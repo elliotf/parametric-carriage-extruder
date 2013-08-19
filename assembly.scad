@@ -7,6 +7,7 @@ da8 = 1 / cos(180 / 8) / 2;
 // tricky bridge near filament broken again; need to make sure lone bridge is a multiple of filament width
 // provide bridging for the carriage mount holes (going from larger to smaller diameter)
 // hobbed bolt is in the filament path too much (was 0.75 into the filament, going to 0.5)
+// extruder hobbed bolt and rear motor shaft bumping into carriage; extruder is not deep enough or not high enough
 
 include <gears.scad>
 include <inc/nema.scad>
@@ -38,6 +39,7 @@ carriage_hole_spacing = 30;
 carriage_hole_small_diam    = 3.2;
 carriage_hole_large_diam    = 6.2;
 carriage_hole_support_thickness = 8;
+carriage_clearance = 25;
 
 motor_screw_spacing = 26;
 
@@ -48,10 +50,9 @@ hotend_mount_screw_hole_spacing = 24;
 hotend_mount_screw_diam = 4;
 hotend_mount_length = 37.5*2;
 hotend_mount_width = 28;
-hotend_mount_height = 0;
 
 mount_plate_thickness = 3;
-bottom_thickness = 8;
+bottom_thickness = 5;
 body_bottom_pos = -motor_side/2-bottom_thickness;
 total_depth = mount_plate_thickness + motor_height + 1;
 total_width = motor_side + motor_side*1.4;
@@ -60,6 +61,7 @@ total_height = motor_side + bottom_thickness;
 filament_from_carriage = hotend_diam / 2 + 7.5; // make sure the hotend can clear the carriage
 filament_x = ext_shaft_diam/2 + filament_diam/2 - .5;
 filament_y = total_depth - filament_from_carriage;
+
 
 module assembly() {
   //gear_assembly();
@@ -76,7 +78,27 @@ module assembly() {
   % translate([filament_x,filament_y,0]) cylinder(r=3/2,h=60,$fn=36,center=true);
 
   // hotend
-  //% translate([filament_x,filament_y,body_bottom_pos-hotend_length/2+hotend_mount_hole_depth]) cylinder(r=hotend_diam/2,h=hotend_length,center=true);
+  % translate([filament_x,filament_y,body_bottom_pos-hotend_length/2+hotend_mount_hole_depth]) hotend();
+
+  // carriage clearance
+  //translate([0,total_depth,-ext_shaft_diam/2-carriage_clearance/2]) cube([carriage_hole_spacing,.5,carriage_clearance],center=true);
+  translate([filament_x,total_depth/2,-ext_shaft_diam/2-carriage_clearance-3/2]) {
+    for(side=[-1,1]) {
+      % translate([carriage_hole_spacing/2*side,0,0]) rotate([90,0,0]) cylinder(r=3/2,h=total_depth,center=true);
+    }
+  }
+}
+
+module hotend() {
+  difference() {
+    cylinder(r=hotend_diam/2,h=hotend_length,center=true, $fn=13);
+
+    // groove
+    translate([0,0,hotend_length/2-5-hotend_groove_thickness/2]) difference() {
+      cylinder(r=hotend_diam/2+0.05,h=hotend_groove_thickness,center=true, $fn=13);
+      cylinder(r=6.3,h=hotend_groove_thickness,center=true, $fn=13);
+    }
+  }
 }
 
 module bearing() {
@@ -119,6 +141,12 @@ module extruder_body_base() {
     for (side=[-1,1]) {
       translate([0,(idler_screw_spacing/2)*side,0]) rotate([0,90,0]) cylinder(r=18*da6,h=45,$fn=6,center=true);
     }
+  }
+
+  // hotend groove
+  translate([filament_x,0,body_bottom_pos-hotend_groove_thickness/2]) {
+    translate([0,total_depth/2,0])
+      cube([hotend_diam+hotend_groove_overlap,total_depth,hotend_groove_thickness],center=true);
   }
 }
 
@@ -267,8 +295,8 @@ module extruder_body_holes() {
     rotate([20,25,0]) cube([40,50,22],center=true);
   }
   // bottom front
-  translate([filament_x+4,-15,body_bottom_pos-7]) {
-    rotate([60,0,0]) cylinder(r=20,h=100,center=true);
+  translate([filament_x+4,-12,body_bottom_pos-7]) {
+    //rotate([45,0,0]) cylinder(r=20,h=100,center=true);
   }
 
   // center back
@@ -290,7 +318,7 @@ module extruder_body_holes() {
   }
   // bottom
   translate([20,-8,body_bottom_pos/2]) {
-    rotate([16,0,45]) cube([70,20,40],center=true);
+    rotate([16,0,45]) cube([70,20,50],center=true);
   }
   translate([20,-7,body_bottom_pos/2]) {
     rotate([-16,0,40]) cube([50,20,40],center=true);
@@ -334,14 +362,24 @@ module extruder_body_holes() {
   }
 
   // hotend
-  translate([filament_x,filament_y,body_bottom_pos]) {
+  translate([filament_x,filament_y,body_bottom_pos+hotend_mount_hole_depth/2]) {
     // hotend mount hole
-    translate([0,0,hotend_mount_height]) rotate([0,0,22.5]) cylinder(r=da8*hotend_diam+0.05,h=hotend_mount_hole_depth*2,$fn=8,center=true);
+    rotate([0,0,22.5])
+      cylinder(r=da8*hotend_diam+0.05,h=hotend_mount_hole_depth,$fn=8,center=true);
+    translate([0,(total_depth-filament_y)/2,0])
+      cube([hotend_diam,total_depth-filament_y+0.5,hotend_mount_hole_depth],center=true);
+    translate([0,0,-hotend_groove_thickness]) {
+      rotate([0,0,22.5]) cylinder(r=hotend_groove_diam*da8,$fn=8,h=hotend_groove_thickness+1,center=true);
+      translate([0,(total_depth-filament_y)/2,0]) {
+        cube([hotend_groove_diam,total_depth-filament_y+1,hotend_groove_thickness+1],center=true);
+      }
+    }
 
+    /*
     // plate is not symmetric, skew to one side
     translate([-1.5,0,0]) {
       // hotend plate recess
-      cube([hotend_mount_length,hotend_mount_width,hotend_mount_height*2],center=true);
+      cube([hotend_mount_length,hotend_mount_width,0],center=true);
 
       // hotend plate screw holes
       for (side=[-1,1]) {
@@ -355,6 +393,7 @@ module extruder_body_holes() {
         }
       }
     }
+    */
   }
 
   // filament guide top recess
@@ -362,6 +401,7 @@ module extruder_body_holes() {
     cylinder(r=6.25/2,$fn=8,h=10,center=true);
 
   // carriage mounting holes
+  /*
   translate([filament_x,total_depth/2,body_bottom_pos+bottom_thickness/2+1]) {
     for (side=[-1,1]) {
       translate([side*carriage_hole_spacing/2,-carriage_hole_support_thickness,0]) rotate([90,0,0]) rotate([0,0,22.5])
@@ -371,7 +411,45 @@ module extruder_body_holes() {
         cylinder(r=carriage_hole_small_diam*da6,$fn=6,h=total_depth,center=true);
     }
   }
+  */
 }
+
+hotend_groove_thickness = 5.8;
+hotend_groove_diam      = 13;
+hotend_groove_overlap   = 10;
+module hotend_groove() {
+  translate([filament_x,0,body_bottom_pos-hotend_groove_thickness/2]) {
+    difference() {
+      translate([0,total_depth/2,0])
+        cube([hotend_diam+hotend_groove_overlap,total_depth,hotend_groove_thickness],center=true);
+      translate([0,filament_y,0]) {
+        rotate([0,0,22.5]) cylinder(r=hotend_groove_diam*da8,$fn=8,h=hotend_groove_thickness+1,center=true);
+        translate([0,(total_depth-filament_y)/2,0]) {
+          cube([hotend_groove_diam,total_depth-filament_y+1,hotend_groove_thickness+1],center=true);
+        }
+      }
+    }
+  }
+      /*
+  translate([filament_x,filament_y,body_bottom_pos-hotend_groove_thickness/2]) {
+    // hotend groove
+    difference() {
+      union() {
+        rotate([0,0,22.5]) cylinder(r=(hotend_diam+hotend_groove_overlap)*da8,$fn=8,h=hotend_groove_thickness,center=true);
+        translate([0,(total_depth-filament_y)/2,0]) {
+          cube([hotend_diam+hotend_groove_overlap,total_depth-filament_y,hotend_groove_thickness],center=true);
+        }
+      }
+      rotate([0,0,22.5]) cylinder(r=hotend_groove_diam*da8,$fn=8,h=hotend_groove_thickness+1,center=true);
+      translate([0,(total_depth-filament_y)/2,0]) {
+        cube([hotend_groove_diam,total_depth-filament_y+1,hotend_groove_thickness+1],center=true);
+      }
+    }
+  }
+      */
+}
+
+//hotend_groove();
 
 bridge_thickness = 0.3;
 
