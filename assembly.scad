@@ -52,16 +52,56 @@ hotend_mount_length = 37.5*2;
 hotend_mount_width = 28;
 
 mount_plate_thickness = 3;
-bottom_thickness = 5;
+bottom_thickness = 4;
 body_bottom_pos = -motor_side/2-bottom_thickness;
 total_depth = mount_plate_thickness + motor_height + 1;
 total_width = motor_side + motor_side*1.4;
 total_height = motor_side + bottom_thickness;
 
-filament_from_carriage = hotend_diam / 2 + 7.5; // make sure the hotend can clear the carriage
+filament_from_carriage = hotend_diam / 2 + 11; // make sure the hotend can clear the carriage
 filament_x = ext_shaft_diam/2 + filament_diam/2 - .5;
 filament_y = total_depth - filament_from_carriage;
 
+//625
+idler_bearing_height = bearing_height;
+idler_bearing_outer  = bearing_outer;
+idler_bearing_inner  = bearing_inner;
+
+// 608
+idler_bearing_height = 7;
+idler_bearing_outer  = 22;
+idler_bearing_inner  = 8;
+
+//626
+idler_bearing_height = 6;
+idler_bearing_outer  = 19;
+idler_bearing_inner  = 6;
+
+idler_width     = idler_bearing_height+14;
+idler_thickness = idler_bearing_inner+3+1;
+idler_shaft_diam = idler_bearing_inner;
+idler_shaft_length = idler_width*2;
+idler_x = filament_x + idler_bearing_outer/2 + filament_diam/2;
+
+idler_screw_spacing = (idler_width - idler_bearing_height - 1);
+idler_screw_from_shaft = 14;
+
+idler_crevice_width = idler_thickness + 0.5;
+idler_crevice_length = total_depth - (filament_y - idler_width/2) + 2;
+idler_crevice_depth = 5;
+idler_crevice_x = idler_x - 0.5;
+idler_crevice_y = total_depth - idler_crevice_length / 2 + 0.5;
+idler_crevice_z = body_bottom_pos + bottom_thickness + idler_crevice_depth/2 + 2.75;
+
+idler_length    = idler_bearing_outer+16;
+idler_length    = motor_side - 2.75;
+idler_length    = -1*(idler_crevice_z - idler_crevice_depth/2 - motor_side/2);
+
+hotend_groove_thickness = 5.8;
+hotend_groove_diam      = 13;
+hotend_groove_overlap   = 10;
+hotend_top_thickness = 0;
+hotend_z = idler_crevice_z - hotend_top_thickness - hotend_groove_thickness;
 
 module assembly() {
   //gear_assembly();
@@ -129,9 +169,10 @@ module extruder_body_base() {
   translate([-motor_side*0.3,mount_plate_thickness/2,0])
     cube([total_width,mount_plate_thickness,motor_side],center=true);
 
+  block_depth = total_depth-mount_plate_thickness;
   // main block
-  translate([motor_side*0.2,total_depth/2+mount_plate_thickness/2,0])
-    cube([motor_side*1.4,total_depth-mount_plate_thickness,motor_side],center=true);
+  translate([motor_side*0.2,block_depth/2+mount_plate_thickness,0])
+    cube([motor_side*1.4,block_depth,motor_side],center=true);
 
   // bottom
   translate([-motor_side*0.3,total_depth/2,body_bottom_pos+bottom_thickness/2])
@@ -144,47 +185,11 @@ module extruder_body_base() {
   }
 
   // hotend groove
-  translate([filament_x,0,body_bottom_pos-hotend_groove_thickness/2]) {
-    translate([0,total_depth/2,0])
+  translate([filament_x,filament_y-total_depth/4,hotend_z-hotend_groove_thickness]) {
+    translate([0,0,0])
       cube([hotend_diam+hotend_groove_overlap,total_depth,hotend_groove_thickness],center=true);
   }
 }
-
-//625
-idler_bearing_height = bearing_height;
-idler_bearing_outer  = bearing_outer;
-idler_bearing_inner  = bearing_inner;
-
-// 608
-idler_bearing_height = 7;
-idler_bearing_outer  = 22;
-idler_bearing_inner  = 8;
-
-//626
-idler_bearing_height = 6;
-idler_bearing_outer  = 19;
-idler_bearing_inner  = 6;
-
-idler_width     = idler_bearing_height+14;
-idler_thickness = idler_bearing_inner+3+1;
-idler_shaft_diam = idler_bearing_inner;
-idler_shaft_length = idler_width*2;
-idler_x = filament_x + idler_bearing_outer/2 + filament_diam/2;
-
-idler_screw_spacing = (idler_width - idler_bearing_height - 1);
-idler_screw_from_shaft = 14;
-
-idler_crevice_width = idler_thickness + 1;
-idler_crevice_length = total_depth - (filament_y - idler_width/2) + 2;
-idler_crevice_depth = 5;
-idler_crevice_x = idler_x - 0.5;
-idler_crevice_y = total_depth - idler_crevice_length / 2 + 0.5;
-idler_crevice_z = body_bottom_pos + bottom_thickness + idler_crevice_depth/2 + 2.75;
-
-idler_length    = idler_bearing_outer+16;
-idler_length    = motor_side - 2.75;
-idler_length    = -1*(idler_crevice_z - idler_crevice_depth/2 - motor_side/2);
-
 module idler_bearing() {
   difference() {
     cylinder(r=idler_bearing_outer/2,h=idler_bearing_height,center=true);
@@ -216,8 +221,8 @@ module idler() {
   }
 }
 
-translate([idler_crevice_x,filament_y,idler_crevice_z - idler_crevice_depth/2 + idler_length/2]) {
-  idler();
+translate([idler_crevice_x+0.25,filament_y,idler_crevice_z - idler_crevice_depth/2 + idler_length/2]) {
+  //idler();
 }
 
 module extruder_body_holes() {
@@ -297,6 +302,9 @@ module extruder_body_holes() {
   // bottom front
   translate([filament_x+4,-12,body_bottom_pos-7]) {
     //rotate([45,0,0]) cylinder(r=20,h=100,center=true);
+  }
+  translate([filament_x+4,-2,body_bottom_pos-7]) {
+    rotate([50,-10,0]) cube([50,20,80],center=true);
   }
 
   // center back
@@ -414,9 +422,6 @@ module extruder_body_holes() {
   */
 }
 
-hotend_groove_thickness = 5.8;
-hotend_groove_diam      = 13;
-hotend_groove_overlap   = 10;
 module hotend_groove() {
   translate([filament_x,0,body_bottom_pos-hotend_groove_thickness/2]) {
     difference() {
@@ -471,6 +476,7 @@ module bridges(){
   }
 
   // carriage mounting hole diameter drop
+  /*
   translate([filament_x,total_depth-carriage_hole_support_thickness,body_bottom_pos+bottom_thickness/2+1]) {
     for (side=[-1,1]) {
       //translate([side*carriage_hole_spacing/2,carriage_hole_support_thickness,0])
@@ -478,6 +484,7 @@ module bridges(){
         # cube([carriage_hole_large_diam+0.5,bridge_thickness,carriage_hole_large_diam+0.5],center=true);
     }
   }
+  */
 }
 
 //rotate([90,0,0]) assembly();
