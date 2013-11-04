@@ -6,7 +6,8 @@ da8 = 1 / cos(180 / 8) / 2;
 // http://creativecommons.org/licenses/by-sa/3.0/
 
 // You can get this file from http://www.thingiverse.com/thing:3575
-use <config.scad>
+include <config.scad>
+include <positions.scad>
 use <inc/parametric_involute_gear_v5.0.scad>
 //use <inc/nema.scad>
 use <inc/spur_generator.scad>
@@ -25,13 +26,13 @@ ext_shaft_nut_diam = 8.1;
 ext_shaft_nut_height = 3.5;
 
 // Here's an example.
-large_tooth_num = 49;
-small_tooth_num = 9;
+large_tooth_num = 71;
+small_tooth_num = 13;
 /* use this ratio for NEMA17?
-*/
 large_tooth_num = 38;
 small_tooth_num = 13;
-gear_dist = 35;
+*/
+//gear_dist = 35;
 // printed 51 and 9
 // 7 and 41
 // 9 and 41
@@ -75,7 +76,8 @@ module small_gear() {
       number_of_teeth = small_tooth_num,
       rim_width       = 2,
       bore_diameter   = 0,
-      hub_diameter    = 21
+      //hub_diameter    = 21
+      hub_diameter    = gear_outer_radius(small_tooth_num,gear_pitch) * 2 + min_material_thickness * 2.5
     );
 
     // flatted motor hole

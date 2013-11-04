@@ -29,7 +29,7 @@ m5_nut_thickness = 5;
 
 // Motors
 nema17_side = 43;
-nema17_len = 36; // "half-length" nema 17
+nema17_len = 34; // "half-length" nema 17
 nema17_len = 48;
 nema17_hole_spacing = 31;
 nema17_screw_diam = m3_diam;
@@ -73,7 +73,7 @@ motor_shoulder_diam = nema14_shoulder_diam;
 
 // Misc settings
 extrusion_width = 0.5;
-extrusion_height = 0.3;
+extrusion_height = 0.25;
 min_material_thickness = extrusion_width*4;
 spacer = 1;
 
@@ -150,5 +150,15 @@ hotend_mount_length = 37.5*2;
 hotend_mount_width = 28;
 hotend_mount_height = 0;
 
+hotend_groove_diam = 12.75;
+hotend_groove_height = 4.4;
+
 filament_from_carriage = hotend_diam / 2 + 8; // make sure the hotend can clear the carriage
+
 filament_x = hobbed_diam/2 + filament_diam/2 - .6;
+idler_x = filament_x + idler_bearing_outer/2 + filament_diam/2;
+
+idler_width     = idler_bearing_height+14;
+idler_thickness = idler_bearing_inner+3+1;
+idler_shaft_diam = idler_bearing_inner;
+idler_shaft_length = idler_width*2;
