@@ -59,7 +59,6 @@ motor_short_shaft_len = nema17_short_shaft_len;
 motor_shoulder_height = nema17_shoulder_height;
 motor_shoulder_diam = nema17_shoulder_diam;
 
-/*
 motor_side = nema14_side;
 motor_len = nema14_len;
 motor_hole_spacing = nema14_hole_spacing;
@@ -69,6 +68,7 @@ motor_shaft_len = nema14_shaft_len;
 motor_short_shaft_len = nema14_short_shaft_len;
 motor_shoulder_height = nema14_shoulder_height;
 motor_shoulder_diam = nema14_shoulder_diam;
+/*
 */
 
 // Misc settings
@@ -130,15 +130,15 @@ mount_plate_thickness = 3;
 bottom_thickness = m3_socket_head_diam + min_material_thickness;
 
 ext_shaft_length  = 60;
-hobbed_diam = 8;
-hobbed_width = 7;
+hobbed_diam = 9;
+hobbed_width = 9;
 ext_shaft_diam = bearing_inner;
 ext_shaft_opening = hobbed_diam + 1;
 
 carriage_hole_spacing = 30;
 carriage_hole_small_diam    = m3_diam;
 carriage_hole_large_diam    = 6;
-carriage_hole_support_thickness = 8;
+carriage_hole_support_thickness = 6;
 
 hotend_length = 63;
 hotend_diam   = 16;
@@ -149,6 +149,7 @@ hotend_mount_screw_nut = 7.3;
 hotend_mount_length = 37.5*2;
 hotend_mount_width = 28;
 hotend_mount_height = 0;
+hotend_mount_hole_spacing = 12.5;
 
-filament_from_carriage = hotend_diam / 2 + 8; // make sure the hotend can clear the carriage
+filament_from_carriage = hotend_diam / 2 + hotend_mount_hole_spacing; // make sure the hotend can clear the carriage
 filament_x = hobbed_diam/2 + filament_diam/2 - .6;
