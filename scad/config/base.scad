@@ -74,7 +74,7 @@ motor_shoulder_diam = nema14_shoulder_diam;
 // Misc settings
 extrusion_width = 0.5;
 extrusion_height = 0.3;
-min_material_thickness = extrusion_width*4;
+min_material_thickness = extrusion_width*2;
 spacer = 1;
 
 // bearing size
@@ -126,12 +126,12 @@ idler_bearing_inner  = bearing_inner;
 
 filament_diam = 3;
 
-mount_plate_thickness = 3;
+mount_plate_thickness = 8;
 bottom_thickness = m3_socket_head_diam + min_material_thickness;
 
 ext_shaft_length  = 60;
 hobbed_diam = 8;
-hobbed_width = 7;
+hobbed_depth = 7;
 ext_shaft_diam = bearing_inner;
 ext_shaft_opening = hobbed_diam + 1;
 
@@ -150,5 +150,4 @@ hotend_mount_length = 37.5*2;
 hotend_mount_width = 28;
 hotend_mount_height = 0;
 
-filament_from_carriage = hotend_diam / 2 + 8; // make sure the hotend can clear the carriage
-filament_x = hobbed_diam/2 + filament_diam/2 - .6;
+filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can clear the carriage

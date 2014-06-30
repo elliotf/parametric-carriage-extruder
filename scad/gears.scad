@@ -31,6 +31,8 @@ small_tooth_num = 9;
 */
 large_tooth_num = 38;
 small_tooth_num = 13;
+large_tooth_num = 33;
+small_tooth_num = 9;
 gear_dist = 35;
 // printed 51 and 9
 // 7 and 41
@@ -54,7 +56,7 @@ module large_gear() {
       hub_thickness = large_gear_thickness-0.5+ext_shaft_nut_height,
       hub_diameter = ext_shaft_nut_diam + 7,
       number_of_teeth = large_tooth_num,
-      circles=4,
+      circles=5,
       bore_diameter = 0);
     cylinder(r=ext_shaft_diam/2,$fn=36,h=50,center=true);
     translate([0,0,large_gear_thickness-1+ext_shaft_nut_height]) {
