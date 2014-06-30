@@ -154,3 +154,6 @@ hotend_mount_width = 28;
 hotend_mount_height = 0;
 
 filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can clear the carriage
+
+idler_screw_spacing = idler_bearing_height + min_material_thickness*2 + idler_screw_diam;
+idler_width = idler_screw_spacing + idler_screw_diam + min_material_thickness*2;
