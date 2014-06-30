@@ -49,8 +49,7 @@ module motor() {
 }
 
 module assembly() {
-  //gear_assembly();
-  //translate([0,0,0]) extruder_body();
+  translate([0,0,0]) extruder_body();
 
   // motor
   % position_motor() rotate([90,0,0]) motor();
@@ -286,5 +285,5 @@ module full_assembly() {
   }
 }
 
-full_assembly();
-//assembly();
+//full_assembly();
+assembly();
