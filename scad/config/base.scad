@@ -126,7 +126,7 @@ idler_bearing_inner  = bearing_inner;
 
 filament_diam = 3;
 filament_compressed_diam = filament_diam - .2;
-filament_opening_diam = filament_diam + 0.1;
+filament_opening_diam = filament_diam + 0.3;
 
 mount_plate_thickness = 8;
 bottom_thickness = m3_socket_head_diam + min_material_thickness;
