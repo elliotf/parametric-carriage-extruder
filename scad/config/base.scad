@@ -125,15 +125,18 @@ idler_bearing_outer  = bearing_outer;
 idler_bearing_inner  = bearing_inner;
 
 filament_diam = 3;
+filament_compressed_diam = filament_diam - .2;
+filament_opening_diam = filament_diam + 0.1;
 
 mount_plate_thickness = 8;
 bottom_thickness = m3_socket_head_diam + min_material_thickness;
 
 ext_shaft_length  = 60;
-hobbed_diam = 8;
+hobbed_effective_diam = 6.9;
+hobbed_outer_diam = 8;
 hobbed_depth = 7;
 ext_shaft_diam = bearing_inner;
-ext_shaft_opening = hobbed_diam + 1;
+ext_shaft_opening = hobbed_outer_diam + 1;
 
 carriage_hole_spacing = 30;
 carriage_hole_small_diam    = m3_diam;

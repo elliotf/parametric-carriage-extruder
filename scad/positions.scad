@@ -1,6 +1,6 @@
 include <config.scad>;
 
-filament_x = hobbed_diam/2 + filament_diam/2 - .6;
+filament_x = hobbed_effective_diam/2 + filament_compressed_diam/2;
 filament_y = filament_from_gears;
 
 idler_screw_from_shaft = bearing_outer/2+idler_screw_nut_diam/2+2;
@@ -24,7 +24,7 @@ module position_motor() {
 }
 
 main_body_width_motor_side = -motor_x - motor_side/2;
-main_body_width_idler_side = hobbed_diam/2 + filament_diam + min_material_thickness;
+main_body_width_idler_side = hobbed_effective_diam/2 + filament_diam + min_material_thickness;
 main_body_width  = main_body_width_motor_side + main_body_width_idler_side;
 main_body_depth  = motor_len + mount_plate_thickness;
 main_body_height_below_shaft = bearing_outer/2 + min_material_thickness;

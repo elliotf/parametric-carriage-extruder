@@ -50,7 +50,7 @@ module motor() {
 
 module assembly() {
   //gear_assembly();
-  translate([0,0,0]) extruder_body();
+  //translate([0,0,0]) extruder_body();
 
   // motor
   % position_motor() rotate([90,0,0]) motor();
@@ -60,11 +60,19 @@ module assembly() {
     cylinder(r=ext_shaft_diam/2,h=ext_shaft_length,center=true);
 
   // hobbed whatnot
-  % translate([0,filament_y,0]) rotate([90,0,0]) rotate([0,0,22.5])
-    cylinder(r=hobbed_diam/2+0.05,h=hobbed_depth,center=true);
+  % translate([0,filament_y,0]) rotate([90,0,0]) {
+    difference() {
+      cylinder(r=hobbed_outer_diam/2,h=hobbed_depth,center=true,$fn=36);
+      rotate_extrude() {
+        translate([hobbed_outer_diam/2+.9,0,0])
+          circle(r=3/2,$fn=16);
+      }
+    }
+    cylinder(r=hobbed_effective_diam/2,h=hobbed_depth-1,center=true,$fn=36);
+  }
 
   // filament
-  % translate([filament_x,filament_y,0]) cylinder(r=3/2,h=60,$fn=8,center=true);
+  % translate([filament_x,filament_y,0]) cylinder(r=3/2,h=60,$fn=16,center=true);
 
   // hotend
   //% translate([filament_x,filament_y,body_bottom_pos-hotend_length/2+hotend_mount_hole_depth]) cylinder(r=hotend_diam/2,h=hotend_length,center=true);
@@ -153,6 +161,10 @@ module extruder_body_holes() {
           hole(motor_shoulder_diam+4,mount_plate_thickness+1,32);
     }
   }
+
+  // filament
+  translate([filament_x,filament_y,0]) rotate([0,0,22.5])
+    hole(filament_opening_diam,1000,8);
 }
 
 module material_savings() {
