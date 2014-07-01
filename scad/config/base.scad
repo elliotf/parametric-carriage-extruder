@@ -20,7 +20,7 @@ z = 2;
 // Screws, nuts
 m3_diam = 3;
 m3_nut_diam  = 5.5;
-m3_nut_thickness  = 3;
+m3_nut_thickness  = 2.5;
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
 m5_diam = 5;
@@ -129,7 +129,6 @@ filament_compressed_diam = filament_diam - .2;
 filament_opening_diam = filament_diam + 0.3;
 
 mount_plate_thickness = 8;
-bottom_thickness = m3_socket_head_diam + min_material_thickness;
 
 ext_shaft_length  = 60;
 hobbed_effective_diam = 6.9;
@@ -145,15 +144,20 @@ carriage_hole_support_thickness = 8;
 
 hotend_length = 63;
 hotend_diam   = 16;
-hotend_mount_hole_depth = 5;
-hotend_mount_screw_hole_spacing = 24;
-hotend_mount_screw_diam = 4;
-hotend_mount_screw_nut = 7.3;
-hotend_mount_length = 37.5*2;
-hotend_mount_width = 28;
-hotend_mount_height = 0;
+hotend_groove_diam   = 12;
+
+// jhead
+hotend_height_above_groove = 5;
+hotend_groove_height = 4.64;
+
+// e3d v6 direct
+hotend_height_above_groove = 3.7;
+hotend_groove_height = 6;
 
 filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can clear the carriage
 
 idler_screw_spacing = idler_bearing_height + min_material_thickness*2 + idler_screw_diam;
 idler_width = idler_screw_spacing + idler_screw_diam + min_material_thickness*2;
+
+idler_groove_width = idler_bearing_inner;
+idler_groove_depth = min_material_thickness;
