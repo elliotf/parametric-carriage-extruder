@@ -159,8 +159,8 @@ filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can 
 idler_screw_spacing = idler_bearing_height + min_material_thickness*2 + idler_screw_diam;
 idler_width         = idler_screw_spacing + idler_screw_diam + min_material_thickness*4;
 idler_thickness     = idler_bearing_inner + min_material_thickness*2;
+idler_groove_width  = idler_thickness + .5;
 
-idler_groove_width = idler_bearing_inner;
-idler_groove_depth = min_material_thickness;
+idler_retainer_height = min_material_thickness;
 
 bottom_plate_height = hotend_height_above_groove + min_material_thickness*2;

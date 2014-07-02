@@ -34,13 +34,13 @@ module assembly() {
   // hobbed whatnot
   % translate([0,filament_y,0]) rotate([90,0,0]) {
     difference() {
-      cylinder(r=hobbed_outer_diam/2,h=hobbed_depth,center=true,$fn=36);
+      cylinder(r=hobbed_outer_diam/2,h=hobbed_depth,center=true,$fn=18);
       rotate_extrude() {
         translate([hobbed_outer_diam/2+.9,0,0])
           circle(r=3/2,$fn=16);
       }
     }
-    cylinder(r=hobbed_effective_diam/2,h=hobbed_depth-1,center=true,$fn=36);
+    cylinder(r=hobbed_effective_diam/2,h=hobbed_depth-1,center=true,$fn=18);
   }
 
   // filament
@@ -58,10 +58,17 @@ module assembly() {
   }
 
   translate([idler_x,idler_y,0.05]) {
-    rotate([90,0,0]) {
-      % hole(idler_bearing_outer,idler_bearing_height,32);
+    % rotate([90,0,0]) {
+      difference() {
+        hole(idler_bearing_outer,idler_bearing_height,32);
+        hole(idler_bearing_inner,idler_bearing_height+1,16);
+      }
     }
     idler();
+  }
+
+  translate([idler_retainer_x,main_body_depth/2,-main_body_height_below_shaft+idler_retainer_height/2]) {
+    cube([idler_retainer_width,main_body_depth,idler_retainer_height],center=true);
   }
 }
 
@@ -116,6 +123,8 @@ module extruder_body() {
         cube([total_width/2,main_body_depth,bottom_plate_height],center=true);
       }
     }
+
+    // idler groove
   }
 
   difference() {
@@ -228,7 +237,7 @@ module idler() {
   idler_shaft_opening = idler_bearing_inner + 0.1;
 
   module body() {
-    translate([min_material_thickness,0,0]) {
+    translate([idler_offset_from_bearing,0,0]) {
       translate([0,0,upper_half_length/2-.5])
         cube([idler_thickness,idler_width,upper_half_length+1],center=true);
       translate([0,0,-lower_half_length/2+.5])
