@@ -59,7 +59,7 @@ module assembly() {
 
   translate([idler_x,idler_y,0.05]) {
     rotate([90,0,0]) {
-      //% hole(idler_bearing_outer,idler_bearing_height,32);
+      % hole(idler_bearing_outer,idler_bearing_height,32);
     }
     idler();
   }
@@ -82,8 +82,15 @@ module gear_assembly() {
 
 module extruder_body() {
   module body() {
-    translate([main_body_x,main_body_y,main_body_z])
-      cube([main_body_width,main_body_depth,main_body_height],center=true);
+    difference() {
+      translate([main_body_x,main_body_y,main_body_z])
+        cube([main_body_width,main_body_depth,main_body_height],center=true);
+      // remove material from main block for idler bearing access without removing material elsewhere
+      translate([filament_x+idler_bearing_outer*.375,main_body_depth,0]) {
+        rotate([90,0,0]) rotate([0,0,22.5])
+          hole(idler_bearing_outer, motor_len*2,8);
+      }
+    }
 
     // mounting plate
     hull() {
@@ -103,13 +110,11 @@ module extruder_body() {
       }
     }
 
-    // hotend mount
-
-    // idler groove
-    bottom_plate_height = hotend_height_above_groove + min_material_thickness*2;
+    // hotend plate
     translate([filament_x,main_body_y,bottom*(main_body_height_below_shaft)]) {
-      translate([0,0,-bottom_plate_height/2+min_material_thickness])
-        cube([total_width,main_body_depth,bottom_plate_height],center=true);
+      translate([total_width/4,0,-bottom_plate_height/2]) {
+        cube([total_width/2,main_body_depth,bottom_plate_height],center=true);
+      }
     }
   }
 
@@ -131,11 +136,6 @@ module extruder_body_holes() {
       cube([main_body_width_idler_side+2,main_body_depth+1,ext_shaft_opening],center=true);
   }
 
-  // idler bearing access
-  translate([filament_x+idler_bearing_outer*.375,main_body_depth,0]) {
-    rotate([90,0,0]) rotate([0,0,22.5])
-      hole(idler_bearing_outer, motor_len*2,8);
-  }
 
   // bearings
   translate([0,gear_side_bearing_y,0]) {
@@ -183,15 +183,15 @@ module extruder_body_holes() {
   }
 
   // hotend
-  translate([filament_x,filament_y,hotend_z-hotend_height_above_groove]) {
+  translate([filament_x,filament_y,hotend_z-hotend_height_above_groove/2-0.05]) {
     intersection() {
       rotate([0,0,22.5])
-        hole(hotend_diam,hotend_height_above_groove*2,8);
+        hole(hotend_diam,hotend_height_above_groove+.1,8);
       translate([0,hotend_diam*.825,0])
-        cube([hotend_diam+1,hotend_diam,hotend_height_above_groove*2+1],center=true);
+        cube([hotend_diam+1,hotend_diam,hotend_height_above_groove+2],center=true);
     }
     rotate([0,0,11.25/2])
-      hole(hotend_diam,hotend_height_above_groove*2,32);
+      hole(hotend_diam,hotend_height_above_groove+.1,32);
   }
   translate([filament_x,filament_y,hotend_z+min_material_thickness]) {
     for (side=[left,right]) {
@@ -225,19 +225,23 @@ module idler_bearing() {
 module idler() {
   lower_half_length = idler_bearing_outer/2 + min_material_thickness*2;
   upper_half_length = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness*2;
+  idler_shaft_opening = idler_bearing_inner + 0.1;
+
   module body() {
-    translate([min_material_thickness,0,upper_half_length/2-.5])
-      cube([idler_thickness,idler_width,upper_half_length+1],center=true);
-    translate([min_material_thickness,0,-lower_half_length/2+.5])
-      cube([idler_thickness,idler_width,lower_half_length+1],center=true);
+    translate([min_material_thickness,0,0]) {
+      translate([0,0,upper_half_length/2-.5])
+        cube([idler_thickness,idler_width,upper_half_length+1],center=true);
+      translate([0,0,-lower_half_length/2+.5])
+        cube([idler_thickness,idler_width,lower_half_length+1],center=true);
+    }
   }
 
   module holes() {
     cube([idler_thickness+10,idler_bearing_height+0.1,idler_bearing_outer],center=true);
     rotate([90,0,0])
-      hole(idler_bearing_inner,idler_width-min_material_thickness*2);
+      hole(idler_shaft_opening,idler_width-min_material_thickness*2);
     translate([-(idler_thickness/2+idler_bearing_inner/2),0,0])
-      cube([idler_thickness+idler_bearing_inner,idler_width-min_material_thickness*2,idler_bearing_inner],center=true);
+      cube([idler_thickness+idler_shaft_opening,idler_width-min_material_thickness*2,idler_shaft_opening],center=true);
   }
 
   difference() {
