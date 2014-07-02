@@ -11,10 +11,10 @@ idler_y = filament_y;
 gear_side_bearing_y     = bearing_height/2-m3_socket_head_height+1;
 carriage_side_bearing_y = filament_y + hobbed_depth/2 + bearing_height/2;
 
-main_body_height_below_shaft = bearing_outer/2 + min_material_thickness*3;
+main_body_height_below_shaft = bearing_outer/2 + min_material_thickness*2;
 
 // motor position
-motor_z = bottom*(main_body_height_below_shaft) + motor_side/2 + min_material_thickness;
+motor_z = bottom*(main_body_height_below_shaft) + motor_side/2;
 motor_y = mount_plate_thickness;
 motor_x = -sqrt(pow(gear_dist,2)-pow(motor_z,2));
 
@@ -27,15 +27,14 @@ main_body_width_idler_side = hobbed_effective_diam/2 + filament_diam + min_mater
 main_body_width  = main_body_width_motor_side + main_body_width_idler_side;
 main_body_depth  = motor_len + mount_plate_thickness;
 main_body_height_above_shaft = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness;
-main_body_height = main_body_height_above_shaft + main_body_height_below_shaft;
+main_body_height = main_body_height_above_shaft + main_body_height_below_shaft + bottom_plate_height;
 
 main_body_x = left*main_body_width/2+main_body_width_idler_side;
 main_body_y = main_body_depth/2;
 main_body_z = bottom*main_body_height/2+main_body_height_above_shaft;
 
-//total_width = (main_body_width - filament_diam/2 - min_material_thickness) * 2;
 total_width = carriage_hole_spacing + m3_nut_diam + min_material_thickness*4;
 
-hotend_z = (main_body_height_below_shaft+min_material_thickness) * bottom;
+hotend_z = (main_body_height_below_shaft+min_material_thickness*2) * bottom;
 
 carriage_hole_z = hotend_z - hotend_height_above_groove - hotend_groove_height;
