@@ -6,6 +6,7 @@ filament_y = filament_from_gears;
 idler_screw_from_shaft = bearing_outer/2+idler_screw_nut_diam/2+2;
 idler_x = filament_x + filament_compressed_diam/2 + idler_bearing_outer/2;
 idler_y = filament_y;
+idler_offset_from_bearing = idler_bearing_inner*.25;
 
 // bearing helps provide clearance for motor mount screws
 gear_side_bearing_y     = bearing_height/2-m3_socket_head_height+1;
@@ -19,7 +20,8 @@ motor_y = mount_plate_thickness;
 motor_x = -sqrt(pow(gear_dist,2)-pow(motor_z,2));
 
 module position_motor() {
-  translate([motor_x,motor_y,motor_z]) child(0);
+  translate([motor_x,motor_y,motor_z])
+    children();
 }
 
 main_body_width_motor_side = -motor_x - motor_side/2;
@@ -38,3 +40,6 @@ total_width = carriage_hole_spacing + m3_nut_diam + min_material_thickness*4;
 hotend_z = (main_body_height_below_shaft+min_material_thickness*2) * bottom;
 
 carriage_hole_z = hotend_z - hotend_height_above_groove - hotend_groove_height;
+
+idler_retainer_width = filament_x + total_width/2 - idler_x - idler_offset_from_bearing - idler_groove_width/2;
+idler_retainer_x     = filament_x + total_width/2 - idler_retainer_width/2;
