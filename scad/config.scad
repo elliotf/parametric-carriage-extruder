@@ -148,11 +148,13 @@ hotend_groove_diam   = 12;
 
 // jhead
 hotend_height_above_groove = 5;
-hotend_groove_height = 4.64;
+hotend_groove_height = 4.6;
 
 // e3d v6 direct
 hotend_height_above_groove = 3.7;
 hotend_groove_height = 6;
+
+hotend_screw_spacing = 25;
 
 filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can clear the carriage without melting gears
 
@@ -162,6 +164,6 @@ idler_shaft_length  = idler_width - min_material_thickness*2;
 idler_thickness     = idler_bearing_inner + min_material_thickness*2;
 idler_groove_width  = idler_thickness + .5;
 
-idler_retainer_height = min_material_thickness;
+idler_retainer_height = min_material_thickness*2;
 
 bottom_plate_height = hotend_height_above_groove + min_material_thickness*2;
