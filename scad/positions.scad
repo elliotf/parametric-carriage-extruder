@@ -4,6 +4,8 @@ filament_x = hobbed_effective_diam/2 + filament_compressed_diam/2;
 filament_y = filament_from_gears;
 
 idler_screw_from_shaft = bearing_outer/2+idler_screw_nut_diam/2+2;
+idler_x = filament_x + filament_compressed_diam/2 + idler_bearing_outer/2;
+idler_y = filament_y;
 
 // bearing helps provide clearance for motor mount screws
 gear_side_bearing_y     = bearing_height/2-m3_socket_head_height+1;

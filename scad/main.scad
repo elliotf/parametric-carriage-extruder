@@ -57,9 +57,12 @@ module assembly() {
         hole(3,30,8);
   }
 
-  //translate([idler_x,filament_y,0.1]) {
-    //idler();
-  //}
+  translate([idler_x,idler_y,0.05]) {
+    rotate([90,0,0]) {
+      //% hole(idler_bearing_outer,idler_bearing_height,32);
+    }
+    idler();
+  }
 }
 
 module bearing() {
@@ -220,39 +223,27 @@ module idler_bearing() {
 }
 
 module idler() {
-  % difference() {
-    union() {
-      translate([0,0,-idler_lower_half/2])
-        cube([idler_thickness,idler_width,idler_lower_half],center=true);
-
-      translate([0,0,idler_upper_half/2])
-        cube([idler_thickness,idler_width,idler_upper_half+0.05],center=true);
-
-      translate([idler_thickness/2-idler_thumb_lever_thickness/2,0,idler_upper_half+idler_thumb_lever_length/2])
-        cube([idler_thumb_lever_thickness,idler_width,idler_thumb_lever_length+0.05],center=true);
-    }
-
-    // holes for screws
-    for(side=[-1,1]) {
-      translate([(idler_thickness)/2,idler_screw_spacing/2*side,idler_screw_from_shaft]) {
-        hull() {
-          rotate([0,-85,0]) translate([0,0,(idler_thickness)/2+1]) rotate([0,0,90])
-            hole(idler_screw_diam,idler_thickness+2.05,6);
-          rotate([0,-95,0]) translate([0,0,(idler_thickness)/2+1]) rotate([0,0,90])
-            hole(idler_screw_diam,idler_thickness+2.05,6);
-        }
-      }
-    }
-
-    // hole for bearing
-    cube([idler_bearing_outer,idler_bearing_height+0.5,idler_bearing_outer+2],center=true);
-    translate([-idler_thickness/2,0,0]) rotate([0,0,22.5]) cylinder(r=(idler_bearing_height+0.5)*da8,$fn=8,h=100,center=true);
-
-    translate([-0.5,0,0]) {
-      rotate([90,0,0]) rotate([0,0,22.5]) cylinder(r=da8*(idler_shaft_diam),h=idler_shaft_length,$fn=8,center=true);
-    }
+  lower_half_length = idler_bearing_outer/2 + min_material_thickness*2;
+  upper_half_length = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness*2;
+  module body() {
+    translate([min_material_thickness,0,upper_half_length/2-.5])
+      cube([idler_thickness,idler_width,upper_half_length+1],center=true);
+    translate([min_material_thickness,0,-lower_half_length/2+.5])
+      cube([idler_thickness,idler_width,lower_half_length+1],center=true);
   }
-  % rotate([90,0,0]) idler_bearing();
+
+  module holes() {
+    cube([idler_thickness+10,idler_bearing_height+0.1,idler_bearing_outer],center=true);
+    rotate([90,0,0])
+      hole(idler_bearing_inner,idler_width-min_material_thickness*2);
+    translate([-(idler_thickness/2+idler_bearing_inner/2),0,0])
+      cube([idler_thickness+idler_bearing_inner,idler_width-min_material_thickness*2,idler_bearing_inner],center=true);
+  }
+
+  difference() {
+    body();
+    holes();
+  }
 }
 
 module bridges(){
