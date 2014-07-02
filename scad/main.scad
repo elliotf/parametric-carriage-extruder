@@ -144,15 +144,21 @@ module extruder_body_holes() {
   }
 
 
-  // bearings
+  // gear side bearing
   translate([0,gear_side_bearing_y,0]) {
     rotate([90,0,0]) rotate([0,0,11.25])
       hole(bearing_outer,bearing_height,16);
   }
   translate([0,main_body_depth,0]) {
+    // carriage side bearing
     rotate([90,0,0]) rotate([0,0,11.25])
       hole(bearing_outer,(main_body_depth-carriage_side_bearing_y)*2+bearing_height,16);
+
+    // easier to insert carriage side bearing, can unscrew shaft while mounted
+    translate([main_body_width_idler_side,0,main_body_height_above_shaft])
+      cube([main_body_width_idler_side*2+bearing_outer,(main_body_depth-carriage_side_bearing_y-bearing_height)*2,main_body_height_above_shaft*2],center=true);
   }
+
 
   // motor
   position_motor() {
