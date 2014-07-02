@@ -58,17 +58,8 @@ module assembly() {
   }
 
   translate([idler_x,idler_y,0.05]) {
-    % rotate([90,0,0]) {
-      difference() {
-        hole(idler_bearing_outer,idler_bearing_height,32);
-        hole(idler_bearing_inner,idler_bearing_height+1,16);
-      }
-    }
     idler();
-  }
-
-  translate([idler_retainer_x,main_body_depth/2,-main_body_height_below_shaft+idler_retainer_height/2]) {
-    cube([idler_retainer_width,main_body_depth,idler_retainer_height],center=true);
+    idler_shaft();
   }
 }
 
@@ -125,6 +116,9 @@ module extruder_body() {
     }
 
     // idler groove
+    translate([idler_retainer_x,main_body_depth/2,-main_body_height_below_shaft+idler_retainer_height/2]) {
+      cube([idler_retainer_width,main_body_depth,idler_retainer_height],center=true);
+    }
   }
 
   difference() {
@@ -231,9 +225,26 @@ module idler_bearing() {
   }
 }
 
+module idler_shaft() {
+  idler_shaft_diam = idler_bearing_inner-0.05;
+  rotate([-90,0,0])
+    rotate([0,0,22.5]) {
+      intersection() {
+        cylinder(r=idler_shaft_diam/2,h=idler_shaft_length,center=true);
+        translate([0,idler_bearing_inner/2,0])
+          cube([idler_bearing_inner,idler_bearing_inner,idler_shaft_length+1],center=true);
+      }
+      intersection() {
+        cylinder(r=idler_shaft_diam/2,h=idler_shaft_length,center=true,$fn=16);
+        translate([0,-idler_bearing_inner/2,0])
+          cube([idler_bearing_inner,idler_bearing_inner,idler_shaft_length+1],center=true);
+      }
+    }
+}
+
 module idler() {
   lower_half_length = idler_bearing_outer/2 + min_material_thickness*2;
-  upper_half_length = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness*2;
+  upper_half_length = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness*2 + 5;
   idler_shaft_opening = idler_bearing_inner + 0.1;
 
   module body() {
@@ -246,16 +257,51 @@ module idler() {
   }
 
   module holes() {
+    // main bearing hole
     cube([idler_thickness+10,idler_bearing_height+0.1,idler_bearing_outer],center=true);
-    rotate([90,0,0])
-      hole(idler_shaft_opening,idler_width-min_material_thickness*2);
+
+    // idler shaft hole
+    rotate([90,0,0]) rotate([0,0,22.5])
+      hole(idler_shaft_opening,idler_shaft_length+0.1,8);
     translate([-(idler_thickness/2+idler_bearing_inner/2),0,0])
-      cube([idler_thickness+idler_shaft_opening,idler_width-min_material_thickness*2,idler_shaft_opening],center=true);
+      cube([idler_thickness+idler_shaft_opening,idler_shaft_length+0.1,idler_shaft_opening],center=true);
+
+    // elongated idler scerw holes
+    for (side=[left,right]) {
+      translate([idler_offset_from_bearing + idler_thickness/2,idler_screw_spacing/2*side,idler_screw_from_shaft]) {
+        hull() {
+          for (offset=[-15,15]) {
+            rotate([0,-90+offset,0])
+              translate([0,0,idler_thickness])
+                hole(idler_screw_diam,idler_thickness*2,18);
+          }
+        }
+      }
+    }
+
+    // angled top end
+    translate([idler_offset_from_bearing+idler_thickness/2-1,0,upper_half_length])
+      rotate([0,-65,0])
+        translate([-idler_thickness/2-idler_offset_from_bearing+1,0,5])
+          cube([idler_thickness*4,idler_width+1,10],center=true);
+
+    // angled pivot point
+    translate([idler_offset_from_bearing+idler_thickness/2-.6,0,-lower_half_length])
+      rotate([0,10,0])
+        translate([-idler_thickness/2,0,-5])
+          cube([idler_thickness*2,idler_width+1,10],center=true);
   }
 
   difference() {
     body();
     holes();
+
+    % rotate([90,0,0]) {
+      difference() {
+        hole(idler_bearing_outer,idler_bearing_height,32);
+        hole(idler_bearing_inner,idler_bearing_height+1,16);
+      }
+    }
   }
 }
 
