@@ -205,9 +205,10 @@ module extruder_body_holes() {
       for (end=[front,rear]) {
         rotate([0,0,30*end])
           translate([hotend_screw_spacing/2*side,0,0]) {
-            rotate([0,0,90*end]) {
+            rotate([0,0,end*-30-22.5*end])
               translate([0,0,-5])
-                hole(3,10,6);
+                hole(3,10,8);
+            rotate([0,0,90*end]) {
               translate([0,0,-m3_nut_thickness/2]) {
                 hole(m3_nut_diam,m3_nut_thickness,6);
                 rotate([0,0,-120*end]) {
