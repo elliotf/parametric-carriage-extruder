@@ -10,7 +10,7 @@ idler_offset_from_bearing = idler_bearing_inner*.25;
 
 // bearing helps provide clearance for motor mount screws
 gear_side_bearing_y     = bearing_height/2-m3_socket_head_height+1;
-carriage_side_bearing_y = filament_y + hobbed_depth/2 + bearing_height/2;
+carriage_side_bearing_y = filament_y + hobbed_depth/2 + bearing_lip_height;
 
 main_body_height_below_shaft = bearing_outer/2 + min_material_thickness*2;
 
