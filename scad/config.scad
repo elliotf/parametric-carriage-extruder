@@ -124,11 +124,14 @@ idler_bearing_height = bearing_height;
 idler_bearing_outer  = bearing_outer;
 idler_bearing_inner  = bearing_inner;
 
+bearing_lip_width = .75;
+bearing_lip_height = (bearing_height + bearing_outer - bearing_inner)/2;
+
 filament_diam = 3;
 filament_compressed_diam = filament_diam - .2;
 filament_opening_diam = filament_diam + 0.3;
 
-mount_plate_thickness = 4;
+mount_plate_thickness = 8;
 
 ext_shaft_length  = 60;
 hobbed_effective_diam = 6.9;

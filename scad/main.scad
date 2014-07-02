@@ -1,3 +1,17 @@
+/*
+
+TODO:
+  carriage screw holes
+  carriage support brace
+  carriage-side (maybe gear-side, too) bearing conical opening
+    to avoid bearing rubbing on plastic
+
+MAYBE:
+  fan mount holes?
+  more bracing for idler retainer?
+
+*/
+
 include <util.scad>
 include <config.scad>
 include <gears.scad>
@@ -130,7 +144,22 @@ module extruder_body() {
     extruder_body_holes();
   }
 
+  % translate([0,carriage_side_bearing_y,0])
+    rotate([90,0,0])
+      cylinder(r=bearing_outer/2,h=bearing_height,center=true);
+
   color("lightblue") bridges();
+}
+
+module sloped_bearing_hole() {
+  rotate([90,0,0]) rotate([0,0,11.25]) {
+    hole(bearing_outer, bearing_height, 16);
+    hull() {
+      hole(bearing_outer-bearing_lip_width*2,bearing_height,16);
+      translate([0,0,0])
+        hole(bearing_inner,bearing_lip_height*2,16);
+    }
+  }
 }
 
 module extruder_body_holes() {
@@ -146,11 +175,14 @@ module extruder_body_holes() {
 
   // gear side bearing
   translate([0,gear_side_bearing_y,0]) {
-    rotate([90,0,0]) rotate([0,0,11.25])
-      hole(bearing_outer,bearing_height,16);
+    sloped_bearing_hole();
   }
 
   carriage_side_bearing_hole_depth = (main_body_depth-carriage_side_bearing_y)*2+bearing_height;
+  translate([0,carriage_side_bearing_y,0]) {
+    sloped_bearing_hole();
+  }
+
   translate([0,main_body_depth,0]) {
     // carriage side bearing
     rotate([90,0,0]) rotate([0,0,11.25])
@@ -364,24 +396,10 @@ module bridges(){
   translate([main_body_x,gear_side_bearing_y+bearing_height/2-bridge_thickness/2,0])
     cube([main_body_width-0.5,bridge_thickness,bearing_outer+1],center=true);
   gear_bearing_support = bearing_height/2+gear_side_bearing_y-extrusion_height;
-  translate([0,gear_bearing_support/2,0]) {
-    difference() {
-      union() {
-        rotate([90,0,0]) rotate([0,0,11.25])
-          hole(ext_shaft_opening-.5,gear_bearing_support,16);
-        translate([bearing_outer/4-1,0,0])
-          cube([bearing_outer/2-.5,gear_bearing_support,ext_shaft_opening-.5],center=true);
-      }
-      rotate([90,0,0]) rotate([0,0,11.25])
-        hole(ext_shaft_opening-1.3,gear_bearing_support+1,16);
-      translate([bearing_outer/4-1,0,0])
-        cube([bearing_outer/2-1.3,gear_bearing_support+1,ext_shaft_opening-1.3],center=true);
-    }
-  }
   translate([0,gear_bearing_support/2-0.1,0]) {
     rotate([90,0,0]) difference() {
-      hole(bearing_outer*.8,gear_bearing_support-0.2,16);
-      hole(bearing_outer*.8-0.5,gear_bearing_support,16);
+      hole(bearing_outer-bearing_lip_width-1,gear_bearing_support-0.2,36);
+      hole(bearing_outer-bearing_lip_width-1.5,gear_bearing_support,36);
     }
   }
 
