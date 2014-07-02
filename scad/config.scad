@@ -19,7 +19,7 @@ z = 2;
 
 // Screws, nuts
 m3_diam = 3;
-m3_nut_diam  = 5.5;
+m3_nut_diam  = 5.6;
 m3_nut_thickness  = 2.5;
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
@@ -129,7 +129,7 @@ bearing_lip_height = (bearing_height + bearing_outer - bearing_inner)/2;
 
 filament_diam = 3;
 filament_compressed_diam = filament_diam - .2;
-filament_opening_diam = filament_diam + 0.3;
+filament_opening_diam = filament_diam + 0.5;
 
 mount_plate_thickness = 8;
 
