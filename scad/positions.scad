@@ -39,7 +39,7 @@ total_width = carriage_hole_spacing + m3_nut_diam + min_material_thickness*4;
 
 hotend_z = (main_body_height_below_shaft+min_material_thickness*2) * bottom;
 
-carriage_hole_z = hotend_z - hotend_height_above_groove - hotend_groove_height;
+carriage_hole_z = hotend_z - hotend_height_above_groove - carriage_hole_diam/2;
 
 idler_retainer_width = filament_x + total_width/2 - idler_x - idler_offset_from_bearing - idler_groove_width/2;
 idler_retainer_x     = filament_x + total_width/2 - idler_retainer_width/2;

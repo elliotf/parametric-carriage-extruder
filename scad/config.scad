@@ -141,9 +141,8 @@ ext_shaft_diam = bearing_inner;
 ext_shaft_opening = hobbed_outer_diam + 1;
 
 carriage_hole_spacing = 30;
-carriage_hole_small_diam    = m3_diam;
-carriage_hole_large_diam    = 6;
-carriage_hole_support_thickness = 8;
+carriage_hole_diam    = m3_diam;
+carriage_hole_depth   = 12;
 
 hotend_length = 63;
 hotend_diam   = 16;
