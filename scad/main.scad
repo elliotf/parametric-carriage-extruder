@@ -69,12 +69,6 @@ module assembly() {
     hotend_retainer();
   }
 
-  % for (side=[left,right]) {
-    translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z])
-      rotate([90,0,0])
-        hole(3,30,8);
-  }
-
   translate([idler_x,idler_y,0.05]) {
     idler();
     idler_shaft();
@@ -136,6 +130,35 @@ module extruder_body() {
     // idler groove
     translate([idler_retainer_x,main_body_depth/2,-main_body_height_below_shaft+idler_retainer_height/2]) {
       cube([idler_retainer_width,main_body_depth,idler_retainer_height],center=true);
+    }
+
+    // carriage mount
+    carriage_hole_brace_width   = carriage_hole_diam+min_material_thickness*4;
+    carriage_side_brace_angle   = sqrt(pow(carriage_hole_brace_width,2)*2)/2;
+    carriage_bottom_brace_angle = sqrt(pow(carriage_hole_depth,2)*2);
+    for(side=[left,right]) {
+      translate([filament_x+(carriage_hole_spacing/2*side),main_body_depth-carriage_hole_depth/2,0]) {
+        translate([0,0,carriage_hole_z-carriage_hole_depth/2+carriage_hole_diam/2])
+          difference() {
+            translate([0,0,bottom_plate_height/2])
+              cube([carriage_hole_diam+min_material_thickness*4,carriage_hole_depth,carriage_hole_depth+bottom_plate_height],center=true);
+
+            translate([0,-carriage_hole_depth/2,-carriage_hole_depth/2]) rotate([45,0,0])
+              cube([carriage_hole_brace_width+1,carriage_bottom_brace_angle,carriage_bottom_brace_angle],center=true);
+          }
+
+        translate([0,-carriage_hole_depth/2,-main_body_height_below_shaft-bottom_plate_height/2]) {
+          rotate([0,0,45])
+            cube([carriage_side_brace_angle,carriage_side_brace_angle,bottom_plate_height],center=true);;
+        }
+      }
+    }
+
+    % for (side=[left,right]) {
+      translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z])
+        rotate([90,0,0]) {
+          hole(carriage_hole_diam,carriage_hole_depth*2,16);
+        }
     }
   }
 
