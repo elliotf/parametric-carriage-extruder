@@ -67,7 +67,7 @@ module assembly() {
     //cylinder(r=hotend_diam/2,h=hotend_length,center=true);
   }
 
-  translate([filament_x,filament_y,hotend_z-hotend_height_above_groove-hotend_groove_height-0.1]) {
+  translate([filament_x,filament_y,hotend_z-hotend_height_above_groove-hotend_retainer_height-0.1]) {
     hotend_retainer();
   }
 
@@ -149,7 +149,8 @@ module extruder_body() {
               cube([carriage_hole_brace_width+1,carriage_bottom_brace_angle,carriage_bottom_brace_angle],center=true);
           }
 
-        translate([0,-carriage_hole_depth/2,-main_body_height_below_shaft-bottom_plate_height/2]) {
+        // support the motor
+        # translate([0,-carriage_hole_depth/2,-main_body_height_below_shaft-bottom_plate_height/2]) {
           rotate([0,0,45])
             cube([carriage_side_brace_angle,carriage_side_brace_angle,bottom_plate_height],center=true);;
         }
@@ -265,6 +266,7 @@ module extruder_body_holes() {
     rotate([0,0,11.25/2])
       hole(hotend_diam,hotend_height_above_groove+.1,32);
   }
+
   translate([filament_x,filament_y,hotend_z+min_material_thickness]) {
     for (side=[left,right]) {
       for (end=[front,rear]) {
@@ -272,13 +274,13 @@ module extruder_body_holes() {
           translate([hotend_screw_spacing/2*side,0,0]) {
             rotate([0,0,end*-30-22.5*end])
               translate([0,0,-5])
-                hole(3,10,8);
+                hole(hotend_screw_diam,10,8);
             rotate([0,0,90*end]) {
-              translate([0,0,-m3_nut_thickness/2]) {
-                hole(m3_nut_diam,m3_nut_thickness,6);
+              translate([0,0,-hotend_nut_thickness/2]) {
+                hole(hotend_nut_diam,hotend_nut_thickness,6);
                 rotate([0,0,-120*end]) {
                   translate([10*side,0,0])
-                  cube([20,m3_nut_diam,m3_nut_thickness],center=true);
+                  cube([20,hotend_nut_diam,hotend_nut_thickness],center=true);
                 }
               }
             }
@@ -347,9 +349,7 @@ module idler_bearing() {
 module idler_shaft() {
   rotate([-90,0,0])
     rotate([0,0,22.5]) {
-      //cylinder(r=idler_shaft_diam/2-0.1,h=idler_shaft_length,center=true);
       hole(idler_shaft_diam,idler_shaft_length,8);
-      % cylinder(r=idler_bearing_inner/2-0.1,h=idler_shaft_length,center=true,$fn=8);
     }
 }
 
