@@ -356,14 +356,18 @@ module idler_shaft() {
 module idler() {
   lower_half_length = main_body_height_below_shaft;
   upper_half_length = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness*2 + 5;
+  total_length = lower_half_length + upper_half_length;
   idler_shaft_opening = idler_bearing_inner + 0.2;
 
   module body() {
     translate([idler_offset_from_bearing,0,0]) {
-      translate([0,0,upper_half_length/2-.5])
-        cube([idler_thickness,idler_width,upper_half_length+1],center=true);
-      translate([0,0,-lower_half_length/2+.5])
-        cube([idler_thickness,idler_width,lower_half_length+1],center=true);
+      hull() {
+        cube([idler_thickness,idler_width,idler_bearing_outer + min_material_thickness*2],center=true);
+
+        translate([idler_thickness/2-.5,0,-lower_half_length+total_length/2]) {
+            cube([1,idler_width,total_length],center=true);
+        }
+      }
     }
   }
 
@@ -389,18 +393,6 @@ module idler() {
         }
       }
     }
-
-    // angled top end
-    translate([idler_offset_from_bearing+idler_thickness/2-1,0,upper_half_length])
-      rotate([0,-65,0])
-        translate([-idler_thickness/2-idler_offset_from_bearing+1,0,5])
-          cube([idler_thickness*4,idler_width+1,10],center=true);
-
-    // angled pivot point
-    translate([idler_offset_from_bearing+idler_thickness/2-.6,0,-lower_half_length])
-      rotate([0,10,0])
-        translate([-idler_thickness/2,0,-5])
-          cube([idler_thickness*2,idler_width+1,10],center=true);
   }
 
   difference() {
