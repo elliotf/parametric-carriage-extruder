@@ -19,7 +19,7 @@ z = 2;
 
 // Screws, nuts
 m3_diam = 3;
-m3_nut_diam  = 5.6;
+m3_nut_diam  = 5.5;
 m3_nut_thickness  = 2.5;
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
@@ -79,15 +79,15 @@ spacer = 1;
 
 // bearing size
 
-// 4-40
+// 4-40, untested
 idler_screw_diam = 3.2;
 idler_screw_nut_diam = 6.8;
 idler_screw_nut_thickness = 2.5;
 
 // m3
-idler_screw_diam = 3.2;
-idler_screw_nut_diam = 5.7;
-idler_screw_nut_thickness = 2.5;
+idler_screw_diam = m3_diam + .4;
+idler_screw_nut_diam = m3_nut_diam + .2;
+idler_screw_nut_thickness = m3_nut_thickness + .5;
 
 // 608
 bearing_height = 7;
@@ -124,7 +124,7 @@ idler_bearing_height = bearing_height;
 idler_bearing_outer  = bearing_outer;
 idler_bearing_inner  = bearing_inner;
 
-bearing_lip_width = .75;
+bearing_lip_width = 1;
 bearing_lip_height = (bearing_height + bearing_outer - bearing_inner)/2;
 
 filament_diam = 3;
@@ -135,7 +135,7 @@ mount_plate_thickness = 8;
 
 ext_shaft_length  = 60;
 hobbed_effective_diam = 6.9;
-hobbed_outer_diam = 8;
+hobbed_outer_diam = 10;
 hobbed_depth = 7;
 ext_shaft_diam = bearing_inner;
 ext_shaft_opening = hobbed_outer_diam + 1;
@@ -146,23 +146,29 @@ carriage_hole_depth   = 12;
 
 hotend_length = 63;
 hotend_diam   = 16;
-hotend_groove_diam   = 12;
+hotend_groove_diam   = 12 + .1;
 
 // jhead
-hotend_height_above_groove = 5;
-hotend_groove_height = 4.6;
+jhead_hotend_height_above_groove = 5;
+jhead_hotend_groove_height = 4.6;
 
 // e3d v6 direct
-hotend_height_above_groove = 3.7;
-hotend_groove_height = 6;
+e3d_hotend_height_above_groove = 3.7;
+e3d_hotend_groove_height = 6;
+
+hotend_height_above_groove = e3d_hotend_height_above_groove;
+hotend_groove_height       = e3d_hotend_groove_height;
 
 hotend_screw_spacing = 25;
+
+hotend_retainer_height = 6;
 
 filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can clear the carriage without melting gears
 
 idler_screw_spacing = idler_bearing_height + min_material_thickness*2 + idler_screw_diam;
 idler_width         = idler_screw_spacing + idler_screw_diam + min_material_thickness*4;
 idler_shaft_length  = idler_width - min_material_thickness*2;
+idler_shaft_diam    = idler_bearing_inner-0.6;
 idler_thickness     = idler_bearing_inner + min_material_thickness*2;
 idler_groove_width  = idler_thickness + .5;
 

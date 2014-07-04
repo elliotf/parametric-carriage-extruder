@@ -10,7 +10,7 @@ translate([-10,0,0])
 translate([30,-10,idler_thickness/2+idler_offset_from_bearing])
   rotate([0,90,0]) idler();
 
-translate([-40,-20,idler_bearing_inner/2])
+translate([-40,-20,idler_shaft_diam/2])
   idler_shaft();
 
 translate([-40,25,0])

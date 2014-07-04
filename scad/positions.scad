@@ -12,7 +12,7 @@ idler_offset_from_bearing = idler_bearing_inner*.25;
 gear_side_bearing_y     = bearing_height/2-m3_socket_head_height+1;
 carriage_side_bearing_y = filament_y + hobbed_depth/2 + bearing_lip_height;
 
-main_body_height_below_shaft = bearing_outer/2 + min_material_thickness*2;
+main_body_height_below_shaft = bearing_outer/2 + min_material_thickness*3;
 
 // motor position
 motor_z = bottom*(main_body_height_below_shaft) + motor_side/2;
@@ -21,7 +21,7 @@ motor_x = -sqrt(pow(gear_dist,2)-pow(motor_z,2));
 
 module position_motor() {
   translate([motor_x,motor_y,motor_z])
-    children();
+    child(0);
 }
 
 main_body_width_motor_side = -motor_x - motor_side/2;

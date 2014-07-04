@@ -5,6 +5,8 @@ TODO:
   carriage support brace
   carriage-side (maybe gear-side, too) bearing conical opening
     to avoid bearing rubbing on plastic
+  calibration piece
+    m3 holes/nuts in different orientations ?
 
 MAYBE:
   fan mount holes?
@@ -65,7 +67,7 @@ module assembly() {
     //cylinder(r=hotend_diam/2,h=hotend_length,center=true);
   }
 
-  translate([filament_x,filament_y,hotend_z-hotend_height_above_groove-hotend_groove_height]) {
+  translate([filament_x,filament_y,hotend_z-hotend_height_above_groove-hotend_groove_height-0.1]) {
     hotend_retainer();
   }
 
@@ -213,7 +215,7 @@ module extruder_body_holes() {
 
     // easier to insert carriage side bearing, can unscrew shaft while mounted
     translate([main_body_width_idler_side,0,main_body_height_above_shaft])
-      cube([main_body_width_idler_side*2+bearing_outer,carriage_side_bearing_hole_depth-bearing_height*3,main_body_height_above_shaft*2],center=true);
+      cube([main_body_width_idler_side*2+bearing_outer,carriage_side_bearing_hole_depth-bearing_height*2,main_body_height_above_shaft*2],center=true);
   }
 
 
@@ -238,7 +240,7 @@ module extruder_body_holes() {
   // idler tensioners
   translate([filament_x,filament_y,idler_screw_from_shaft]) {
     for (side=[left,right]) {
-      translate([-filament_diam-min_material_thickness,idler_screw_spacing/2*side,0]) {
+      translate([-filament_diam-min_material_thickness*3,idler_screw_spacing/2*side,0]) {
         // idler screws
         rotate([0,90,0]) rotate([0,0,22.5])
           hole(idler_screw_diam, main_body_width*2,8);
@@ -289,9 +291,25 @@ module extruder_body_holes() {
 module hotend_retainer() {
   retainer_sides = hotend_screw_spacing + m3_diam + min_material_thickness*3;
 
+  module position_screws() {
+    for (side=[left,right]) {
+      for (end=[front,rear]) {
+        rotate([0,0,30*end]) {
+          translate([hotend_screw_spacing/2*side,0,0]) {
+            rotate([0,0,-30*end])
+              child(0);
+          }
+        }
+      }
+    }
+  }
+
   module body() {
-    //cube([retainer_sides,retainer_sides,hotend_groove_height-.1],center=true);
-    hole(retainer_sides,hotend_groove_height-.1,32);
+    hull() {
+      position_screws() {
+        hole(m3_diam+0.1+min_material_thickness*5,hotend_groove_height,8);
+      }
+    }
   }
 
   module holes() {
@@ -306,14 +324,8 @@ module hotend_retainer() {
     }
 
     // screw holes
-    for (side=[left,right]) {
-      for (end=[front,rear]) {
-        rotate([0,0,30*end]) {
-          translate([hotend_screw_spacing/2*side,0,0]) {
-            hole(3.05,hotend_groove_height*2,16);
-          }
-        }
-      }
+    position_screws() {
+      hole(m3_diam+0.1,hotend_groove_height*2,16);
     }
   }
 
@@ -333,26 +345,18 @@ module idler_bearing() {
 }
 
 module idler_shaft() {
-  idler_shaft_diam = idler_bearing_inner-0.05;
   rotate([-90,0,0])
     rotate([0,0,22.5]) {
-      intersection() {
-        cylinder(r=idler_shaft_diam/2,h=idler_shaft_length,center=true);
-        translate([0,idler_bearing_inner/2,0])
-          cube([idler_bearing_inner,idler_bearing_inner,idler_shaft_length+1],center=true);
-      }
-      intersection() {
-        cylinder(r=idler_shaft_diam/2,h=idler_shaft_length,center=true,$fn=16);
-        translate([0,-idler_bearing_inner/2,0])
-          cube([idler_bearing_inner,idler_bearing_inner,idler_shaft_length+1],center=true);
-      }
+      //cylinder(r=idler_shaft_diam/2-0.1,h=idler_shaft_length,center=true);
+      hole(idler_shaft_diam,idler_shaft_length,8);
+      % cylinder(r=idler_bearing_inner/2-0.1,h=idler_shaft_length,center=true,$fn=8);
     }
 }
 
 module idler() {
-  lower_half_length = idler_bearing_outer/2 + min_material_thickness*2;
+  lower_half_length = main_body_height_below_shaft;
   upper_half_length = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness*2 + 5;
-  idler_shaft_opening = idler_bearing_inner + 0.1;
+  idler_shaft_opening = idler_bearing_inner + 0.2;
 
   module body() {
     translate([idler_offset_from_bearing,0,0]) {
@@ -365,7 +369,7 @@ module idler() {
 
   module holes() {
     // main bearing hole
-    cube([idler_thickness+10,idler_bearing_height+0.1,idler_bearing_outer],center=true);
+    cube([idler_thickness+10,idler_bearing_height+0.5,idler_bearing_outer+1],center=true);
 
     // idler shaft hole
     rotate([90,0,0]) rotate([0,0,22.5])
@@ -373,7 +377,7 @@ module idler() {
     translate([-(idler_thickness/2+idler_bearing_inner/2),0,0])
       cube([idler_thickness+idler_shaft_opening,idler_shaft_length+0.1,idler_shaft_opening],center=true);
 
-    // elongated idler scerw holes
+    // elongated idler screw holes
     for (side=[left,right]) {
       translate([idler_offset_from_bearing + idler_thickness/2,idler_screw_spacing/2*side,idler_screw_from_shaft]) {
         hull() {
