@@ -1,16 +1,9 @@
 include <config.scad>;
 
-filament_x = hobbed_effective_diam/2 + filament_compressed_diam/2;
-filament_y = filament_from_gears;
-
 idler_screw_from_shaft = bearing_outer/2+idler_screw_nut_diam/2+2;
-idler_x = filament_x + filament_compressed_diam/2 + idler_bearing_outer/2;
-idler_y = filament_y;
-idler_offset_from_bearing = idler_bearing_inner*.25;
 
 // bearing helps provide clearance for motor mount screws
-gear_side_bearing_y     = bearing_height/2-m3_socket_head_height+1;
-carriage_side_bearing_y = filament_y + hobbed_depth/2 + bearing_lip_height;
+gear_side_bearing_y = bearing_height/2-m3_socket_head_height/2; // buttonhead
 
 main_body_height_below_shaft = bearing_outer/2 + min_material_thickness*3;
 
@@ -35,11 +28,21 @@ main_body_x = left*main_body_width/2+main_body_width_idler_side;
 main_body_y = main_body_depth/2;
 main_body_z = bottom*main_body_height/2+main_body_height_above_shaft;
 
+filament_x = hobbed_effective_diam/2 + filament_compressed_diam/2;
+filament_y = main_body_depth - filament_from_carriage;
+
+idler_x = filament_x + filament_compressed_diam/2 + idler_bearing_outer/2;
+idler_y = filament_y;
+idler_offset_from_bearing = idler_bearing_inner*.25;
+
 total_width = carriage_hole_spacing + m3_nut_diam + min_material_thickness*4;
 
 hotend_z = (main_body_height_below_shaft+bottom_plate_height-hotend_height_above_groove) * bottom;
 
-carriage_hole_z = hotend_z - hotend_height_above_groove - carriage_hole_diam/2;
+bottom_plate_z = bottom*(main_body_height_below_shaft+bottom_plate_height/2);
+carriage_hole_z = bottom_plate_z;
 
 idler_retainer_width = filament_x + total_width/2 - idler_x - idler_offset_from_bearing - idler_groove_width/2;
 idler_retainer_x     = filament_x + total_width/2 - idler_retainer_width/2;
+
+carriage_side_bearing_y = filament_y + hobbed_depth/2 + bearing_lip_height;

@@ -85,10 +85,14 @@ module bearing() {
 }
 
 module gear_assembly() {
-  translate([0,-2.5,0]) rotate([90,0,0]) large_gear();
+  translate([0,gear_side_bearing_y-bearing_height/2-.5,0])
+    rotate([90,0,0])
+      rotate([0,0,125])
+        large_gear();
 
-  translate([-1 * gear_dist,-2,0]) {
-    rotate([90,0,0]) small_gear();
+  translate([motor_x,-3,motor_z]) {
+    rotate([90,0,0])
+      small_gear();
   }
 }
 
@@ -98,9 +102,9 @@ module extruder_body() {
       translate([main_body_x,main_body_y,main_body_z])
         cube([main_body_width,main_body_depth,main_body_height],center=true);
       // remove material from main block for idler bearing access without removing material elsewhere
-      translate([filament_x+idler_bearing_outer*.375,main_body_depth,0]) {
+      translate([filament_x+idler_bearing_outer*.4,main_body_depth,0]) {
         rotate([90,0,0]) rotate([0,0,22.5])
-          hole(idler_bearing_outer, motor_len*2,8);
+          hole(idler_bearing_outer*1.15, motor_len*2,8);
       }
     }
 
@@ -123,10 +127,8 @@ module extruder_body() {
     }
 
     // hotend plate
-    translate([filament_x,main_body_y,bottom*(main_body_height_below_shaft)]) {
-      translate([total_width/4,0,-bottom_plate_height/2]) {
-        cube([total_width/2,main_body_depth,bottom_plate_height],center=true);
-      }
+    translate([filament_x,main_body_y,bottom_plate_z]) {
+      cube([total_width,main_body_depth,bottom_plate_height],center=true);
     }
 
     // idler groove
@@ -135,6 +137,7 @@ module extruder_body() {
     }
 
     // carriage mount
+    /*
     carriage_hole_brace_width   = carriage_hole_diam+min_material_thickness*4;
     carriage_side_brace_angle   = sqrt(pow(carriage_hole_brace_width,2)*2)/2;
     carriage_bottom_brace_angle = sqrt(pow(carriage_hole_depth,2)*2);
@@ -156,6 +159,7 @@ module extruder_body() {
         }
       }
     }
+    */
 
     % for (side=[left,right]) {
       translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z])
@@ -418,7 +422,7 @@ module bridges(){
   translate([0,gear_bearing_support/2-0.1,0]) {
     rotate([90,0,0]) difference() {
       hole(bearing_outer-bearing_lip_width-1,gear_bearing_support-0.2,36);
-      hole(bearing_outer-bearing_lip_width-1.5,gear_bearing_support,36);
+      hole(bearing_outer-bearing_lip_width-2,gear_bearing_support,36);
     }
   }
 
@@ -435,15 +439,8 @@ module bridges(){
 
 module full_assembly() {
   assembly();
-
-  translate([motor_x,-10,motor_z]) {
-    rotate([-90,0,0]) small_gear();
-  }
-
-  translate([0,-3,0]) {
-    rotate([-90,0,0]) rotate([180,0,0]) rotate([0,0,185]) large_gear();
-  }
+  //gear_assembly();
 }
 
-//full_assembly();
-assembly();
+full_assembly();
+//assembly();

@@ -131,7 +131,7 @@ filament_diam = 3;
 filament_compressed_diam = filament_diam - .2;
 filament_opening_diam = filament_diam + 0.5;
 
-mount_plate_thickness = 8;
+mount_plate_thickness = 4;
 
 ext_shaft_length  = 60;
 hobbed_effective_diam = 6.9;
@@ -166,7 +166,7 @@ hotend_nut_thickness = m3_nut_thickness+0.3;
 
 hotend_retainer_height = 6;
 
-filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can clear the carriage without melting gears
+filament_from_carriage =  hotend_diam * 1.4; // make sure the hotend can clear the carriage without melting gears
 
 idler_screw_spacing = idler_bearing_height + min_material_thickness*2 + idler_screw_diam;
 idler_width         = idler_screw_spacing + idler_screw_diam + min_material_thickness*4;
@@ -177,5 +177,4 @@ idler_groove_width  = idler_thickness + .5;
 
 idler_retainer_height = min_material_thickness*2;
 
-//bottom_plate_height = hotend_height_above_groove + min_material_thickness*2;
 bottom_plate_height = min_material_thickness*2 + hotend_nut_thickness + min_material_thickness;
