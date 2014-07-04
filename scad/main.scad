@@ -161,6 +161,20 @@ module extruder_body() {
     }
     */
 
+    // carriage brace
+    brace_depth = main_body_depth - filament_y - hotend_diam/2 - 0.5;
+    brace_angle_length = sqrt(pow(brace_depth,2)*2);
+    translate([filament_x,main_body_depth - brace_depth/2,bottom_plate_z-bottom_plate_height/2-brace_depth/2]) {
+      difference() {
+        cube([hotend_diam/2,brace_depth,brace_depth],center=true);
+
+        translate([0,-brace_depth/2,-brace_depth/2]) {
+          rotate([45,0,0])
+            cube([hotend_diam/2+1,brace_angle_length,brace_angle_length],center=true);
+        }
+      }
+    }
+
     % for (side=[left,right]) {
       translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z])
         rotate([90,0,0]) {
