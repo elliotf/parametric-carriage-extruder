@@ -67,7 +67,7 @@ module assembly() {
     //cylinder(r=hotend_diam/2,h=hotend_length,center=true);
   }
 
-  translate([filament_x,filament_y,hotend_z-hotend_height_above_groove-hotend_retainer_height-0.1]) {
+  translate([filament_x,filament_y,-main_body_height_below_shaft-bottom_plate_height-hotend_retainer_height]) {
     hotend_retainer();
   }
 
@@ -132,8 +132,8 @@ module extruder_body() {
     }
 
     // idler groove
-    translate([idler_retainer_x,main_body_depth/2,-main_body_height_below_shaft+idler_retainer_height/2]) {
-      cube([idler_retainer_width,main_body_depth,idler_retainer_height],center=true);
+    translate([idler_retainer_x,main_body_depth/2,-main_body_height_below_shaft]) {
+      cube([idler_retainer_width,main_body_depth,idler_retainer_height*2],center=true);
     }
 
     // carriage mount
@@ -164,13 +164,20 @@ module extruder_body() {
     // carriage brace
     brace_depth = main_body_depth - filament_y - hotend_diam/2 - 0.5;
     brace_angle_length = sqrt(pow(brace_depth,2)*2);
-    translate([filament_x,main_body_depth - brace_depth/2,bottom_plate_z-bottom_plate_height/2-brace_depth/2]) {
-      difference() {
-        cube([hotend_diam/2,brace_depth,brace_depth],center=true);
+    translate([filament_x,main_body_depth-brace_depth/2,bottom_plate_z]) {
+      intersection() {
+        scale([.66,1,1])
+        hull() {
+          translate([0,brace_depth/2,0])
+            rotate([90,0,0])
+              hole(bottom_plate_height+brace_depth*2-4,1,64);
 
-        translate([0,-brace_depth/2,-brace_depth/2]) {
-          rotate([45,0,0])
-            cube([hotend_diam/2+1,brace_angle_length,brace_angle_length],center=true);
+          translate([0,-brace_depth/2+.5,0])
+            rotate([90,0,0]) rotate([0,0,11.25/2])
+              hole(bottom_plate_height,1,32);
+        }
+        translate([0,0,-brace_depth]) {
+          cube([brace_depth*2,brace_depth,brace_depth*2],center=true);
         }
       }
     }
@@ -188,9 +195,11 @@ module extruder_body() {
     extruder_body_holes();
   }
 
-  % translate([0,carriage_side_bearing_y,0])
-    rotate([90,0,0])
+  % translate([0,carriage_side_bearing_y,0]) {
+    rotate([90,0,0]) {
       cylinder(r=bearing_outer/2,h=bearing_height,center=true);
+    }
+  }
 
   color("lightblue") bridges();
 }
@@ -198,11 +207,6 @@ module extruder_body() {
 module sloped_bearing_hole() {
   rotate([90,0,0]) rotate([0,0,11.25]) {
     hole(bearing_outer, bearing_height, 16);
-    hull() {
-      hole(bearing_outer-bearing_lip_width*2,bearing_height,16);
-      translate([0,0,0])
-        hole(bearing_inner,bearing_lip_height*2,16);
-    }
   }
 }
 
@@ -436,7 +440,7 @@ module bridges(){
   translate([0,gear_bearing_support/2-0.1,0]) {
     rotate([90,0,0]) difference() {
       hole(bearing_outer-bearing_lip_width-1,gear_bearing_support-0.2,36);
-      hole(bearing_outer-bearing_lip_width-2,gear_bearing_support,36);
+      hole(bearing_outer-bearing_lip_width-min_material_thickness*3,gear_bearing_support,36);
     }
   }
 

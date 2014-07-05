@@ -138,14 +138,14 @@ hobbed_effective_diam = 6.9;
 hobbed_outer_diam = 10;
 hobbed_depth = 7;
 ext_shaft_diam = bearing_inner;
-ext_shaft_opening = hobbed_outer_diam + 1;
+ext_shaft_opening = bearing_outer-bearing_lip_width*2;
 
 carriage_hole_spacing = 30;
 carriage_hole_diam    = m3_diam;
 carriage_hole_depth   = 12;
 
 hotend_length = 63;
-hotend_diam   = 16;
+hotend_diam   = 16 + 0.1;
 hotend_groove_diam   = 12 + .1;
 
 // jhead
