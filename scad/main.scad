@@ -429,23 +429,13 @@ module bridges(){
   // gear support bearing
   translate([main_body_x,gear_side_bearing_y+bearing_height/2-bridge_thickness/2,0])
     cube([main_body_width-0.5,bridge_thickness,bearing_outer+1],center=true);
-  gear_bearing_support = bearing_height/2+gear_side_bearing_y-extrusion_height;
+  gear_bearing_support = bearing_height/2+gear_side_bearing_y;
   translate([0,gear_bearing_support/2-0.1,0]) {
     rotate([90,0,0]) difference() {
       hole(bearing_outer-bearing_lip_width-1,gear_bearing_support-0.2,36);
       hole(bearing_outer-bearing_lip_width-min_material_thickness*3,gear_bearing_support,36);
     }
   }
-
-  // carriage mounting hole diameter drop
-  /*
-  translate([filament_x,total_depth-carriage_hole_support_thickness,body_bottom_pos+bottom_thickness/2]) {
-    for (side=[-1,1]) {
-      translate([side*carriage_hole_spacing/2,0,0])
-        cube([carriage_hole_large_diam+0.5,bridge_thickness,carriage_hole_large_diam+0.5],center=true);
-    }
-  }
-  */
 }
 
 module full_assembly() {
