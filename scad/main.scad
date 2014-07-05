@@ -2,9 +2,6 @@
 
 TODO:
   carriage screw holes
-  carriage support brace
-  carriage-side (maybe gear-side, too) bearing conical opening
-    to avoid bearing rubbing on plastic
   calibration piece
     m3 holes/nuts in different orientations ?
 
@@ -330,7 +327,7 @@ module hotend_retainer() {
   }
 
   module holes() {
-    // groove hole
+    // groove hole for main shaft
     rotate([0,0,11.25])
       hole(hotend_groove_diam,hotend_groove_height+1,16);
     translate([0,retainer_sides*.6,0]) {
@@ -339,6 +336,22 @@ module hotend_retainer() {
       rotate([0,0,22.5])
         hole(retainer_sides*.75,hotend_groove_height+1,8);
     }
+
+    jhead_difference = e3d_hotend_groove_height - jhead_hotend_groove_height + 0.1;
+    // groove for jhead hotend
+    translate([0,0,hotend_groove_height/2]) {
+      rotate([0,0,11.25])
+        hole(hotend_diam+0.1,jhead_difference*2,16);
+      translate([0,retainer_sides*.6,0]) {
+        cube([hotend_diam+0.1,retainer_sides*1.2,jhead_difference*2],center=true);
+
+        rotate([0,0,22.5])
+          hole(retainer_sides*.75,jhead_difference*2,8);
+      }
+    }
+
+    rotate([0,0,11.25])
+      hole(hotend_groove_diam,hotend_groove_height+1,16);
 
     // screw holes
     position_screws() {

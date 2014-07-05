@@ -157,7 +157,7 @@ e3d_hotend_height_above_groove = 3.7;
 e3d_hotend_groove_height = 6;
 
 hotend_height_above_groove = e3d_hotend_height_above_groove;
-hotend_groove_height       = e3d_hotend_groove_height;
+hotend_groove_height       = e3d_hotend_groove_height - .1;
 
 hotend_screw_spacing = 25;
 hotend_screw_diam    = m3_diam+0.1;
