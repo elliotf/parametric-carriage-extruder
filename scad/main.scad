@@ -98,15 +98,8 @@ module gear_assembly() {
 
 module extruder_body() {
   module body() {
-    difference() {
-      translate([main_body_x,main_body_y,main_body_z])
-        cube([main_body_width,main_body_depth,main_body_height],center=true);
-      // remove material from main block for idler bearing access without removing material elsewhere
-      translate([filament_x+idler_bearing_outer*.4,main_body_depth,0]) {
-        rotate([90,0,0]) rotate([0,0,22.5])
-          hole(idler_bearing_outer*1.15, motor_len*2,8);
-      }
-    }
+    translate([main_body_x,main_body_y,main_body_z])
+      cube([main_body_width,main_body_depth,main_body_height],center=true);
 
     // mounting plate
     hull() {
