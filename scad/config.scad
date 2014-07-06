@@ -178,3 +178,4 @@ idler_groove_width  = idler_thickness + .5;
 idler_retainer_height = min_material_thickness*2;
 
 bottom_plate_height = min_material_thickness*2 + hotend_nut_thickness + min_material_thickness;
+bottom_plate_height = m3_nut_diam + min_material_thickness*2;

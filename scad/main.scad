@@ -64,7 +64,7 @@ module assembly() {
     //cylinder(r=hotend_diam/2,h=hotend_length,center=true);
   }
 
-  translate([filament_x,filament_y,-main_body_height_below_shaft-bottom_plate_height-hotend_retainer_height]) {
+  translate([filament_x,filament_y,-main_body_height_below_shaft-bottom_plate_height-hotend_retainer_height-0.1]) {
     hotend_retainer();
   }
 
@@ -302,7 +302,7 @@ module extruder_body_holes() {
   }
 }
 
-module hotend_retainer() {
+module hotend_retainer(groove_height=jhead_hotend_groove_height) {
   retainer_sides = hotend_screw_spacing + m3_diam + min_material_thickness*3;
 
   module position_screws() {
@@ -337,16 +337,16 @@ module hotend_retainer() {
         hole(retainer_sides*.75,hotend_groove_height+1,8);
     }
 
-    jhead_difference = e3d_hotend_groove_height - jhead_hotend_groove_height + 0.1;
+    difference = e3d_hotend_groove_height - groove_height + 0.1;
     // groove for jhead hotend
     translate([0,0,hotend_groove_height/2]) {
       rotate([0,0,11.25])
-        hole(hotend_diam+0.1,jhead_difference*2,16);
+        hole(hotend_diam+0.1,difference*2,16);
       translate([0,retainer_sides*.6,0]) {
-        cube([hotend_diam+0.1,retainer_sides*1.2,jhead_difference*2],center=true);
+        cube([hotend_diam+0.1,retainer_sides*1.2,difference*2],center=true);
 
         rotate([0,0,22.5])
-          hole(retainer_sides*.75,jhead_difference*2,8);
+          hole(retainer_sides*.75,difference*2,8);
       }
     }
 
