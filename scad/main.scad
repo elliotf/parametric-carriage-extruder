@@ -125,6 +125,19 @@ module extruder_body() {
       cube([idler_retainer_width,main_body_depth,idler_retainer_height*2],center=true);
     }
 
+    slope_length = sqrt(pow(idler_retainer_height,2)*2);
+    slope_pos    = main_body_depth-carriage_hole_depth-m3_nut_thickness;
+    for(side=[top,bottom]) {
+      translate([filament_x,slope_pos,bottom_plate_z+(bottom_plate_height/2*side)]) {
+        rotate([45,0,0]) {
+          cube([total_width,slope_length,slope_length],center=true);
+        }
+      }
+    }
+    translate([filament_x,slope_pos+(main_body_depth-slope_pos)/2,bottom_plate_z]) {
+      cube([total_width,main_body_depth-slope_pos,bottom_plate_height+idler_retainer_height*2],center=true);
+    }
+
     // carriage brace
     /*
     brace_thickness = 4;
@@ -213,6 +226,13 @@ module sloped_bearing_hole() {
 }
 
 module extruder_body_holes() {
+  // ensure motor can fit
+  position_motor() {
+    translate([0,motor_len/2+1,0]) {
+      cube([motor_side,motor_len+2,motor_side],center=true);
+    }
+  }
+
   // main shaft
   translate([0,main_body_depth/2,0]) {
     rotate([90,0,0]) rotate([0,0,11.25])
@@ -294,16 +314,16 @@ module extruder_body_holes() {
   }
 
   // hotend mount holes, captive nuts
-  translate([filament_x,filament_y,hotend_z+min_material_thickness]) {
+  translate([filament_x,filament_y,carriage_hole_z]) {
     for (side=[left,right]) {
       for (end=[front,rear]) {
         rotate([0,0,30*end])
           translate([hotend_screw_spacing/2*side,0,0]) {
             rotate([0,0,end*-30-22.5*end])
-              translate([0,0,-5])
-                hole(hotend_screw_diam,10,8);
+              translate([0,0,0])
+                hole(hotend_screw_diam,bottom_plate_height*2,8);
             rotate([0,0,90*end]) {
-              translate([0,0,-hotend_nut_thickness/2]) {
+              translate([0,0,0]) {
                 hole(hotend_nut_diam,hotend_nut_thickness,6);
                 rotate([0,0,-120*end]) {
                   translate([10*side,0,0])
@@ -320,16 +340,16 @@ module extruder_body_holes() {
   for (side = [left,right]) {
     translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z]) {
       rotate([90,0,0]) {
-        hole(carriage_hole_diam,carriage_hole_depth*2,16);
+        hole(carriage_hole_diam,carriage_hole_depth*2+7,16);
       }
 
-      translate([0,-carriage_hole_depth+m3_nut_thickness,0]) {
+      translate([0,-carriage_hole_depth,0]) {
         translate([25*side,0,0]) {
-          cube([50,m3_nut_thickness,m3_nut_diam],center=true);
+          cube([50,m3_nut_thickness*1.5,m3_nut_diam],center=true);
         }
 
         rotate([90,0,0]) {
-          hole(m3_nut_diam,m3_nut_thickness,6);
+          hole(m3_nut_diam,m3_nut_thickness*1.5,6);
         }
       }
     }
@@ -488,7 +508,7 @@ module bridges(){
 
   // carriage hole diameter change
   for (side = [left,right]) {
-    translate([filament_x+carriage_hole_spacing/2*side,main_body_depth-carriage_hole_depth+m3_nut_thickness*1.5+extrusion_height-0.1,carriage_hole_z]) {
+    translate([filament_x+carriage_hole_spacing/2*side,main_body_depth-carriage_hole_depth+m3_nut_thickness*.75+extrusion_height/2,carriage_hole_z]) {
       cube([m3_nut_diam,extrusion_height,m3_nut_diam],center=true);
     }
   }
