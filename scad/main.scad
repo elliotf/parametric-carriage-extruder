@@ -325,11 +325,11 @@ module extruder_body_holes() {
 
       translate([0,-carriage_hole_depth+m3_nut_thickness,0]) {
         translate([25*side,0,0]) {
-          cube([50,m3_nut_thickness+0.1,m3_nut_diam+0.1],center=true);
+          cube([50,m3_nut_thickness+0.1,m3_nut_diam],center=true);
         }
 
         rotate([90,0,0]) {
-          hole(m3_nut_diam+0.1,m3_nut_thickness+0.1,6);
+          hole(m3_nut_diam,m3_nut_thickness+0.1,6);
         }
       }
     }
@@ -489,7 +489,7 @@ module bridges(){
   // carriage hole diameter change
   for (side = [left,right]) {
     translate([filament_x+carriage_hole_spacing/2*side,main_body_depth-carriage_hole_depth+m3_nut_thickness*1.5+extrusion_height-0.1,carriage_hole_z]) {
-      cube([m3_nut_diam+0.2,extrusion_height,m3_nut_diam+0.2],center=true);
+      cube([m3_nut_diam,extrusion_height,m3_nut_diam],center=true);
     }
   }
 }
