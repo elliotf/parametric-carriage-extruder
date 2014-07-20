@@ -326,11 +326,11 @@ module extruder_body_holes() {
 
       translate([0,-carriage_hole_depth+m3_nut_thickness,0]) {
         translate([25*side,0,0]) {
-          cube([50,m3_nut_thickness+0.1,m3_nut_diam],center=true);
+          cube([50,m3_nut_thickness,m3_nut_diam],center=true);
         }
 
         rotate([90,0,0]) {
-          hole(m3_nut_diam,m3_nut_thickness+0.1,6);
+          hole(m3_nut_diam,m3_nut_thickness,6);
         }
       }
     }

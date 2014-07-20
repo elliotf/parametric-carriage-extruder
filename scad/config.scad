@@ -19,8 +19,8 @@ z = 2;
 
 // Screws, nuts
 m3_diam = 3;
-m3_nut_diam  = 5.5 + 0.2;
-m3_nut_thickness  = 2.5;
+m3_nut_diam  = 5.5 + 0.2;      // 0.2 is fudging
+m3_nut_thickness  = 2.5 + 0.2; // 0.2 is fudging
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
 m5_diam = 5;
@@ -82,12 +82,12 @@ spacer = 1;
 // 4-40, untested
 idler_screw_diam = 3.2;
 idler_screw_nut_diam = 6.8;
-idler_screw_nut_thickness = 2.5;
+idler_screw_nut_thickness = 2.5 + 1;
 
 // m3
 idler_screw_diam = m3_diam + .4;
 idler_screw_nut_diam = m3_nut_diam;
-idler_screw_nut_thickness = m3_nut_thickness + .5;
+idler_screw_nut_thickness = m3_nut_thickness + 1;
 
 // 608
 bearing_height = 7;
@@ -162,7 +162,7 @@ hotend_groove_height       = e3d_hotend_groove_height - .1;
 hotend_screw_spacing = 25;
 hotend_screw_diam    = m3_diam+0.1;
 hotend_nut_diam      = m3_nut_diam;
-hotend_nut_thickness = m3_nut_thickness+0.3;
+hotend_nut_thickness = m3_nut_thickness+0.2;
 
 hotend_retainer_height = 6;
 
