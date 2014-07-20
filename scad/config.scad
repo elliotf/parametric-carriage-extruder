@@ -145,8 +145,8 @@ carriage_hole_diam    = m3_diam;
 carriage_hole_depth   = 12;
 
 hotend_length = 63;
-hotend_diam   = 16 + 0.1;
-hotend_groove_diam   = 12 + .1;
+hotend_diam   = 16 + 0.15;
+hotend_groove_diam   = 12 + .15;
 
 // jhead
 jhead_hotend_height_above_groove = 5;
