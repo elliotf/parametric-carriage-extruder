@@ -21,7 +21,7 @@ main_body_width_motor_side = -motor_x - motor_side/2;
 main_body_width_idler_side = hobbed_effective_diam/2 + filament_diam + min_material_thickness;
 main_body_width  = main_body_width_motor_side + main_body_width_idler_side;
 main_body_depth  = motor_len + mount_plate_thickness;
-main_body_height_above_shaft = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness;
+main_body_height_above_shaft = idler_screw_from_shaft + idler_screw_diam/2 + min_material_thickness * 2;
 main_body_height = main_body_height_above_shaft + main_body_height_below_shaft + bottom_plate_height;
 
 main_body_x = left*main_body_width/2+main_body_width_idler_side;
