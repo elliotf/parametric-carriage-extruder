@@ -126,6 +126,7 @@ module extruder_body() {
     }
 
     // carriage brace
+    /*
     brace_thickness = 4;
     brace_x         = (idler_retainer_x+idler_retainer_width/2-filament_x)-brace_thickness/2;
     brace_height    = 20;
@@ -161,9 +162,8 @@ module extruder_body() {
         }
       }
     }
+    */
 
-
-    /*
     brace_depth        = main_body_depth - filament_y - hotend_diam/2 - 0.5;
     brace_angle_length = sqrt(pow(brace_depth,2)*2);
     translate([filament_x,main_body_depth-brace_depth/2,bottom_plate_z]) {
@@ -172,7 +172,7 @@ module extruder_body() {
         hull() {
           translate([0,brace_depth/2,0])
             rotate([90,0,0])
-              hole(bottom_plate_height+brace_depth*2-4,1,64);
+              hole(bottom_plate_height+brace_depth*2-5,1,64);
 
           translate([0,-brace_depth/2+.5,0])
             rotate([90,0,0]) rotate([0,0,11.25/2])
@@ -183,7 +183,6 @@ module extruder_body() {
         }
       }
     }
-    */
 
     % for (side=[left,right]) {
       translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z])

@@ -166,7 +166,7 @@ hotend_nut_thickness = m3_nut_thickness+0.2;
 
 hotend_retainer_height = 6;
 
-filament_from_carriage =  hotend_diam * 1.4; // make sure the hotend can clear the carriage without melting gears
+filament_from_carriage =  hotend_diam * 1.75; // make sure the hotend can clear the carriage without melting gears
 
 idler_screw_spacing = idler_bearing_height + min_material_thickness*2 + idler_screw_diam;
 idler_width         = idler_screw_spacing + idler_screw_diam + min_material_thickness*4;
