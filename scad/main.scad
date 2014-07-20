@@ -127,6 +127,7 @@ module extruder_body() {
 
     slope_length = sqrt(pow(idler_retainer_height,2)*2);
     slope_pos    = main_body_depth-carriage_hole_depth-m3_nut_thickness;
+    slope_depth  = main_body_depth-slope_pos;
     for(side=[top,bottom]) {
       translate([filament_x,slope_pos,bottom_plate_z+(bottom_plate_height/2*side)]) {
         rotate([45,0,0]) {
@@ -134,8 +135,20 @@ module extruder_body() {
         }
       }
     }
-    translate([filament_x,slope_pos+(main_body_depth-slope_pos)/2,bottom_plate_z]) {
-      cube([total_width,main_body_depth-slope_pos,bottom_plate_height+idler_retainer_height*2],center=true);
+    translate([filament_x,slope_pos+slope_depth/2,bottom_plate_z]) {
+      cube([total_width,slope_depth,bottom_plate_height+idler_retainer_height*2],center=true);
+    }
+
+    motor_support_angle_length = sqrt(pow(slope_depth,2)*2);
+    intersection() {
+      translate([filament_x-total_width/2,main_body_depth,bottom_plate_z]) {
+        rotate([0,0,45]) {
+          cube([motor_support_angle_length,motor_support_angle_length,bottom_plate_height],center=true);
+        }
+      }
+      translate([filament_x-total_width/2,main_body_depth/2,0]) {
+        cube([slope_depth*2-5,main_body_depth,100],center=true);
+      }
     }
 
     // carriage brace
