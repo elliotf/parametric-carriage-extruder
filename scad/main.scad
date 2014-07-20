@@ -127,7 +127,45 @@ module extruder_body() {
     }
 
     // carriage brace
-    brace_depth = main_body_depth - filament_y - hotend_diam/2 - 0.5;
+    brace_thickness = 4;
+    brace_x         = (idler_retainer_x+idler_retainer_width/2-filament_x)-brace_thickness/2;
+    brace_height    = 20;
+    translate([filament_x-brace_x,main_body_depth/2,bottom_plate_z]) {
+      hull() {
+        translate([0,-main_body_depth/2+mount_plate_thickness,0]) {
+          rotate([90,0,0]) {
+            rotate([0,0,22.5]) {
+              hole(brace_thickness,mount_plate_thickness,8);
+            }
+          }
+        }
+
+        translate([0,main_body_depth/2-mount_plate_thickness/2,0]) {
+          cube([brace_thickness,mount_plate_thickness,bottom_plate_height],center=true);
+        }
+
+        translate([0,main_body_depth/2-mount_plate_thickness/2,-bottom_plate_height/2-brace_height]) {
+          rotate([90,0,0]) {
+            rotate([0,0,22.5]) {
+              hole(brace_thickness,mount_plate_thickness,8);
+            }
+          }
+        }
+      }
+
+      hull() {
+        translate([0,1,0]) {
+          cube([brace_thickness,1,bottom_plate_height],center=true);
+        }
+        translate([-brace_height*.25,main_body_depth/2-mount_plate_thickness/2,0]) {
+          cube([brace_height,mount_plate_thickness,bottom_plate_height],center=true);
+        }
+      }
+    }
+
+
+    /*
+    brace_depth        = main_body_depth - filament_y - hotend_diam/2 - 0.5;
     brace_angle_length = sqrt(pow(brace_depth,2)*2);
     translate([filament_x,main_body_depth-brace_depth/2,bottom_plate_z]) {
       intersection() {
@@ -146,6 +184,7 @@ module extruder_body() {
         }
       }
     }
+    */
 
     % for (side=[left,right]) {
       translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z])
