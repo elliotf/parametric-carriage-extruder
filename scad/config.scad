@@ -131,7 +131,7 @@ filament_diam = 3;
 filament_compressed_diam = filament_diam - .2;
 filament_opening_diam = filament_diam + 0.5;
 
-mount_plate_thickness = 4;
+mount_plate_thickness = 3;
 
 ext_shaft_length  = 60;
 hobbed_effective_diam = 6.9;
