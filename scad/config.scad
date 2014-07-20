@@ -19,8 +19,8 @@ z = 2;
 
 // Screws, nuts
 m3_diam = 3;
-m3_nut_diam  = 5.5 + 0.2;      // 0.2 is fudging
-m3_nut_thickness  = 2.5 + 0.2; // 0.2 is fudging
+m3_nut_diam  = 5.5 + 0.2;      // actual + fudging
+m3_nut_thickness  = 2.5 + 0.3; // actual + fudging
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
 m5_diam = 5;
