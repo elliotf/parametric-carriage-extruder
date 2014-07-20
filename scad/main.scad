@@ -355,7 +355,9 @@ module hotend_retainer(groove_height=jhead_hotend_groove_height) {
   module body() {
     hull() {
       position_screws() {
-        hole(m3_diam+0.1+min_material_thickness*5,hotend_groove_height,8);
+        rotate([0,0,22.5]) {
+          hole(m3_diam+0.1+min_material_thickness*5,hotend_groove_height,8);
+        }
       }
     }
   }
