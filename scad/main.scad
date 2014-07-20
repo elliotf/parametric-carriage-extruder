@@ -126,31 +126,6 @@ module extruder_body() {
       cube([idler_retainer_width,main_body_depth,idler_retainer_height*2],center=true);
     }
 
-    // carriage mount
-    /*
-    carriage_hole_brace_width   = carriage_hole_diam+min_material_thickness*4;
-    carriage_side_brace_angle   = sqrt(pow(carriage_hole_brace_width,2)*2)/2;
-    carriage_bottom_brace_angle = sqrt(pow(carriage_hole_depth,2)*2);
-    for(side=[left,right]) {
-      translate([filament_x+(carriage_hole_spacing/2*side),main_body_depth-carriage_hole_depth/2,0]) {
-        translate([0,0,carriage_hole_z-carriage_hole_depth/2+carriage_hole_diam/2])
-          difference() {
-            translate([0,0,bottom_plate_height/2])
-              cube([carriage_hole_diam+min_material_thickness*4,carriage_hole_depth,carriage_hole_depth+bottom_plate_height],center=true);
-
-            translate([0,-carriage_hole_depth/2,-carriage_hole_depth/2]) rotate([45,0,0])
-              cube([carriage_hole_brace_width+1,carriage_bottom_brace_angle,carriage_bottom_brace_angle],center=true);
-          }
-
-        // support the motor
-        # translate([0,-carriage_hole_depth/2,-main_body_height_below_shaft-bottom_plate_height/2]) {
-          rotate([0,0,45])
-            cube([carriage_side_brace_angle,carriage_side_brace_angle,bottom_plate_height],center=true);;
-        }
-      }
-    }
-    */
-
     // carriage brace
     brace_depth = main_body_depth - filament_y - hotend_diam/2 - 0.5;
     brace_angle_length = sqrt(pow(brace_depth,2)*2);
@@ -279,6 +254,7 @@ module extruder_body_holes() {
       hole(hotend_diam,hotend_height_above_groove+.1,32);
   }
 
+  // hotend mount holes, captive nuts
   translate([filament_x,filament_y,hotend_z+min_material_thickness]) {
     for (side=[left,right]) {
       for (end=[front,rear]) {
@@ -297,6 +273,25 @@ module extruder_body_holes() {
               }
             }
           }
+      }
+    }
+  }
+
+  // carriage mount holes
+  for (side = [left,right]) {
+    translate([filament_x+carriage_hole_spacing/2*side,main_body_depth,carriage_hole_z]) {
+      rotate([90,0,0]) {
+        hole(carriage_hole_diam,carriage_hole_depth*2,16);
+      }
+
+      translate([0,-carriage_hole_depth+m3_nut_thickness,0]) {
+        translate([25*side,0,0]) {
+          cube([50,m3_nut_thickness+0.1,m3_nut_diam+0.1],center=true);
+        }
+
+        rotate([90,0,0]) {
+          hole(m3_nut_diam+0.1,m3_nut_thickness+0.1,6);
+        }
       }
     }
   }
@@ -447,6 +442,13 @@ module bridges(){
     rotate([90,0,0]) difference() {
       hole(bearing_outer-bearing_lip_width-1,gear_bearing_support-0.2,36);
       hole(bearing_outer-bearing_lip_width-min_material_thickness*3,gear_bearing_support,36);
+    }
+  }
+
+  // carriage hole diameter change
+  for (side = [left,right]) {
+    translate([filament_x+carriage_hole_spacing/2*side,main_body_depth-carriage_hole_depth+m3_nut_thickness*1.5+extrusion_height-0.1,carriage_hole_z]) {
+      cube([m3_nut_diam+0.2,extrusion_height,m3_nut_diam+0.2],center=true);
     }
   }
 }
