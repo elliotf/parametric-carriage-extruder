@@ -153,14 +153,11 @@ module carriage() {
         }
 
         // be able to slip carriage on without removing X rods
-        translate([0,bearing_diam/2,0]) {
-          % cube([x_carriage_width-extrusion_height,bearing_diam,8],center=true);
-        }
         hull() {
           for (side=[top,bottom]) {
             rotate([33*side,0,0])
-            translate([0,bearing_diam/2,0]) {
-              cube([x_carriage_width-extrusion_height,bearing_diam,0.05],center=true);
+            translate([-extrusion_height,bearing_diam/2,0]) {
+              cube([x_carriage_width,bearing_diam,0.05],center=true);
             }
           }
         }
