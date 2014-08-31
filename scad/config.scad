@@ -1,6 +1,10 @@
+motor_pulley_tooth_pitch = 2; // GT2 belt
+motor_pulley_tooth_count = 20;
+
 // All hail whosawhatsis
 da6 = 1 / cos(180 / 6) / 2;
 da8 = 1 / cos(180 / 8) / 2;
+pi  = 3.14159;
 
 approx_pi = 3.14159;
 
@@ -90,21 +94,6 @@ idler_screw_nut_diam = 5.7;
 idler_screw_nut_thickness = 2.5;
 
 // 608
-bearing_height = 7;
-bearing_outer  = 22;
-bearing_inner  = 8;
-
-// 626
-bearing_height = 6;
-bearing_outer  = 19;
-bearing_inner  = 6;
-
-// 625
-bearing_height = 5;
-bearing_outer  = 16;
-bearing_inner  = 5;
-
-// 608
 idler_bearing_height = 7;
 idler_bearing_outer  = 22;
 idler_bearing_inner  = 8;
@@ -119,30 +108,25 @@ idler_bearing_height = 5;
 idler_bearing_outer  = 16;
 idler_bearing_inner  = 5;
 
-// use the same bearing as everywhere else
-idler_bearing_height = bearing_height;
-idler_bearing_outer  = bearing_outer;
-idler_bearing_inner  = bearing_inner;
+/*
+//624
+idler_bearing_height = 5;
+idler_bearing_outer  = 13;
+idler_bearing_inner  = 4;
 
-bearing_lip_width = .75;
-bearing_lip_height = (bearing_height + bearing_outer - bearing_inner)/2;
+//623
+idler_bearing_height = 4;
+idler_bearing_outer  = 10;
+idler_bearing_inner  = 3;
+*/
 
 filament_diam = 3;
 filament_compressed_diam = filament_diam - .2;
 filament_opening_diam = filament_diam + 0.5;
 
-mount_plate_thickness = 8;
-
-ext_shaft_length  = 60;
 hobbed_effective_diam = 6.9;
 hobbed_outer_diam = 8;
 hobbed_depth = 7;
-ext_shaft_diam = bearing_inner;
-ext_shaft_opening = hobbed_outer_diam + 1;
-
-carriage_hole_spacing = 30;
-carriage_hole_diam    = m3_diam;
-carriage_hole_depth   = 12;
 
 hotend_length = 63;
 hotend_diam   = 16;
@@ -156,16 +140,33 @@ hotend_groove_height = 4.6;
 hotend_height_above_groove = 3.7;
 hotend_groove_height = 6;
 
-hotend_screw_spacing = 25;
+wall_thickness = 3;
 
-filament_from_gears =  hotend_diam/2 + motor_len/3; // make sure the hotend can clear the carriage without melting gears
+motor_pulley_circumference = motor_pulley_tooth_pitch * motor_pulley_tooth_count;
+motor_pulley_diameter      = motor_pulley_circumference / pi;
+belt_thickness = 1;
+belt_tooth_height   = 1.5;
+belt_tooth_distance = 2;
+belt_tooth_ratio    = 0.5;
+belt_width = 6;
+belt_opening_width = 8;
 
-idler_screw_spacing = idler_bearing_height + min_material_thickness*2 + idler_screw_diam;
-idler_width         = idler_screw_spacing + idler_screw_diam + min_material_thickness*4;
-idler_shaft_length  = idler_width - min_material_thickness*2;
-idler_thickness     = idler_bearing_inner + min_material_thickness*2;
-idler_groove_width  = idler_thickness + .5;
+x_rod_spacing = 45;
 
-idler_retainer_height = min_material_thickness*2;
+// lm8uu
+bearing_len = 25;
+bearing_diam = 15;
 
-bottom_plate_height = hotend_height_above_groove + min_material_thickness*2;
+bearing_body_diam = bearing_diam+wall_thickness*2;
+space_between_bearing_bodies = x_rod_spacing - bearing_body_diam;
+space_between_bearings = 1;
+x_carriage_width = bearing_len*2 + space_between_bearings;
+carriage_plate_thickness = wall_thickness*1.5;
+carriage_screw_diam = 3;
+carriage_nut_diam = 5.5;
+carriage_nut_height = 3;
+carriage_screw_spacing = 30;
+
+belt_clamp_width  = x_carriage_width;
+belt_clamp_height = space_between_bearing_bodies/2+carriage_nut_diam/2;
+belt_clamp_depth  = bearing_body_diam/2-carriage_plate_thickness + belt_opening_width/2;
