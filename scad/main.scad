@@ -70,8 +70,8 @@ module bearing() {
 
 module idler_bearing() {
   difference() {
-    cylinder(r=idler_bearing_outer/2,h=idler_bearing_height,center=true);
-    cylinder(r=idler_bearing_inner/2,h=idler_bearing_height*2,center=true);
+    hole(idler_bearing_outer,idler_bearing_height,36);
+    hole(idler_bearing_inner,idler_bearing_height*2,36);
   }
 }
 
@@ -329,6 +329,12 @@ module assembly() {
 
   translate([0,0.05,0]) {
     belt_clamp();
+  }
+
+  # translate([hotend_x,motor_y,motor_z]) {
+    rotate([0,90,0]) {
+      hole(hobbed_effective_diam,hobbed_depth,36);
+    }
   }
 }
 
