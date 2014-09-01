@@ -14,7 +14,7 @@ translate([-hotend_clamp_height/2,hotend_y-5,hotend_clamp_removable_width]) {
   }
 }
 
-translate([x_carriage_width*.75*left,-motor_side,-belt_width/2+belt_clamp_depth]) {
+translate([x_carriage_width*.75*left,-motor_side,-belt_opening_width/2+belt_clamp_depth]) {
   rotate([0,0,90]) {
     rotate([90,0,0]) {
       belt_clamp();
