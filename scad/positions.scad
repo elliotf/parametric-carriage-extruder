@@ -6,7 +6,7 @@ motor_y = (bearing_diam/2+wall_thickness+motor_side/2)*front;
 motor_z = 0;
 
 hotend_side = front;
-hotend_motor_offset_y = (hobbed_effective_diam/2+filament_diam/2)*hotend_side;
+hotend_motor_offset_y = (hobbed_effective_diam/2+filament_diam/2-0.25)*hotend_side;
 hotend_motor_offset_z = (motor_shoulder_diam/2)*bottom;
 
 hotend_x = motor_x + hotend_diam/2 + extrusion_height*2;
@@ -22,7 +22,7 @@ hotend_clamp_y = motor_y;
 hotend_clamp_z = hotend_z - hotend_clamp_height/2;
 
 idler_bearing_x = hotend_x;
-idler_bearing_y = hotend_y + (idler_bearing_outer/2+filament_diam/2)*hotend_side;
+idler_bearing_y = hotend_y + (idler_bearing_outer/2+filament_diam/2-0.25)*hotend_side;
 idler_bearing_z = motor_z;
 
 belt_clamp_x = 0;
