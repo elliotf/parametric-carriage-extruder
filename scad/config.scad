@@ -108,7 +108,6 @@ idler_bearing_height = 5;
 idler_bearing_outer  = 16;
 idler_bearing_inner  = 5;
 
-/*
 //624
 idler_bearing_height = 5;
 idler_bearing_outer  = 13;
@@ -118,6 +117,7 @@ idler_bearing_inner  = 4;
 idler_bearing_height = 4;
 idler_bearing_outer  = 10;
 idler_bearing_inner  = 3;
+/*
 */
 
 filament_diam = 3;
@@ -161,10 +161,10 @@ bearing_body_diam = bearing_diam+wall_thickness*2;
 space_between_bearing_bodies = x_rod_spacing - bearing_body_diam;
 space_between_bearings = 1;
 x_carriage_width = bearing_len*2 + space_between_bearings;
-carriage_plate_thickness = wall_thickness*1.5;
+carriage_plate_thickness = 5;
 carriage_screw_diam = 3;
 carriage_nut_diam = 5.5;
-carriage_nut_height = 3;
+carriage_nut_height = 2;
 carriage_screw_spacing = 30;
 
 belt_clamp_width  = x_carriage_width;
