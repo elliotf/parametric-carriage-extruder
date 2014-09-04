@@ -21,3 +21,9 @@ translate([x_carriage_width*.75*left,-motor_side,-belt_opening_width/2+belt_clam
     }
   }
 }
+
+translate([x_carriage_width*.6*right,-motor_side*1.2,-hobbed_effective_diam]) {
+    rotate([-45,0,0]) {
+      idler_arm();
+    }
+}
