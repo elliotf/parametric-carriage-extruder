@@ -107,21 +107,19 @@ module carriage() {
     // motor and mounts
     dist_from_motor_to_carriage_end = x_carriage_width/2-motor_x;
     motor_mount_depth = motor_side-motor_hole_spacing;
-    translate([motor_x,motor_y,motor_z]) {
-      rotate([0,90,0]) {
-        % motor();
-      }
 
-      translate([dist_from_motor_to_carriage_end/2,motor_hole_spacing/2,motor_hole_spacing/2]) {
-        translate([0,motor_mount_depth/4,0]) {
-          cube([dist_from_motor_to_carriage_end,motor_mount_depth/2,motor_mount_depth],center=true);
-        }
+    hull() {
+      translate([motor_x+dist_from_motor_to_carriage_end/2,0,x_rod_spacing/2]) {
         rotate([0,90,0]) {
-          hole(motor_mount_depth,dist_from_motor_to_carriage_end,90);
+          hole(bearing_body_diam,dist_from_motor_to_carriage_end,90);
+        }
+      }
+      translate([motor_x+dist_from_motor_to_carriage_end/2,motor_y+motor_hole_spacing/2,motor_z+motor_hole_spacing/2]) {
+        rotate([0,90,0]) {
+          hole(3+wall_thickness,dist_from_motor_to_carriage_end,90);
         }
       }
     }
-
     % translate([idler_bearing_x,idler_bearing_y,idler_bearing_z]) {
       rotate([0,90,0]) {
         idler_bearing();
@@ -335,34 +333,67 @@ module idler_arm() {
         }
       }
       translate([arm_x,idler_bearing_y-motor_y,idler_bearing_z-motor_z]) {
-        rotate([0,90,0]) {
-          hole(3+wall_thickness, arm_thickness, 16);
+        rotate([0,90,0]) { //rotate([0,0,22.5/2]) {
+          hole(3+idler_bearing_outer+5, arm_thickness, 16);
         }
       }
-      translate([arm_x,motor_hole_spacing/2*front,idler_screw_z]) {
-        cube([arm_thickness,3+wall_thickness*2,3],center=true);
+      translate([arm_x,motor_hole_spacing/2*rear,motor_hole_spacing/2*top+10]) {
+        rotate([45,0,0]) {
+          cube([arm_thickness,16,12],center=true);
+        }
       }
     }
   }
 
   module holes() {
     translate([arm_x,motor_hole_spacing/2*front,motor_hole_spacing/2]) {
-      rotate([0,90,0]) {
+      rotate([0,90,0]) rotate([0,0,22.5]) {
         hole(3, arm_thickness*2, 8);
       }
     }
     translate([arm_x,idler_bearing_y-motor_y,idler_bearing_z-motor_z]) {
-      rotate([0,90,0]) {
+      rotate([0,90,0]) rotate([0,0,22.5]){
         hole(idler_bearing_inner,arm_thickness*2, 8);
-        hole(idler_bearing_outer+2,idler_bearing_height+1, 16);
+        hole(idler_bearing_outer+4,idler_bearing_height+.5, 8);
       }
     }
 
-    # translate([arm_x+filament_diam,motor_hole_spacing/2*front,idler_screw_z]) {
-      rotate([90,0,0]) {
-        hole(3, 40, 16);
+    translate([arm_x,(hobbed_effective_diam/2+filament_diam/2)*front,0]) {
+      cube([filament_diam+1,filament_diam+3,70],center=true);
+    }
+
+    // idler screw
+    translate([arm_x,0,0]) {
+      rotate([45,0,0]) {
+        translate([0,sqrt(pow(motor_hole_spacing/2 + 4,2)*2),0]) {
+          hole(3.5,100,12);
+
+          translate([0,0,0]) {
+            hole(carriage_nut_diam,hobbed_effective_diam*3,12);
+          }
+        }
       }
     }
+
+    translate([0,0,0]) {
+      rotate([45,0,0]) {
+        cube([motor_len,motor_len*2,hobbed_effective_diam*2],center=true);
+      }
+    }
+    /*
+    hull() {
+      translate([arm_x,motor_hole_spacing/2+10,motor_hole_spacing/2+10]) {
+        rotate([0,90,0]) {
+          hole(10, 20, 8);
+        }
+      }
+      translate([arm_x,-motor_hole_spacing/2,-motor_hole_spacing/2]) {
+        rotate([0,90,0]) {
+          hole(10, 20, 8);
+        }
+      }
+    }
+    */
   }
 
   difference() {
@@ -372,6 +403,12 @@ module idler_arm() {
 }
 
 module assembly() {
+  translate([motor_x,motor_y,motor_z]) {
+    rotate([0,90,0]) {
+      % motor();
+    }
+  }
+
   carriage();
 
   translate([hotend_x-0.05,hotend_y,hotend_z]) {

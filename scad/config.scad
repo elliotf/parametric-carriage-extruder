@@ -108,6 +108,7 @@ idler_bearing_height = 5;
 idler_bearing_outer  = 16;
 idler_bearing_inner  = 5;
 
+/*
 //624
 idler_bearing_height = 5;
 idler_bearing_outer  = 13;
@@ -117,7 +118,6 @@ idler_bearing_inner  = 4;
 idler_bearing_height = 4;
 idler_bearing_outer  = 10;
 idler_bearing_inner  = 3;
-/*
 */
 
 filament_diam = 3;
