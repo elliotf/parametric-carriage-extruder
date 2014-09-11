@@ -1,4 +1,3 @@
-// You can get this file from http://www.thingiverse.com/thing:3575
 include <../scad/positions.scad>
 use <../scad/main.scad>
 

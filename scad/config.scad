@@ -6,8 +6,6 @@ da6 = 1 / cos(180 / 6) / 2;
 da8 = 1 / cos(180 / 8) / 2;
 pi  = 3.14159;
 
-approx_pi = 3.14159;
-
 // make coordinates more communicative
 left  = -1;
 right = 1;
