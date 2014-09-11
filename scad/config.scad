@@ -20,8 +20,8 @@ y = 1;
 z = 2;
 
 // Screws, nuts
-m3_diam = 3;
-m3_nut_diam  = 5.6;
+m3_diam = 3.1;
+m3_nut_diam  = 5.8;
 m3_nut_thickness  = 2.5;
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
@@ -87,8 +87,8 @@ idler_screw_nut_diam = 6.8;
 idler_screw_nut_thickness = 2.5;
 
 // m3
-idler_screw_diam = 3.2;
-idler_screw_nut_diam = 5.7;
+idler_screw_diam = m3_diam;
+idler_screw_nut_diam = m3_nut_diam;
 idler_screw_nut_thickness = 2.5;
 
 // 608
@@ -138,6 +138,8 @@ hotend_groove_height = 4.6;
 hotend_height_above_groove = 3.7;
 hotend_groove_height = 6;
 
+hotend_clamped_height = hotend_height_above_groove + hotend_groove_height;
+
 wall_thickness = 3;
 
 motor_pulley_circumference = motor_pulley_tooth_pitch * motor_pulley_tooth_count;
@@ -160,8 +162,8 @@ space_between_bearing_bodies = x_rod_spacing - bearing_body_diam;
 space_between_bearings = 1;
 x_carriage_width = bearing_len*2 + space_between_bearings;
 carriage_plate_thickness = 5;
-carriage_screw_diam = 3;
-carriage_nut_diam = 5.5;
+carriage_screw_diam = m3_diam;
+carriage_nut_diam = m3_nut_diam;
 carriage_nut_height = 2;
 carriage_screw_spacing = 30;
 
