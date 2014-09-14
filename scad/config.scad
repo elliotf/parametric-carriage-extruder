@@ -6,6 +6,8 @@ da6 = 1 / cos(180 / 6) / 2;
 da8 = 1 / cos(180 / 8) / 2;
 pi  = 3.14159;
 
+resolution = 24;
+
 // make coordinates more communicative
 left  = -1;
 right = 1;
@@ -170,3 +172,6 @@ carriage_screw_spacing = 30;
 belt_clamp_width  = x_carriage_width;
 belt_clamp_height = space_between_bearing_bodies/2+carriage_nut_diam/2;
 belt_clamp_depth  = bearing_body_diam/2-carriage_plate_thickness + belt_opening_width/2;
+
+idler_groove_material = 5;
+idler_width = idler_bearing_height + wall_thickness * 4;

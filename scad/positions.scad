@@ -1,21 +1,24 @@
 include <config.scad>;
 
+hotend_clamp_height_above_hotend = 1;
+hotend_clamp_height = hotend_groove_height + hotend_height_above_groove + hotend_clamp_height_above_hotend;
+
 // motor position
 motor_y = (bearing_diam/2+wall_thickness+motor_side/2)*front;
-motor_z = 27;
+motor_z = motor_side/2+m3_nut_diam/2+.5;
 
 hotend_side = front;
-hotend_motor_offset_y = (hobbed_effective_diam/2+filament_diam/2-0.25)*hotend_side;
+hotend_motor_offset_y = (hobbed_effective_diam/2+filament_diam/2*.75)*hotend_side;
 hotend_motor_offset_z = (motor_shoulder_diam/2)*bottom;
+hotend_motor_offset_z = (motor_side/2-hotend_clamp_height)*bottom;
 
-hotend_clamp_removable_width = hotend_diam/2 + 2;
+hotend_clamp_removable_width = hotend_diam/2 + motor_shoulder_height + .5;
 
 hotend_x = x_carriage_width/2 - hotend_clamp_removable_width;
 hotend_y = motor_y + hotend_motor_offset_y;
 hotend_z = motor_z + hotend_motor_offset_z;
 
 hotend_clamp_width  = x_carriage_width/2-hotend_x;
-hotend_clamp_height = hotend_groove_height + hotend_height_above_groove;
 
 hotend_clamp_x = x_carriage_width/2 - hotend_clamp_width/2;
 hotend_clamp_y = motor_y;
