@@ -25,9 +25,11 @@ hotend_clamp_y = motor_y;
 hotend_clamp_z = hotend_z - hotend_clamp_height/2;
 
 idler_bearing_x = hotend_x;
-//idler_bearing_y = hotend_y + (idler_bearing_outer/2+filament_diam/2-0.25)*hotend_side;
-idler_bearing_y = hotend_y + (idler_bearing_outer/2)*hotend_side;
+idler_bearing_y = hotend_y + (idler_bearing_outer/2+filament_diam/2*.5)*hotend_side;
 idler_bearing_z = motor_z;
+idler_screw_diam = m3_diam;
+idler_screw_x    = hotend_x-filament_diam/2-idler_screw_diam/2;
+idler_screw_z    = motor_z+motor_hole_spacing/2+motor_screw_diam/2+idler_screw_diam/2;
 
 belt_clamp_x = 0;
 belt_clamp_y = 0;

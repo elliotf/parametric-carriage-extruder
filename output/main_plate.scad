@@ -7,7 +7,7 @@ translate([0,0,x_carriage_width/2]) {
   }
 }
 
-translate([-hotend_clamp_height,hotend_y-5,hotend_clamp_removable_width]) {
+translate([-hotend_clamp_height*2.5,motor_y-5,0]) {
   rotate([0,-90,0]) {
     hotend_clamp();
   }
@@ -23,7 +23,7 @@ translate([hotend_clamp_height+10,hotend_y-5,hotend_clamp_removable_width]) {
   }
 }
 
-translate([x_carriage_width*.5*left,-motor_side,-belt_opening_width/2+belt_clamp_depth]) {
+translate([-x_rod_spacing/2-hotend_clamp_height,-motor_side,-belt_opening_width/2+belt_clamp_depth]) {
   rotate([0,0,90]) {
     rotate([90,0,0]) {
       belt_clamp();
@@ -31,8 +31,8 @@ translate([x_carriage_width*.5*left,-motor_side,-belt_opening_width/2+belt_clamp
   }
 }
 
-translate([x_carriage_width*.6*right,-motor_side*1.2,-hobbed_effective_diam]) {
-  rotate([-45,0,0]) {
-    //idler_arm();
+translate([motor_side/2,motor_y-motor_side*.25,motor_side/2]) {
+  rotate([90,0,0]) {
+    idler_arm();
   }
 }
