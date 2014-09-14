@@ -246,13 +246,26 @@ module carriage() {
       idler_hole();
     }
 
-    translate([idler_screw_x,motor_y+motor_side/2+2,idler_screw_z]) {
-      rotate([90,0,0]) {
-        rotate([0,0,90]) {
-          hole(m3_nut_diam,m3_nut_height*2,6);
+    hull() {
+      for(side=[top,bottom]) {
+        translate([idler_screw_x,motor_y+motor_side/2+2,idler_screw_z+0.75*side]) {
+          rotate([90,0,0]) {
+            rotate([0,0,90]) {
+              hole(m3_nut_diam,m3_nut_height*2,6);
+            }
+          }
         }
-        rotate([0,0,22.5]) {
-          hole(m3_diam,100,8);
+      }
+    }
+
+    hull() {
+      for(side=[top,bottom]) {
+        translate([idler_screw_x,motor_y+motor_side/2+2,idler_screw_z+0.75*side]) {
+          rotate([90,0,0]) {
+            rotate([0,0,22.5]) {
+              hole(m3_diam,100,8);
+            }
+          }
         }
       }
     }
@@ -358,7 +371,6 @@ module belt_clamp() {
       }
     }
 
-    // MAYBE TODO: support different diameter for motor and idler pulleys
     for (side=[left,right]) {
       // belt path
       translate([carriage_nut_diam*side,0,motor_pulley_diameter/2+belt_thickness/2]) {
@@ -454,9 +466,13 @@ module idler_arm() {
       }
     }
 
-    translate([screw_x,0,screw_z]) {
-      rotate([90,0,0]) rotate([0,0,22.5]) {
-        hole(idler_screw_diam,100,8);
+    hull() {
+      for(side=[top,bottom]) {
+        translate([screw_x,0,screw_z+0.75*side]) {
+          rotate([90,0,0]) rotate([0,0,22.5]) {
+            hole(idler_screw_diam,100,8);
+          }
+        }
       }
     }
   }
