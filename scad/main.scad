@@ -81,19 +81,17 @@ module hotend_hole() {
 }
 
 module idler_hole() {
-
   idler_x = hotend_clamp_removable_width;
   idler_y = idler_bearing_y - hotend_y + hotend_motor_offset_y;
   idler_z = 0;
 
   hull() {
-    translate([idler_x,idler_y-idler_bearing_inner*.25,idler_z]) {
-      translate([0,0.5,0]) {
+    translate([idler_x,,idler_z]) {
+      translate([0,idler_y-idler_bearing_inner*.25,0]) {
         cube([idler_width+1,idler_bearing_inner+0.5,idler_bearing_outer+wall_thickness],center=true);
       }
 
-
-      translate([0,-idler_bearing_outer/2+0.5,hotend_clamp_height/2+1]) {
+      translate([0,-motor_side/2+.95,hotend_clamp_height/2+0.5]) {
         cube([idler_width+1,2,motor_side+1],center=true);
       }
     }
@@ -143,6 +141,11 @@ module carriage() {
     dist_from_motor_to_carriage_end = x_carriage_width/2-motor_x;
     motor_mount_depth = motor_side-motor_hole_spacing;
 
+    motor_mount_post_diam = motor_screw_diam+wall_thickness*2;
+    screw_area_width  = dist_from_motor_to_carriage_end;
+    screw_area_depth  = motor_mount_post_diam/2+(motor_side/2-motor_hole_spacing/2) + 3.5;
+    screw_area_height = m3_nut_diam+wall_thickness*1.5;
+    screw_area_offset_y = screw_area_depth/2-motor_mount_post_diam/2;
     hull() {
       translate([motor_x+dist_from_motor_to_carriage_end/2,0,x_rod_spacing/2]) {
         rotate([0,90,0]) {
@@ -150,10 +153,15 @@ module carriage() {
         }
       }
       translate([motor_x+dist_from_motor_to_carriage_end/2,motor_y+motor_hole_spacing/2,motor_z+motor_hole_spacing/2]) {
-        rotate([0,90,0]) {
-          hole(motor_screw_diam+wall_thickness*2,dist_from_motor_to_carriage_end,resolution*.75);
+        rotate([0,90,0]) rotate([0,0,22.5]) {
+          hole(motor_screw_diam+wall_thickness*2,dist_from_motor_to_carriage_end,8);
         }
       }
+    }
+
+    // captive nut area for idler
+    translate([motor_x+dist_from_motor_to_carriage_end/2,motor_y+motor_hole_spacing/2+screw_area_offset_y,motor_z+motor_hole_spacing/2+screw_area_height/2-wall_thickness/2]) {
+      cube([screw_area_width,screw_area_depth,screw_area_height],center=true);
     }
   }
 
@@ -236,6 +244,17 @@ module carriage() {
 
     translate([motor_x,motor_y,motor_z]) {
       idler_hole();
+    }
+
+    translate([idler_screw_x,motor_y+motor_side/2+2,idler_screw_z]) {
+      rotate([90,0,0]) {
+        rotate([0,0,90]) {
+          hole(m3_nut_diam,m3_nut_height*2,6);
+        }
+        rotate([0,0,22.5]) {
+          hole(m3_diam,100,8);
+        }
+      }
     }
   }
 
@@ -385,6 +404,11 @@ module idler_arm() {
   bearing_y = idler_bearing_y - motor_y;
   bearing_z = idler_bearing_z - motor_z;
 
+  offset_z  = hotend_clamp_height/2+0.5;
+
+  screw_x   = idler_screw_x - motor_x;
+  screw_z   = idler_screw_z - motor_z;
+
   arm_length_above_motor = 0;
   arm_thickness = idler_bearing_height+wall_thickness*3;
   arm_depth     = hotend_clamp_height;
@@ -401,15 +425,17 @@ module idler_arm() {
 
   module body() {
     hull() {
-      translate([bearing_x,bearing_y-idler_bearing_inner*.25,bearing_z]) {
-        cube([idler_width,idler_bearing_inner,idler_bearing_inner+wall_thickness*2],center=true);
-
-        translate([0,0,hotend_clamp_height/2+1+motor_side/2-1]) {
-          cube([idler_width,3,2],center=true);
+      translate([bearing_x,0,0]) {
+        translate([0,bearing_y-idler_bearing_inner*.25,bearing_z]) {
+          cube([idler_width,idler_bearing_inner,idler_bearing_inner+wall_thickness*2],center=true);
         }
 
-        translate([0,-idler_bearing_outer/2,hotend_clamp_height/2+1]) {
-          cube([idler_width,1,motor_side],center=true);
+        translate([0,bearing_y-idler_bearing_inner*.25,offset_z+arm_length/2-1]) {
+          cube([idler_width,idler_bearing_inner,2],center=true);
+        }
+
+        translate([0,-motor_side/2+1,offset_z]) {
+          cube([idler_width,2,motor_side],center=true);
         }
       }
     }
@@ -427,9 +453,15 @@ module idler_arm() {
         hole(idler_bearing_outer+4, idler_bearing_height+1, 8);
       }
     }
+
+    translate([screw_x,0,screw_z]) {
+      rotate([90,0,0]) rotate([0,0,22.5]) {
+        hole(idler_screw_diam,100,8);
+      }
+    }
   }
 
-  difference() {
+  color("LightGreen") difference() {
     body();
     holes();
 

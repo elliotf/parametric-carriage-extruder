@@ -25,6 +25,7 @@ z = 2;
 m3_diam = 3.1;
 m3_nut_diam  = 5.8;
 m3_nut_thickness  = 2.5;
+m3_nut_height  = m3_nut_thickness;
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
 m5_diam = 5;
