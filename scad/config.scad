@@ -176,3 +176,8 @@ belt_clamp_depth  = bearing_body_diam/2-carriage_plate_thickness + belt_opening_
 
 idler_groove_material = 5;
 idler_width = idler_bearing_height + wall_thickness * 4;
+
+idler_shaft_opening_length = idler_width - 2;
+idler_shaft_diam = idler_bearing_inner - 0.7;
+idler_shaft_length = idler_shaft_opening_length - 1;
+idler_shaft_opening_diam = idler_shaft_diam + 0.5;

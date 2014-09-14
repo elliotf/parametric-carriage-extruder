@@ -36,3 +36,7 @@ translate([motor_side/2,motor_y-motor_side*.25,motor_side/2]) {
     idler_arm();
   }
 }
+
+translate([hotend_clamp_height,-motor_side-bearing_body_diam-5,idler_shaft_diam/2]) {
+  idler_shaft();
+}

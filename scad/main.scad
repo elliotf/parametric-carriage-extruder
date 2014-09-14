@@ -88,11 +88,11 @@ module idler_hole() {
   hull() {
     translate([idler_x,,idler_z]) {
       translate([0,idler_y-idler_bearing_inner*.25,0]) {
-        cube([idler_width+1,idler_bearing_inner+0.5,idler_bearing_outer+wall_thickness],center=true);
+        cube([idler_width+1,idler_bearing_inner+1,idler_bearing_outer+wall_thickness],center=true);
       }
 
-      translate([0,-motor_side/2+.95,hotend_clamp_height/2+0.5]) {
-        cube([idler_width+1,2,motor_side+1],center=true);
+      translate([0,-motor_side/2+1.2,hotend_clamp_height/2+0.5]) {
+        cube([idler_width+1,2.5,motor_side+1],center=true);
       }
     }
   }
@@ -456,10 +456,10 @@ module idler_arm() {
   module holes() {
     translate([bearing_x,bearing_y,bearing_z]) {
       rotate([0,90,0]) rotate([0,0,22.5]) {
-        hole(idler_bearing_inner-1,idler_width-1,8);
+        hole(idler_shaft_opening_diam,idler_shaft_opening_length,8);
       }
       translate([0,idler_bearing_inner,0]) {
-        cube([idler_width-1,idler_bearing_inner*2,idler_bearing_inner-1],center=true);
+        cube([idler_shaft_opening_length,idler_bearing_inner*2,idler_shaft_opening_diam],center=true);
       }
       rotate([0,90,0]) rotate([0,0,22.5]) {
         hole(idler_bearing_outer+4, idler_bearing_height+1, 8);
@@ -480,12 +480,12 @@ module idler_arm() {
   color("LightGreen") difference() {
     body();
     holes();
+  }
+}
 
-    % translate([bearing_x,bearing_y,bearing_z]) {
-      rotate([0,90,0]) {
-        idler_bearing();
-      }
-    }
+module idler_shaft() {
+  rotate([0,90,0]) rotate([0,0,22.5]) {
+    hole(idler_shaft_diam,idler_shaft_length,8);
   }
 }
 
