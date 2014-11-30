@@ -255,17 +255,29 @@ module direct_drive() {
     }
 
     // motor shoulder + slack
+    mount_shoulder_width = motor_shoulder_diam/2+abs(hinge_space_pos_x)+1;
     intersection() {
       hull() {
-        for(x=[0,-.5]) {
-          translate([x,0,0]) {
-            rotate([0,0,22.5]) {
-              hole(motor_shoulder_diam+0.5,motor_shoulder_height*2+0.05,resolution);
-            }
-
-          }
+        rotate([0,0,22.5]) {
+          hole(motor_shoulder_diam+0.5,plate_thickness*2+0.05,resolution);
         }
-        hole(2,(motor_shoulder_height+motor_shoulder_diam/2+2)*2,resolution);
+        hole(2,(plate_thickness+motor_shoulder_diam/2+2)*2,resolution);
+      }
+      translate([motor_shoulder_diam/2-mount_shoulder_width/2+1,0,0]) {
+        cube([mount_shoulder_width,motor_shoulder_diam+1,motor_len],center=true);
+      }
+    }
+
+    // idler arm motor shoulder clearance
+    intersection() {
+      translate([-0.5,0,0]) {
+        hull() {
+          hole(motor_shoulder_diam+0.5,motor_shoulder_height*2,resolution);
+          hole(2,(motor_shoulder_height+motor_shoulder_diam/2)*2,resolution);
+        }
+      }
+      translate([hinge_space_pos_x-motor_side/2,0,0]) {
+        cube([motor_side+0.05,motor_side+0.05,motor_len],center=true);
       }
     }
 
