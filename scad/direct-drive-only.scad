@@ -182,6 +182,9 @@ module direct_drive() {
   block_height = idler_pos_z + idler_bearing_height/2;
 
   module body() {
+    hotend_rounded_corner_radius = wall_thickness;
+    hotend_rounded_corner_pos_x  = filament_pos_x+hotend_diam/2;
+    hotend_rounded_corner_pos_y  = hotend_pos_y-hotend_clamped_height+hotend_rounded_corner_radius+hotend_clearance;
     hull() {
       for(side=[left,right]) {
         for(end=[front,rear]) {
@@ -189,6 +192,9 @@ module direct_drive() {
             hole(rounded_radius*2,plate_thickness,resolution);
           }
         }
+      }
+      translate([hotend_rounded_corner_pos_x,hotend_rounded_corner_pos_y,plate_thickness/2]) {
+        hole(hotend_rounded_corner_radius*2,plate_thickness,resolution);
       }
     }
 
@@ -198,8 +204,10 @@ module direct_drive() {
         translate([motor_hole_spacing/2*left,y,block_height/2]) {
           hole(rounded_radius*2,block_height,resolution);
         }
-        translate([filament_pos_x,y,block_height/2]) {
-          cube([hotend_diam+wall_thickness*2,rounded_radius*2,block_height],center=true);
+      }
+      for(y=[motor_side/2-hotend_rounded_corner_radius,hotend_rounded_corner_pos_y]) {
+        translate([hotend_rounded_corner_pos_x,y,block_height/2]) {
+          hole(hotend_rounded_corner_radius*2,block_height,resolution);
         }
       }
     }
