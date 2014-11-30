@@ -337,36 +337,10 @@ module direct_drive() {
 
       // idler bearing
       translate([0,0,idler_pos_z]) {
-        /*
-        hull() {
-          hole(idler_bearing_outer+1,idler_bearing_height+idler_washer_thickness*2,resolution);
-          translate([-idler_bearing_outer/2,0,0]) {
-            cube([idler_bearing_outer,idler_bearing_outer+1,idler_bearing_height+idler_washer_thickness*2],center=true);
-          }
-        }
-        */
-        hole(idler_bearing_outer,idler_bearing_height+idler_washer_thickness*2,resolution);
-        /*
-        rotate_extrude($fn=resolution) {
-          translate([idler_bearing_inner/2+1,idler_washer_thickness/2]) {
-            //square([.5,idler_bearing_height+idler_washer_thickness],center=true);
-          }
-          hull() {
-            translate([idler_bearing_inner/2+2,idler_washer_thickness/2]) {
-              square([1,idler_bearing_height+idler_washer_thickness],center=true);
-            }
-            translate([idler_bearing_outer/2+1.5,idler_washer_thickness/2-0.5]) {
-              //square([0.05,idler_bearing_height+idler_washer_thickness+1],center=true);
-            }
-            translate([idler_bearing_outer/2,idler_washer_thickness/2-0.5]) {
-              square([2,idler_bearing_height+idler_washer_thickness+1],center=true);
-            }
-          }
-        }
-        */
+        hole(idler_bearing_outer+1.5,idler_bearing_height+idler_washer_thickness*2,resolution);
       }
 
-      // idler nut
+      // captive idler nut/bolt
       hull() {
         rotate([0,0,90]) {
           translate([0,0,idler_nut_pos_z]) {
