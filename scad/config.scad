@@ -28,9 +28,11 @@ m3_nut_thickness  = 2.5;
 m3_nut_height  = m3_nut_thickness;
 m3_socket_head_diam = 6;
 m3_socket_head_height = 3;
+
 m5_diam = 5;
 m5_nut_diam = 8;
-m5_nut_thickness = 5;
+m5_nut_thickness = 4;
+m5_nut_height = m5_nut_thickness;
 
 // Motors
 nema17_side = 43;
@@ -39,7 +41,7 @@ nema17_len = 48;
 nema17_hole_spacing = 31;
 nema17_screw_diam = m3_diam;
 nema17_shaft_diam = 5;
-nema17_shaft_len = 16.5;
+nema17_shaft_len = 22;
 nema17_short_shaft_len = 0;
 nema17_shoulder_height = 2;
 nema17_shoulder_diam = nema17_hole_spacing*.75;
@@ -78,7 +80,7 @@ motor_shoulder_diam = nema14_shoulder_diam;
 
 // Misc settings
 extrusion_width = 0.5;
-extrusion_height = 0.3;
+extrusion_height = 0.2;
 min_material_thickness = extrusion_width*2;
 spacer = 1;
 
@@ -86,13 +88,10 @@ spacer = 1;
 
 // 4-40
 idler_screw_diam = 3.2;
-idler_screw_nut_diam = 6.8;
-idler_screw_nut_thickness = 2.5;
+idler_nut_diam = 6.8;
+idler_nut_thickness = 2.5;
 
 // m3
-idler_screw_diam = m3_diam;
-idler_screw_nut_diam = m3_nut_diam;
-idler_screw_nut_thickness = 2.5;
 
 // 608
 idler_bearing_height = 7;
@@ -105,9 +104,12 @@ idler_bearing_outer  = 19;
 idler_bearing_inner  = 6;
 
 //625
-idler_bearing_height = 5;
-idler_bearing_outer  = 16;
-idler_bearing_inner  = 5;
+idler_bearing_height      = 5;
+idler_bearing_outer       = 16;
+idler_bearing_inner       = 5;
+idler_screw_diam          = m5_diam;
+idler_nut_diam            = m5_nut_diam;
+idler_nut_thickness       = m5_nut_thickness;
 
 /*
 //624
@@ -116,30 +118,37 @@ idler_bearing_outer  = 13;
 idler_bearing_inner  = 4;
 
 //623
-idler_bearing_height = 4;
-idler_bearing_outer  = 10;
-idler_bearing_inner  = 3;
+idler_bearing_height      = 4;
+idler_bearing_outer       = 10;
+idler_bearing_inner       = 3;
+idler_screw_diam          = m3_diam;
+idler_nut_diam      = m3_nut_diam;
+idler_nut_thickness = 2.5;
 */
 
 filament_diam = 3;
-filament_compressed_diam = filament_diam - .2;
+filament_compressed_diam = filament_diam * 0.75;
 filament_opening_diam = filament_diam + 0.5;
 
+hobbed_pulley_height  = 11;
+hobbed_pulley_len     = hobbed_pulley_height;
 hobbed_effective_diam = 6.9;
-hobbed_outer_diam = 8;
-hobbed_depth = 7;
+hobbed_pulley_diam    = 9;
+hob_dist_from_end     = 3.25;
+hob_width             = 3.5;
+hob_depth             = hobbed_pulley_diam/2-hobbed_effective_diam/2;
 
 hotend_length = 63;
 hotend_diam   = 16;
 hotend_groove_diam   = 12;
 
-// jhead
-hotend_height_above_groove = 5;
-hotend_groove_height = 4.6;
-
 // e3d v6 direct
 hotend_height_above_groove = 3.7;
 hotend_groove_height = 6;
+
+// jhead
+hotend_height_above_groove = 5;
+hotend_groove_height = 4.6;
 
 hotend_clamped_height = hotend_height_above_groove + hotend_groove_height;
 
