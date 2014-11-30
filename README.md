@@ -1,17 +1,5 @@
-This is an *UNTESTED* work in progress of a NEMA14/NEMA17 geared extruder for 3mm filament, inspired by kliment's and sgraber's compact i3 extruder.
+A combination x-carriage + extruder for prusa i3-like printers.
 
-# Why?
+Configured to direct-drive 3mm filament.  Note that you'll likely want to use a 0.9 degree (400-step) motor to have sufficient steps/mm.
 
-* I have a bunch of left over NEMA14 motors from my terrible emaker huxley indiegogo kit
-* My NEMA14 motors are almost half the weight of my NEMA17 motors -- faster movement?
-* Faster to print than the kliment/sgraber (hopefully)
-* I still have a lot of 3mm filament
-* The parametric design should allow for NEMA17 version, 5mm shaft, 6mm shaft, 8mm shaft
-* It's a challenge!
-
-# TODO
-* generate gears based on:
-  * desired steps/mm
-  * hobbed bolt/gear diameter
-  * nema14 or nema17
-  * accounting for a minimum number of teeth
+Is parametric, should be able to change it to 1.75mm filament if you so desire -- see 'filament_diam' variable.
