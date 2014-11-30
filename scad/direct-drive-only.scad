@@ -362,7 +362,19 @@ module direct_drive() {
           }
         }
       }
+    }
 
+    bevel_dist = extrusion_height*3;
+    translate([idler_pos_x,0,0]) {
+      // created a bevel in case the first few layers are melted into a flange
+      hull() {
+        rotate([0,0,90]) {
+          hole(idler_nut_diam,motor_shoulder_height,6);
+        }
+        rotate([0,0,90]) {
+          hole(idler_nut_diam+bevel_dist*2,0.05,36);
+        }
+      }
     }
 
     // filament path
