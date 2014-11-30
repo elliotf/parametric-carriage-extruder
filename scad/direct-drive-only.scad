@@ -235,10 +235,6 @@ module direct_drive() {
         }
       }
     }
-    // flat for captive idler nut
-    translate([hotend_diam/2,motor_side/2,plate_thickness/2+block_height/2+0.025]) {
-      //cube([12,motor_side,block_height-plate_thickness+0.05],center=true);
-    }
 
     // motor mount holes
     for(side=[top,bottom]) {
