@@ -1,6 +1,5 @@
 include <util.scad>
 include <config.scad>
-include <positions.scad>
 
 idler_shaft_support   = 4;
 
@@ -27,38 +26,13 @@ idler_washer_thickness = 1;
 
 echo("Idler screw length at least ", idler_shaft_support*2 + 1 + idler_bearing_height + 3);
 
-module hobbed_pulley() {
-  module body() {
-    translate([0,0,hobbed_pulley_height/2-hob_dist_from_end]) {
-      hole(hobbed_pulley_diam,hobbed_pulley_height,36);
-    }
-  }
-
-  module holes() {
-    rotate_extrude() {
-      translate([hobbed_pulley_diam/2+hob_width/2-(hob_depth),0,0]) {
-        circle(hob_width/2,$fn=36);
-      }
-    }
-
-    hole(motor_shaft_diam,motor_len/2,36);
-  }
-
-  difference() {
-    body();
-    holes();
-  }
-}
-
-
 module direct_drive() {
   rounded_radius = motor_side/2 - motor_hole_spacing/2;
-  resolution     = 64;
   block_height = idler_pos_z + idler_bearing_height/2 + idler_washer_thickness + idler_shaft_support;
   block_height = idler_pos_z + idler_bearing_height/2;
 
+  hotend_rounded_corner_radius = 3;
   module body() {
-    hotend_rounded_corner_radius = wall_thickness;
     hotend_rounded_corner_pos_x  = filament_pos_x+hotend_diam/2;
     hotend_rounded_corner_pos_y  = hotend_pos_y-hotend_clamped_height+hotend_rounded_corner_radius+hotend_clearance;
     hull() {
@@ -252,12 +226,11 @@ module direct_drive() {
       }
     }
 
-    // hotend
+    // hotend void
     hotend_res = resolution*2;
     above_height = hotend_height_above_groove+hotend_clearance*2;
     translate([filament_pos_x,hotend_pos_y,filament_pos_z]) {
       rotate([-90,0,0]) {
-        //% hotend();
         translate([0,0,-hotend_clamped_height]) {
           rotate([0,0,180/hotend_res])
             hole(hotend_groove_diam+hotend_clearance,hotend_clamped_height*2,hotend_res);
@@ -274,11 +247,7 @@ module direct_drive() {
           }
 
           // zip tie restraint
-            rotate_extrude($fn=resolution) {
-              translate([hotend_groove_diam/2 + 6,0]) {
-                square([2,3],center=true);
-              }
-            }
+          zip_tie_hole(hotend_diam + hotend_rounded_corner_radius*2);
         }
 
         translate([0,0,-hotend_clamped_height-10+hotend_clearance]) {
@@ -296,15 +265,6 @@ module direct_drive() {
     translate([hinge_space_pos_x-hinge_space_width/2-idler_nut_diam/2-1,0,idler_nut_pos_z+idler_nut_thickness/2+extrusion_height]) {
       cube([idler_nut_diam+2,idler_nut_diam+3,extrusion_height*2],center=true);
     }
-
-    /*
-    translate([idler_pos_x,0,idler_pos_z]) { 
-      difference() {
-        hole(idler_bearing_inner+extrusion_width*3,idler_bearing_height+4,resolution);
-        hole(idler_bearing_inner,idler_bearing_height+4.05,resolution);
-      }
-    }
-    */
   }
 
   % motor();

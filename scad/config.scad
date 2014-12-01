@@ -1,13 +1,14 @@
 motor_pulley_tooth_pitch = 2; // GT2 belt
-motor_pulley_tooth_count = 20;
+motor_pulley_tooth_count = 16;
 
 // All hail whosawhatsis
 pi  = 3.14159265359;
 
-resolution = 24;
+resolution = 64;
 
 // make coordinates more communicative
 left  = -1;
+center = 0;
 right = 1;
 front = -1;
 rear  = 1;
@@ -153,7 +154,7 @@ hotend_groove_height = 4.6;
 
 hotend_clamped_height = hotend_height_above_groove + hotend_groove_height;
 
-wall_thickness = 3;
+wall_thickness = 2;
 
 motor_pulley_circumference = motor_pulley_tooth_pitch * motor_pulley_tooth_count;
 motor_pulley_diameter      = motor_pulley_circumference / pi;
@@ -170,24 +171,4 @@ x_rod_spacing = 45;
 bearing_len = 25;
 bearing_diam = 15;
 
-bearing_body_diam = bearing_diam+wall_thickness*2;
-space_between_bearing_bodies = x_rod_spacing - bearing_body_diam;
-space_between_bearings = 1;
-x_carriage_width = bearing_len*2 + space_between_bearings;
-carriage_plate_thickness = 5;
-carriage_screw_diam = m3_diam;
-carriage_nut_diam = m3_nut_diam;
-carriage_nut_height = 2;
 carriage_screw_spacing = 30;
-
-belt_clamp_width  = x_carriage_width;
-belt_clamp_height = space_between_bearing_bodies/2+carriage_nut_diam/2;
-belt_clamp_depth  = bearing_body_diam/2-carriage_plate_thickness + belt_opening_width/2;
-
-idler_groove_material = 5;
-idler_width = idler_bearing_height + wall_thickness * 4;
-
-idler_shaft_opening_length = idler_width - 2;
-idler_shaft_diam = idler_bearing_inner - 0.7;
-idler_shaft_length = idler_shaft_opening_length - 1;
-idler_shaft_opening_diam = idler_shaft_diam + 0.5;

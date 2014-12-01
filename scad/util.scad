@@ -91,3 +91,34 @@ module hotend_hole() {
     hole(filament_diam+1,200,hotend_res);
   }
 }
+
+module hobbed_pulley() {
+  module body() {
+    translate([0,0,hobbed_pulley_height/2-hob_dist_from_end]) {
+      hole(hobbed_pulley_diam,hobbed_pulley_height,36);
+    }
+  }
+
+  module holes() {
+    rotate_extrude() {
+      translate([hobbed_pulley_diam/2+hob_width/2-(hob_depth),0,0]) {
+        circle(hob_width/2,$fn=36);
+      }
+    }
+
+    hole(motor_shaft_diam,motor_len/2,36);
+  }
+
+  difference() {
+    body();
+    holes();
+  }
+}
+
+module zip_tie_hole(diam,width=3,thickness=2,resolution=64) {
+  rotate_extrude($fn=resolution) {
+    translate([diam/2 + thickness/2,0]) {
+      square([thickness,width],center=true);
+    }
+  }
+}
