@@ -2,7 +2,6 @@ include <util.scad>
 include <config.scad>
 include <positions.scad>
 
-motor_screw_head_diam = 6;
 idler_shaft_support   = 4;
 
 filament_opening = filament_diam + 0.5;
@@ -20,7 +19,6 @@ hinge_space_width = 2;
 hinge_space_pos_x = filament_pos_x - filament_diam/2 - 1 - hinge_space_width/2;
 hinge_pos_y       = - motor_hole_spacing/2;
 
-hotend_clearance = 0.15;
 hotend_pos_y      = -motor_hole_spacing/2-motor_screw_head_diam/2;
 
 idler_screw_pos_y = motor_side/2-wall_thickness-m3_nut_diam/2;

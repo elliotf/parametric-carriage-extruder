@@ -76,6 +76,8 @@ motor_shoulder_height = nema14_shoulder_height;
 motor_shoulder_diam = nema14_shoulder_diam;
 */
 
+motor_screw_head_diam = 6;
+
 // Misc settings
 extrusion_width = 0.5;
 extrusion_height = 0.2;
@@ -136,9 +138,10 @@ hob_dist_from_end     = 3.25;
 hob_width             = 3.5;
 hob_depth             = hobbed_pulley_diam/2-hobbed_effective_diam/2;
 
-hotend_length = 63;
-hotend_diam   = 16;
-hotend_groove_diam   = 12;
+hotend_length      = 63;
+hotend_diam        = 16;
+hotend_groove_diam = 12;
+hotend_clearance   = 0.15;
 
 // e3d v6 direct
 hotend_height_above_groove = 3.7;

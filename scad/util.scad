@@ -71,8 +71,6 @@ module hotend() {
 }
 
 module hotend_hole() {
-  hotend_clearance = 0.15;
-
   hotend_res = resolution/2;
 
   above_height = hotend_height_above_groove+hotend_clearance*2;
