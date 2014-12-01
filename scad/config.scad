@@ -2,9 +2,7 @@ motor_pulley_tooth_pitch = 2; // GT2 belt
 motor_pulley_tooth_count = 20;
 
 // All hail whosawhatsis
-da6 = 1 / cos(180 / 6) / 2;
-da8 = 1 / cos(180 / 8) / 2;
-pi  = 3.14159;
+pi  = 3.14159265359;
 
 resolution = 24;
 
