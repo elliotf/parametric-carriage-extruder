@@ -7,22 +7,28 @@ space_between_bearing_bodies = x_rod_spacing - bearing_body_diam;
 space_between_bearings = 1;
 x_carriage_width = bearing_len*2 + space_between_bearings;
 carriage_plate_thickness = 5;
+carriage_plate_pos_y     = bearing_body_diam/2*front;
 carriage_screw_diam = m3_diam;
 carriage_nut_diam = m3_nut_diam;
 carriage_nut_height = 2;
 
 belt_clamp_width  = x_carriage_width;
 belt_clamp_height = space_between_bearing_bodies/2+carriage_nut_diam/2;
-belt_clamp_depth  = bearing_body_diam/2-carriage_plate_thickness + belt_opening_width/2;
+belt_clamp_depth  = bearing_body_diam/2-carriage_plate_thickness/2 + belt_opening_width/2;
+
+motor_clamp_mount_thickness = 5;
+motor_clamp_wall_thickness  = 3;
 
 // motor position
 motor_y = (bearing_body_diam/2+carriage_plate_thickness/2+motor_side/2)*front;
 motor_z = motor_side/2+m3_nut_diam/2+.5;
 
-belt_clamp_x = 0;
-belt_clamp_y = 0;
-belt_clamp_z = 0;
+belt_clamp_pos_x = 0;
+belt_clamp_pos_y = carriage_plate_pos_y + carriage_plate_thickness/2 + belt_clamp_depth/2;
+belt_clamp_pos_z = 0;
 belt_clamp_center_screw_offset_z = space_between_bearing_bodies/2-carriage_nut_diam/2-1;
+
+echo("belt_clamp_center_screw_offset_z: ", belt_clamp_center_screw_offset_z);
 
 motor_x = motor_len/2 - hotend_diam;
 
@@ -38,27 +44,17 @@ module carriage() {
     // bearing holders
     for(side=[top,bottom]) {
       translate([0,0,x_rod_spacing/2*side]) {
-        rotate([0,90,0]) {
-          hole(bearing_body_diam,x_carriage_width,resolution);
-        }
-        intersection() {
-          hull() {
-            for(z=[0,carriage_plate_thickness/2*side]) {
-              translate([0,-carriage_plate_thickness/2,z]) {
-                rotate([0,90,0]) {
-                  hole(bearing_body_diam,x_carriage_width,resolution);
-                }
-              }
-            }
-            translate([0,0,carriage_plate_thickness/2*side]) {
-              rotate([0,90,0]) {
-                hole(bearing_body_diam,x_carriage_width,resolution);
-              }
+        hull() {
+          //for(z=[0,carriage_plate_thickness/2*side]) {
+          translate([0,-carriage_plate_thickness/2,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,x_carriage_width,resolution);
             }
           }
-
-          translate([0,-motor_side/2,0]) {
-            cube([x_carriage_width+2,motor_side,motor_side],center=true);
+          translate([0,0,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,x_carriage_width,resolution);
+            }
           }
         }
 
@@ -69,7 +65,7 @@ module carriage() {
     }
 
     // mount plate
-    translate([0,(bearing_body_diam/2)*front,0]) {
+    translate([0,carriage_plate_pos_y,0]) {
       cube([x_carriage_width,carriage_plate_thickness,x_rod_spacing],center=true);
     }
   }
@@ -86,7 +82,7 @@ module carriage() {
         for(x=[left,0,right]) {
           translate([x*(x_carriage_width/2-bearing_len/2),0,0]) {
             rotate([0,90,0]) {
-              zip_tie_hole(bearing_body_diam);
+              //zip_tie_hole(bearing_body_diam);
             }
           }
         }
@@ -108,7 +104,7 @@ module carriage() {
         // be able to slip carriage on without removing X rods
         hull() {
           for (end=[top,bottom]) {
-            rotate([-45+45*side+33*end,0,0])
+            rotate([33*end,0,0])
             translate([-extrusion_height,bearing_diam/2,0]) {
               cube([x_carriage_width,bearing_diam,0.05],center=true);
             }
@@ -145,27 +141,53 @@ module carriage() {
 
 module belt_clamp() {
   module body() {
-    translate([0,-bearing_body_diam/2+carriage_plate_thickness+belt_clamp_depth/2,belt_clamp_height/2-carriage_nut_diam/2-0.5]) {
+    //translate([0,-bearing_body_diam/2+carriage_plate_thickness+belt_clamp_depth/2,belt_clamp_height/2-carriage_nut_diam/2-0.5]) {
+    translate([0,0,belt_clamp_height/2-carriage_nut_diam/2-0.5]) {
       cube([belt_clamp_width,belt_clamp_depth,belt_clamp_height],center=true);
     }
   }
 
+  module bridges() {
+    /*
+    for(side=[left,center,right]) {
+      translate([carriage_screw_spacing/2*side,0,1]) {
+        rotate([90,0,0]) {
+          difference() {
+            hole(carriage_nut_diam,belt_clamp_depth,6);
+            hole(carriage_screw_diam,bearing_body_diam,resolution);
+          }
+        }
+      }
+    }
+    */
+  }
+
   module holes() {
     translate([0,belt_opening_width/2,0]) {
+      /*
       // center clamp screw hole
-      translate([0,0,belt_clamp_center_screw_offset_z]) {
+      translate([0,0,belt_clamp_center_screw_offset_z + 1]) {
         rotate([90,0,0]) rotate([0,0,90]) {
-          hole(carriage_screw_diam,bearing_body_diam,6);
-          hole(carriage_nut_diam,carriage_nut_height*2,6);
+          hole(carriage_screw_diam,bearing_body_diam*2,resolution);
         }
       }
 
       // clamp screw holes
       for(side=[left,right]) {
-        translate([carriage_screw_spacing/2*side,0,0]) {
+        translate([carriage_screw_spacing/2*side,0,1]) {
           rotate([90,0,0]) {
-            hole(carriage_screw_diam,bearing_body_diam,6);
-            hole(carriage_nut_diam,belt_opening_width*2-2,6);
+            hole(carriage_screw_diam,bearing_body_diam*2,6);
+          }
+        }
+      }
+      */
+
+      for(z=[0,belt_clamp_center_screw_offset_z]) {
+        for(side=[left,center,right]) {
+          translate([carriage_screw_spacing/2*side,0,z]) {
+            rotate([90,0,0]) {
+              hole(carriage_screw_diam,bearing_body_diam*2,resolution);
+            }
           }
         }
       }
@@ -199,13 +221,33 @@ module belt_clamp() {
         }
 
         translate([0,belt_opening_width+0.5,-carriage_nut_diam/2]) {
-          cube([x_carriage_width+1,1,carriage_nut_diam*2],center=true);
+          cube([x_carriage_width+1,1,carriage_nut_diam],center=true);
         }
       }
     }
   }
 
-  color("Plum") difference() {
+  color("Plum") {
+    difference() {
+      translate([0,belt_clamp_pos_y,0]) {
+        body();
+      }
+      holes();
+    }
+    translate([0,belt_clamp_pos_y,0]) {
+      bridges();
+    }
+  }
+}
+
+module motor_clamp() {
+  module body() {
+  }
+
+  module holes() {
+  }
+
+  difference() {
     body();
     holes();
   }
@@ -220,7 +262,7 @@ module assembly() {
 
   carriage();
 
-  translate([0,0.05,0]) {
+  translate([0,0.1,0]) {
     belt_clamp();
   }
 
@@ -247,4 +289,11 @@ module assembly() {
   }
 }
 
-assembly();
+module plate() {
+  rotate([0,90,0]) {
+    carriage();
+  }
+}
+
+plate();
+//assembly();
