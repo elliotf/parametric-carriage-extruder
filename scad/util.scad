@@ -18,8 +18,8 @@ module motor() {
         cylinder(r=5/2,h=motor_shaft_len,center=true,$fn=16);
 
       // shoulder
-      translate([0,0,motor_len/2+motor_shoulder_height/2])
-        cylinder(r=motor_shoulder_diam/2,h=motor_shoulder_height,center=true); // shoulder
+      translate([0,0,motor_len/2+motor_shoulder_height/2-0.05])
+        cylinder(r=motor_shoulder_diam/2,h=motor_shoulder_height+0.05,center=true); // shoulder
 
       // short shaft
       translate([0,0,-motor_len/2-motor_short_shaft_len/2])
@@ -120,5 +120,16 @@ module zip_tie_hole(diam,width=3,thickness=2,resolution=64) {
     translate([diam/2 + thickness/2,0]) {
       square([thickness,width],center=true);
     }
+  }
+}
+
+module rounded_square(side,len) {
+  resolution = 360/2;
+  rounded    = side+7.5;
+
+  intersection() {
+    cube([side,side,len],center=true);
+    hole(rounded,len+1,resolution);
+    echo("RADIUS: ", rounded);
   }
 }

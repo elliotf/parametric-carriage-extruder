@@ -4,7 +4,7 @@ include <positions.scad>
 
 clamp_mount_width = 18;
 clamp_mount_thickness = 8;
-wall_thickness  = 3;
+wall_thickness  = extrusion_width*4;
 
 clamp_screw_diam    = m3_diam;
 clamp_nut_diam      = m3_nut_diam;
@@ -14,16 +14,6 @@ resolution          = 64;
 carriage_hole_pos_y = motor_side/2+1+clamp_mount_thickness/2;
 carriage_hole_pos_z = bottom*6;
 
-module rounded_square(side,len) {
-  resolution = 360/2;
-  rounded    = side+7.5;
-
-  intersection() {
-    cube([side,side,len],center=true);
-    hole(rounded,len+1,resolution);
-    echo("RADIUS: ", rounded);
-  }
-}
 
 module motor_clamp() {
   clamp_captive_area_depth = clamp_nut_diam + wall_thickness*2;

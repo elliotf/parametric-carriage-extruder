@@ -34,11 +34,6 @@ motor_x = motor_len/2 - hotend_diam;
 
 echo("MOTOR PULLEY DIAMETER: ", motor_pulley_diameter);
 
-module position_motor() {
-  translate([motor_x,motor_y,motor_z])
-    children();
-}
-
 module carriage() {
   module body() {
     // bearing holders
@@ -105,7 +100,7 @@ module carriage() {
         hull() {
           for (end=[top,bottom]) {
             rotate([33*end,0,0])
-            translate([-extrusion_height,bearing_diam/2,0]) {
+            translate([extrusion_height,bearing_diam/2,0]) {
               cube([x_carriage_width,bearing_diam,0.05],center=true);
             }
           }
@@ -290,7 +285,7 @@ module assembly() {
 }
 
 module plate() {
-  rotate([0,90,0]) {
+  rotate([0,-90,0]) {
     carriage();
   }
 }
