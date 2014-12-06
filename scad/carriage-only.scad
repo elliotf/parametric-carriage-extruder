@@ -1,6 +1,7 @@
 include <util.scad>
 include <config.scad>
 include <positions.scad>
+use <motor_clamp.scad>
 
 bearing_body_diam = bearing_diam+wall_thickness*2;
 space_between_bearing_bodies = x_rod_spacing - bearing_body_diam;
@@ -10,7 +11,7 @@ carriage_plate_thickness = 5;
 carriage_plate_pos_y     = bearing_body_diam/2*front;
 carriage_screw_diam = m3_diam;
 carriage_nut_diam = m3_nut_diam;
-carriage_nut_height = 2;
+carriage_nut_thickness = 2;
 
 belt_clamp_width  = x_carriage_width;
 belt_clamp_height = space_between_bearing_bodies/2+carriage_nut_diam/2;
@@ -34,7 +35,43 @@ motor_x = motor_len/2 - hotend_diam;
 
 echo("MOTOR PULLEY DIAMETER: ", motor_pulley_diameter);
 
-module carriage() {
+module plain_carriage_holes() {
+  for(side=[top,bottom]) {
+    translate([0,0,x_rod_spacing/2*side]) {
+      // bearing hole
+      rotate([0,90,0]) {
+        hole(bearing_diam,x_carriage_width+1,90);
+      }
+
+      // bevels
+      for (end=[left,right]) {
+        translate([x_carriage_width/2*end,0,0]) {
+          rotate([0,90*end,0]) {
+            hull() {
+              translate([0,0,1.5]) {
+                hole(bearing_diam+1,3,90);
+              }
+              hole(bearing_diam,3,90);
+            }
+          }
+        }
+      }
+
+      // be able to slip carriage on without removing X rods
+      hull() {
+        for (end=[top,bottom]) {
+          rotate([33*end,0,0])
+          translate([extrusion_height,bearing_diam/2,0]) {
+            cube([x_carriage_width,bearing_diam,0.05],center=true);
+          }
+        }
+      }
+    }
+  }
+
+}
+
+module plain_carriage() {
   module body() {
     // bearing holders
     for(side=[top,bottom]) {
@@ -66,49 +103,8 @@ module carriage() {
   }
 
   module holes() {
-    for(side=[top,bottom]) {
-      translate([0,0,x_rod_spacing/2*side]) {
-        // bearing hole
-        rotate([0,90,0]) {
-          hole(bearing_diam,x_carriage_width+1,90);
-        }
+    plain_carriage_holes();
 
-        // zip tie holes
-        for(x=[left,0,right]) {
-          translate([x*(x_carriage_width/2-bearing_len/2),0,0]) {
-            rotate([0,90,0]) {
-              //zip_tie_hole(bearing_body_diam);
-            }
-          }
-        }
-
-        // bevels
-        for (end=[left,right]) {
-          translate([x_carriage_width/2*end,0,0]) {
-            rotate([0,90*end,0]) {
-              hull() {
-                translate([0,0,1.5]) {
-                  hole(bearing_diam+1,3,90);
-                }
-                hole(bearing_diam,3,90);
-              }
-            }
-          }
-        }
-
-        // be able to slip carriage on without removing X rods
-        hull() {
-          for (end=[top,bottom]) {
-            rotate([33*end,0,0])
-            translate([extrusion_height,bearing_diam/2,0]) {
-              cube([x_carriage_width,bearing_diam,0.05],center=true);
-            }
-          }
-        }
-      }
-    }
-
-    nut_hole_depth = carriage_plate_thickness-3;
     translate([0,(bearing_body_diam/2+carriage_plate_thickness/2)*front,0]) {
       // mounting holes
       for(z=[0,belt_clamp_center_screw_offset_z]) {
@@ -118,10 +114,65 @@ module carriage() {
               rotate([0,0,22.5]) {
                 hole(carriage_screw_diam,bearing_body_diam,8);
               }
-              rotate([0,0,90]) {
-                //hole(carriage_nut_diam,carriage_nut_height*2,6);
-              }
             }
+          }
+        }
+      }
+    }
+  }
+
+  color("LightBlue") difference() {
+    body();
+    holes();
+  }
+}
+
+module motor_clamp_carriage() {
+  module body() {
+    // bearing holders
+    for(side=[top,bottom]) {
+      translate([0,0,x_rod_spacing/2*side]) {
+        hull() {
+          //for(z=[0,carriage_plate_thickness/2*side]) {
+          translate([0,-carriage_plate_thickness/2,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,x_carriage_width,resolution);
+            }
+          }
+          translate([0,0,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,x_carriage_width,resolution);
+            }
+          }
+        }
+
+        translate([0,-bearing_body_diam/4,-bearing_body_diam/4*side]) {
+          cube([x_carriage_width,bearing_body_diam/2,bearing_body_diam/2],center=true);
+        }
+      }
+    }
+
+    // mount plate
+    translate([0,carriage_plate_pos_y,0]) {
+      cube([x_carriage_width,carriage_plate_thickness,x_rod_spacing],center=true);
+    }
+
+    translate([-x_carriage_width/2+motor_clamp_mount_width/2,carriage_plate_pos_y-carriage_plate_thickness/2-motor_side/2-1,motor_side/8]) {
+      motor_clamp();
+    }
+  }
+
+  module holes() {
+    plain_carriage_holes();
+    // mounting holes
+    for(side=[left,right]) {
+      translate([carriage_screw_spacing/2*side,(bearing_body_diam/2+carriage_plate_thickness/2)*front,0]) {
+        rotate([90,0,0]) {
+          rotate([0,0,22.5]) {
+            hole(carriage_screw_diam,bearing_body_diam,8);
+          }
+          rotate([0,0,90]) {
+            hole(carriage_nut_diam,carriage_nut_thickness*2,6);
           }
         }
       }
@@ -192,7 +243,7 @@ module belt_clamp() {
       // belt path
       translate([carriage_nut_diam*side,0,motor_pulley_diameter/2+belt_thickness/2]) {
         translate([x_carriage_width/2*side,0,0]) {
-          # cube([x_carriage_width,belt_opening_width+0.05,belt_thickness],center=true);
+          cube([x_carriage_width,belt_opening_width+0.05,belt_thickness],center=true);
         }
         // belt teeth
         for (i = [0:15]) {
@@ -235,19 +286,6 @@ module belt_clamp() {
   }
 }
 
-module motor_clamp() {
-  module body() {
-  }
-
-  module holes() {
-  }
-
-  difference() {
-    body();
-    holes();
-  }
-}
-
 module assembly() {
   translate([motor_x,motor_y,motor_z]) {
     rotate([0,90,0]) {
@@ -255,7 +293,7 @@ module assembly() {
     }
   }
 
-  carriage();
+  plain_carriage();
 
   translate([0,0.1,0]) {
     belt_clamp();
@@ -285,8 +323,16 @@ module assembly() {
 }
 
 module plate() {
-  rotate([0,-90,0]) {
-    carriage();
+  translate([x_rod_spacing,0,0]) {
+    rotate([0,-90,0]) {
+      plain_carriage();
+    }
+  }
+
+  translate([-x_rod_spacing,0,0]) {
+    rotate([0,-90,0]) {
+      motor_clamp_carriage();
+    }
   }
 }
 

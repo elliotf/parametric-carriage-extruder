@@ -6,6 +6,9 @@ pi  = 3.14159265359;
 
 resolution = 64;
 
+motor_clamp_mount_width     = 20;
+motor_clamp_mount_thickness = 8;
+
 // make coordinates more communicative
 left  = -1;
 center = 0;
