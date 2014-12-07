@@ -46,13 +46,14 @@ module motor_clamp() {
   }
 
   module holes() {
+    // motor void
     rotate([0,90,0]) {
       rounded_square(motor_side,clamp_mount_width+1);
     }
 
-    // motor void
+    // clamp gap
     translate([0,-motor_side/2,0]) {
-      cube([motor_len,motor_side,2],center=true);
+      cube([motor_len,motor_side,8],center=true);
     }
 
     // clamp screw area
