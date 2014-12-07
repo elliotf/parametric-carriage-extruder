@@ -157,7 +157,7 @@ hotend_groove_height = 4.6;
 
 hotend_clamped_height = hotend_height_above_groove + hotend_groove_height;
 
-wall_thickness = 2;
+wall_thickness = extrusion_width*4;
 
 motor_pulley_circumference = motor_pulley_tooth_pitch * motor_pulley_tooth_count;
 motor_pulley_diameter      = motor_pulley_circumference / pi;

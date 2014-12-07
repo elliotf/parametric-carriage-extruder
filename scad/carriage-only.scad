@@ -128,6 +128,9 @@ module plain_carriage() {
 }
 
 module motor_clamp_carriage() {
+  clamp_pos_x = -x_carriage_width/2+motor_clamp_mount_width/2;
+  clamp_pos_y = carriage_plate_pos_y-carriage_plate_thickness/2-motor_side/2-1;
+  clamp_pos_z = motor_side*.18;
   module body() {
     // bearing holders
     for(side=[top,bottom]) {
@@ -157,8 +160,47 @@ module motor_clamp_carriage() {
       cube([x_carriage_width,carriage_plate_thickness,x_rod_spacing],center=true);
     }
 
-    translate([-x_carriage_width/2+motor_clamp_mount_width/2,carriage_plate_pos_y-carriage_plate_thickness/2-motor_side/2-1,motor_side/8]) {
-      motor_clamp();
+    // clamp
+    translate([clamp_pos_x,0,0]) {
+      translate([0,clamp_pos_y,clamp_pos_z]) {
+        rotate([-90,0,0]) {
+          motor_clamp_body();
+        }
+
+        translate([0,motor_side/4+wall_thickness,0]) {
+          cube([motor_clamp_mount_width,motor_side/2,motor_side],center=true);
+        }
+      }
+
+      // upper brace
+      hull() {
+        translate([0,clamp_pos_y+motor_side*.25,clamp_pos_z+motor_side/2+wall_thickness/2]) {
+          cube([motor_clamp_mount_width,1,wall_thickness],center=true);
+        }
+
+        translate([0,-carriage_plate_thickness/2,x_rod_spacing/2]) {
+          translate([0,0,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,motor_clamp_mount_width,resolution);
+            }
+          }
+        }
+      }
+
+      // lower brace
+      hull() {
+        translate([0,clamp_pos_y+motor_side*.25,clamp_pos_z-motor_side/2-wall_thickness/2]) {
+          cube([motor_clamp_mount_width,1,wall_thickness],center=true);
+        }
+
+        translate([0,-carriage_plate_thickness/2,-x_rod_spacing/2]) {
+          translate([0,0,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,motor_clamp_mount_width,resolution);
+            }
+          }
+        }
+      }
     }
   }
 
@@ -174,6 +216,15 @@ module motor_clamp_carriage() {
           rotate([0,0,90]) {
             hole(carriage_nut_diam,carriage_nut_thickness*2,6);
           }
+        }
+      }
+    }
+
+    // clamp
+    translate([clamp_pos_x,clamp_pos_y,clamp_pos_z]) {
+      rotate([0,0,180]) {
+        rotate([-90,0,0]) {
+          motor_clamp_holes();
         }
       }
     }
@@ -336,5 +387,7 @@ module plate() {
   }
 }
 
-plate();
+motor_clamp_carriage();
+
+//plate();
 //assembly();

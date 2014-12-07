@@ -15,64 +15,64 @@ resolution          = 64;
 carriage_hole_pos_y = motor_side/2+1+clamp_mount_thickness/2;
 carriage_hole_pos_z = bottom*6;
 
-module motor_clamp() {
-  clamp_captive_area_depth = clamp_nut_diam + wall_thickness*2;
-  clamp_screw_pos_y        = front*(motor_side/2+wall_thickness+clamp_nut_diam/2+0.5);
+clamp_captive_area_depth = clamp_nut_diam + wall_thickness*2;
+clamp_screw_pos_y        = front*(motor_side/2+wall_thickness+clamp_nut_diam/2+0.5);
 
-  module body() {
-    hull() {
-      rotate([0,90,0]) {
-        rounded_square(motor_side+wall_thickness*2,clamp_mount_width);
-      }
+module motor_clamp_body() {
+  hull() {
+    rotate([0,90,0]) {
+      rounded_square(motor_side+wall_thickness*2,clamp_mount_width);
     }
+  }
 
-    hull() {
-      translate([0,front*(motor_side/2+wall_thickness/2),0]) {
-        cube([clamp_mount_width,wall_thickness,motor_side/2],center=true);
-      }
-      translate([0,clamp_screw_pos_y,0]) {
-        for(x=[left,right]) {
-          translate([x*(clamp_mount_width/2-clamp_screw_diam/2),0,0]) {
-            rotate([0,0,90]) {
-              hole(clamp_screw_diam,motor_side/2,18);
-            }
+  hull() {
+    translate([0,front*(motor_side/2+wall_thickness/2),0]) {
+      cube([clamp_mount_width,wall_thickness,motor_side/2],center=true);
+    }
+    translate([0,clamp_screw_pos_y,0]) {
+      for(x=[left,right]) {
+        translate([x*(clamp_mount_width/2-clamp_screw_diam/2),0,0]) {
+          rotate([0,0,90]) {
+            hole(clamp_screw_diam,motor_side/2,18);
           }
         }
-        translate([0,front*clamp_nut_diam/2,0]) {
-          hole(clamp_nut_diam,motor_side/2,24);
-        }
+      }
+      translate([0,front*clamp_nut_diam/2,0]) {
+        hole(clamp_nut_diam,motor_side/2,24);
       }
     }
   }
+}
 
-  module holes() {
-    // motor void
-    rotate([0,90,0]) {
-      rounded_square(motor_side,clamp_mount_width+1);
+module motor_clamp_holes() {
+  // motor void
+  rotate([0,90,0]) {
+    rounded_square(motor_side,clamp_mount_width+1);
+  }
+
+  // clamp gap
+  translate([0,-motor_side/2,0]) {
+    cube([motor_len,motor_side,8],center=true);
+  }
+
+  // clamp screw area
+  translate([0,clamp_screw_pos_y,0]) {
+    rotate([0,0,22.5]) {
+      hole(clamp_screw_diam,motor_side*.8,8);
     }
 
-    // clamp gap
-    translate([0,-motor_side/2,0]) {
-      cube([motor_len,motor_side,8],center=true);
-    }
-
-    // clamp screw area
-    translate([0,clamp_screw_pos_y,0]) {
-      rotate([0,0,22.5]) {
-        hole(clamp_screw_diam,motor_len*2,8);
-      }
-
-      translate([0,0,-motor_side/2+clamp_nut_thickness]) {
-        rotate([0,0,90]) {
-          hole(clamp_nut_diam,motor_side/2,6);
-        }
+    translate([0,0,-motor_side/4-clamp_nut_thickness]) {
+      rotate([0,0,90]) {
+        hole(clamp_nut_diam,clamp_nut_thickness*4,6);
       }
     }
   }
+}
 
+module motor_clamp() {
   color("Orange") difference() {
-    body();
-    holes();
+    motor_clamp_body();
+    motor_clamp_holes();
   }
 }
 
