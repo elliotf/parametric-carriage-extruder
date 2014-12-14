@@ -4,7 +4,8 @@ motor_pulley_tooth_count = 16;
 // All hail whosawhatsis
 pi  = 3.14159265359;
 
-resolution = 64;
+resolution = 32;
+rotation   = 180/resolution;
 
 motor_clamp_mount_width     = 20;
 motor_clamp_mount_thickness = 8;
@@ -24,7 +25,8 @@ y = 1;
 z = 2;
 
 // Screws, nuts
-m3_diam = 3.1;
+m3_diam          = 3.1;
+m3_diam_vertical = 3.2; // after printer calibration check
 m3_nut_diam  = 5.8;
 m3_nut_thickness  = 2.5;
 m3_nut_height  = m3_nut_thickness;
@@ -61,7 +63,6 @@ nema14_shoulder_diam = 22;
 motor_side = nema17_side;
 motor_len = nema17_len;
 motor_hole_spacing = nema17_hole_spacing;
-motor_screw_diam = nema17_screw_diam;
 motor_shaft_diam = nema17_shaft_diam;
 motor_shaft_len = nema17_shaft_len;
 motor_short_shaft_len = nema17_short_shaft_len;
@@ -72,7 +73,6 @@ motor_shoulder_diam = nema17_shoulder_diam;
 motor_side = nema14_side;
 motor_len = nema14_len;
 motor_hole_spacing = nema14_hole_spacing;
-motor_screw_diam = nema14_screw_diam;
 motor_shaft_diam = nema14_shaft_diam;
 motor_shaft_len = nema14_shaft_len;
 motor_short_shaft_len = nema14_short_shaft_len;

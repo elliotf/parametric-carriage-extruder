@@ -46,14 +46,13 @@ module direct_drive() {
 
     // main block
     hull() {
-      for(y=[rear*motor_hole_spacing/2,hotend_pos_y-hotend_clamped_height+rounded_radius+hotend_clearance]) {
-        translate([motor_hole_spacing/2*left,y,block_height/2]) {
-          hole(rounded_radius*2,block_height,resolution);
-        }
-      }
       for(y=[motor_side/2-hotend_rounded_corner_radius,hotend_rounded_corner_pos_y]) {
-        translate([hotend_rounded_corner_pos_x,y,block_height/2]) {
-          hole(hotend_rounded_corner_radius*2,block_height,resolution);
+        for (x=[(motor_side/2-hotend_rounded_corner_radius)*left,hotend_rounded_corner_pos_x]) {
+          translate([x,y,block_height/2]) {
+            rotate([0,0,rotation]) {
+              hole(hotend_rounded_corner_radius*2,block_height,resolution);
+            }
+          }
         }
       }
     }
@@ -72,10 +71,10 @@ module direct_drive() {
           }
         }
         // tensioner captive nut
-        translate([hobbed_pulley_diam*.6,tensioner_wiggle/2*side,0]) {
+        translate([-motor_side/2,tensioner_wiggle/2*side,0]) {
           rotate([0,90,0]) {
             rotate([0,0,90]) {
-              hole(m3_nut_diam,6,6);
+              hole(m3_nut_diam,10,6);
             }
           }
         }
@@ -85,19 +84,13 @@ module direct_drive() {
     // motor mount holes
     for(side=[top,bottom]) {
       translate([motor_hole_spacing/2,motor_hole_spacing/2*side,0]) {
-        hole(motor_screw_diam,motor_len,resolution);
-
-        translate([0,0,plate_thickness+motor_len/2]) {
-          hole(motor_screw_head_diam,motor_len,resolution);
+        rotate([0,0,22.5]) {
+          hole(m3_diam_vertical,motor_len,8);
         }
       }
     }
     translate([-motor_hole_spacing/2,-motor_hole_spacing/2,0]) {
-      hole(motor_screw_diam,motor_len,resolution);
-
-      translate([0,0,plate_thickness+motor_len/2]) {
-        //hole(motor_screw_head_diam,motor_len,resolution);
-      }
+      hole(m3_diam_vertical+.2,motor_len,resolution);
     }
 
     // motor shoulder + slack
@@ -162,14 +155,15 @@ module direct_drive() {
       hull() {
         hole(1,motor_len,resolution);
 
-        translate([-(motor_screw_head_diam/2-motor_screw_diam/2),motor_screw_head_diam/2,0]) {
+        translate([-(motor_screw_head_diam/2-m3_diam_vertical/2),motor_screw_head_diam/2,0]) {
           hole(1,motor_len,resolution);
         }
       }
 
       hull() {
-        translate([-(motor_screw_head_diam/2-motor_screw_diam/2),motor_screw_head_diam/2,0]) {
+        translate([-(motor_screw_head_diam/2-m3_diam_vertical/2),motor_screw_head_diam/2,0]) {
           hole(1,motor_len,resolution);
+
           translate([-motor_side,0,0]) {
             cube([hinge_space_width,1,motor_len],center=true);
           }
