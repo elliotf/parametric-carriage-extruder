@@ -161,7 +161,7 @@ wall_thickness = extrusion_width*4;
 
 motor_pulley_circumference = motor_pulley_tooth_pitch * motor_pulley_tooth_count;
 motor_pulley_diameter      = motor_pulley_circumference / pi;
-belt_thickness = 1;
+belt_thickness = .95;
 belt_tooth_height   = 1.5;
 belt_tooth_distance = 2;
 belt_tooth_ratio    = 0.5;
