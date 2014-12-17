@@ -150,5 +150,5 @@ module clamp_plate() {
   }
 }
 
-clamp_plate();
-//clamp_assembly();
+//clamp_plate();
+clamp_assembly();

@@ -258,6 +258,12 @@ module motor_clamp_carriage() {
     body();
     holes();
   }
+
+  translate([clamp_pos_x+motor_clamp_mount_width/2+10,clamp_pos_y,clamp_pos_z]) {
+    rotate([0,90,0]) {
+      //% motor();
+    }
+  }
 }
 
 module belt_clamp() {
@@ -407,7 +413,7 @@ module belt_clamp() {
 module assembly() {
   translate([motor_x,motor_y,motor_z]) {
     rotate([0,90,0]) {
-      % motor();
+      //% motor();
     }
   }
 
@@ -433,6 +439,7 @@ module assembly() {
 
   // clearance check for twisted belt
   /*
+  */
   % hull() {
     translate([-50,0,(motor_pulley_diameter/2+belt_thickness/2)*bottom]) {
       cube([1,belt_thickness,belt_width],center=true);
@@ -441,7 +448,6 @@ module assembly() {
       cube([1,belt_thickness,belt_width],center=true);
     }
   }
-  */
   % hull() {
     translate([-50,0,(motor_pulley_diameter/2+belt_thickness/2)*bottom]) {
       cube([1,belt_width,belt_thickness],center=true);
@@ -468,11 +474,18 @@ module assembly() {
 module plate() {
   translate([x_rod_spacing,0,0]) {
     rotate([0,-90,0]) {
-      plain_carriage();
+      //plain_carriage();
+    }
+    translate([0,0,-belt_clamp_pos_y+belt_clamp_depth/2]) {
+      rotate([0,0,180]) {
+        rotate([90,0,0]) {
+          belt_clamp();
+        }
+      }
     }
   }
 
-  translate([-x_rod_spacing,0,0]) {
+  translate([-x_rod_spacing,0,x_carriage_width/2]) {
     rotate([0,-90,0]) {
       motor_clamp_carriage();
     }
@@ -481,5 +494,5 @@ module plate() {
 
 //motor_clamp_carriage();
 
-//plate();
-assembly();
+plate();
+//assembly();
