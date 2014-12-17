@@ -135,7 +135,7 @@ module plain_carriage() {
 
 module motor_clamp_carriage() {
   clamp_pos_x = -x_carriage_width/2+motor_clamp_mount_width/2;
-  clamp_pos_y = carriage_plate_pos_y-carriage_plate_thickness/2-motor_side/2-1;
+  clamp_pos_y = carriage_plate_pos_y-carriage_plate_thickness/2-motor_side/2-3;
   clamp_pos_z = x_rod_spacing/2+bearing_body_diam/2-motor_side/2-wall_thickness;
   module body() {
     // bearing holders
@@ -235,8 +235,10 @@ module motor_clamp_carriage() {
           rotate([0,0,22.5]) {
             hole(carriage_screw_diam,bearing_body_diam,8);
           }
-          rotate([0,0,90]) {
-            hole(carriage_nut_diam,carriage_nut_thickness*2,6);
+          translate([0,0,10]) {
+            rotate([0,0,90]) {
+              hole(carriage_nut_diam,carriage_nut_thickness*2+20,6);
+            }
           }
         }
       }
