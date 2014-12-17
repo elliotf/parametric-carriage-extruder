@@ -123,9 +123,10 @@ module zip_tie_hole(diam,width=3,thickness=2,resolution=64) {
   }
 }
 
-module rounded_square(side,len) {
+module rounded_square(side,diam,len) {
   resolution = 360/2;
   rounded    = side+7.5;
+  rounded    = diam;
 
   intersection() {
     cube([side,side,len],center=true);

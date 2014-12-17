@@ -7,6 +7,7 @@ clamp_mount_thickness = motor_clamp_mount_thickness;
 
 wall_thickness        = extrusion_width*4;
 
+clamp_area_length   = motor_side*.7;
 clamp_screw_diam    = m3_diam+0.1;
 clamp_nut_diam      = m3_nut_diam;
 clamp_nut_thickness = m3_nut_thickness;
@@ -21,24 +22,24 @@ clamp_screw_pos_y        = front*(motor_side/2+wall_thickness+clamp_nut_diam/2+0
 module motor_clamp_body() {
   hull() {
     rotate([0,90,0]) {
-      rounded_square(motor_side+wall_thickness*2,clamp_mount_width);
+      rounded_square(motor_side+wall_thickness*2,motor_diam+wall_thickness*2,clamp_mount_width);
     }
   }
 
   hull() {
     translate([0,front*(motor_side/2+wall_thickness/2),0]) {
-      cube([clamp_mount_width,wall_thickness,motor_side/2],center=true);
+      cube([clamp_mount_width,wall_thickness,clamp_area_length],center=true);
     }
     translate([0,clamp_screw_pos_y,0]) {
       for(x=[left,right]) {
         translate([x*(clamp_mount_width/2-clamp_screw_diam/2),0,0]) {
           rotate([0,0,90]) {
-            hole(clamp_screw_diam,motor_side/2,18);
+            hole(clamp_screw_diam,clamp_area_length,6);
           }
         }
       }
       translate([0,front*clamp_nut_diam/2,0]) {
-        hole(clamp_nut_diam,motor_side/2,24);
+        hole(clamp_nut_diam,clamp_area_length,24);
       }
     }
   }
@@ -47,7 +48,7 @@ module motor_clamp_body() {
 module motor_clamp_holes() {
   // motor void
   rotate([0,90,0]) {
-    rounded_square(motor_side,clamp_mount_width+1);
+    rounded_square(motor_side,motor_diam,clamp_mount_width+1);
   }
 
   // clamp gap
@@ -58,12 +59,13 @@ module motor_clamp_holes() {
   // clamp screw area
   translate([0,clamp_screw_pos_y,0]) {
     rotate([0,0,22.5]) {
-      hole(clamp_screw_diam,motor_side*.8,8);
+      hole(clamp_screw_diam,clamp_area_length+1,8);
     }
 
-    translate([0,0,-motor_side/4-clamp_nut_thickness]) {
+    // captive nut
+    translate([0,0,-clamp_area_length/2]) {
       rotate([0,0,90]) {
-        hole(clamp_nut_diam,clamp_nut_thickness*4,6);
+        hole(clamp_nut_diam,clamp_nut_thickness*2,6);
       }
     }
   }
