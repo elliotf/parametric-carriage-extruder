@@ -145,12 +145,16 @@ module motor_clamp_carriage() {
           //for(z=[0,carriage_plate_thickness/2*side]) {
           translate([0,-carriage_plate_thickness/2,0]) {
             rotate([0,90,0]) {
-              hole(bearing_body_diam,x_carriage_width,resolution);
+              rotate([0,0,rotation]) {
+                hole(bearing_body_diam,x_carriage_width,resolution);
+              }
             }
           }
           translate([0,0,0]) {
             rotate([0,90,0]) {
-              hole(bearing_body_diam,x_carriage_width,resolution);
+              rotate([0,0,rotation]) {
+                hole(bearing_body_diam,x_carriage_width,resolution);
+              }
             }
           }
         }
@@ -178,33 +182,45 @@ module motor_clamp_carriage() {
         }
       }
 
-      // upper brace
-      hull() {
-        translate([0,clamp_pos_y+motor_side*.25,clamp_pos_z+motor_side/2+wall_thickness/2]) {
-          cube([motor_clamp_mount_width,1,wall_thickness],center=true);
-        }
+      // bearing body brace
+      for(side=[top,bottom]) {
+        hull() {
+          translate([0,clamp_pos_y+motor_side*.25,clamp_pos_z+(motor_side/2+wall_thickness/2)*side]) {
+            cube([motor_clamp_mount_width,1,wall_thickness],center=true);
+          }
 
-        translate([0,-carriage_plate_thickness/2,x_rod_spacing/2]) {
-          translate([0,0,0]) {
-            rotate([0,90,0]) {
-              hole(bearing_body_diam,motor_clamp_mount_width,resolution);
+          translate([0,-carriage_plate_thickness/2,x_rod_spacing/2*side]) {
+            intersection() {
+              translate([0,0,0]) {
+                rotate([0,90,0]) {
+                  rotate([0,0,rotation]) {
+                    hole(bearing_body_diam,motor_clamp_mount_width,resolution);
+                  }
+                }
+              }
+
+              translate([0,-bearing_body_diam/2,bearing_body_diam/2*side]) {
+                cube([motor_clamp_mount_width,motor_clamp_mount_width,bearing_body_diam],center=true); {
+                }
+              }
             }
           }
         }
       }
 
-      // lower brace
+      // mount plate brace
       hull() {
+        translate([0,clamp_pos_y+motor_side/2+wall_thickness/2,clamp_pos_z]) {
+          cube([motor_clamp_mount_width,wall_thickness,motor_side],center=true);
+        }
+        translate([0,carriage_plate_pos_y,0]) {
+          cube([motor_clamp_mount_width,carriage_plate_thickness,x_rod_spacing],center=true);
+        }
         translate([0,clamp_pos_y+motor_side*.25,clamp_pos_z-motor_side/2-wall_thickness/2]) {
           cube([motor_clamp_mount_width,1,wall_thickness],center=true);
         }
-
-        translate([0,-carriage_plate_thickness/2,-x_rod_spacing/2]) {
-          translate([0,0,0]) {
-            rotate([0,90,0]) {
-              hole(bearing_body_diam,motor_clamp_mount_width,resolution);
-            }
-          }
+        translate([0,clamp_pos_y+motor_side*.25,clamp_pos_z+motor_side/2+wall_thickness/2]) {
+          cube([motor_clamp_mount_width,1,wall_thickness],center=true);
         }
       }
     }
