@@ -27,7 +27,7 @@ z = 2;
 // Screws, nuts
 m3_diam          = 3.1;
 m3_diam_vertical = 3.2; // after printer calibration check
-m3_nut_diam  = 5.8;
+m3_nut_diam  = 5.6;
 m3_nut_thickness  = 2.5;
 m3_nut_height  = m3_nut_thickness;
 m3_socket_head_diam = 6;
