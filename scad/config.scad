@@ -154,8 +154,10 @@ hotend_height_above_groove = 3.7;
 hotend_groove_height = 6;
 
 // jhead
+/*
 hotend_height_above_groove = 5;
 hotend_groove_height = 4.6;
+*/
 
 hotend_clamped_height = hotend_height_above_groove + hotend_groove_height;
 
