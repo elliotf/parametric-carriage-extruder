@@ -37,7 +37,7 @@ module direct_drive() {
     hotend_rounded_corner_pos_y  = hotend_pos_y-hotend_clamped_height+hotend_rounded_corner_radius+hotend_clearance;
     hull() {
       translate([0,0,plate_thickness/2]) {
-        rounded_square(motor_side,plate_thickness);
+        rounded_square(motor_side,motor_diam,plate_thickness);
       }
       translate([hotend_rounded_corner_pos_x,hotend_rounded_corner_pos_y,plate_thickness/2]) {
         hole(hotend_rounded_corner_radius*2,plate_thickness,resolution);
