@@ -38,8 +38,8 @@ module motor_clamp_body() {
           }
         }
       }
-      translate([0,front*clamp_nut_diam/2,0]) {
-        hole(clamp_nut_diam,clamp_area_length,24);
+      translate([0,0,0]) {
+        hole(clamp_nut_diam+wall_thickness*4,clamp_area_length,6);
       }
     }
   }
