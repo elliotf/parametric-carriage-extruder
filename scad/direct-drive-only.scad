@@ -26,6 +26,13 @@ idler_washer_thickness = 1;
 
 echo("Idler screw length at least ", idler_shaft_support*2 + 1 + idler_bearing_height + 3);
 
+groove_mount = 1;
+groove_mount_hole_spacing = 50;
+groove_mount_hole_diam    = 4.1;
+groove_mount_nut_diam     = 4.1;
+groove_mount_thickness    = 8;
+groove_mount_thickness    = (motor_side-motor_shoulder_diam)/2;
+
 module direct_drive() {
   rounded_radius = motor_side/2 - motor_hole_spacing/2;
   block_height = idler_pos_z + idler_bearing_height/2 + idler_washer_thickness + idler_shaft_support;
@@ -39,8 +46,10 @@ module direct_drive() {
       translate([0,0,plate_thickness/2]) {
         rounded_square(motor_side,motor_diam,plate_thickness);
       }
-      translate([hotend_rounded_corner_pos_x,hotend_rounded_corner_pos_y,plate_thickness/2]) {
-        hole(hotend_rounded_corner_radius*2,plate_thickness,resolution);
+      if (!groove_mount) {
+        translate([hotend_rounded_corner_pos_x,hotend_rounded_corner_pos_y,plate_thickness/2]) {
+          hole(hotend_rounded_corner_radius*2,plate_thickness,resolution);
+        }
       }
     }
 
@@ -50,6 +59,21 @@ module direct_drive() {
         for (x=[(motor_side/2-hotend_rounded_corner_radius)*left,hotend_rounded_corner_pos_x]) {
           translate([x,y,block_height/2]) {
             hole(hotend_rounded_corner_radius*2,block_height,resolution);
+          }
+        }
+      }
+    }
+
+    if (groove_mount) {
+      hull() {
+        for(side=[left,right]) {
+          // groove mount is flush with bottom of extruder, but motor is cantilevered
+          //for(y=[hotend_rounded_corner_pos_y-hotend_rounded_corner_radius+groove_mount_thickness/2]) {
+          // groove mount is flush with face of motor, so no overhang, but extruder extends into carriage hole
+          for(y=[-motor_side/2+groove_mount_thickness/2]) {
+            translate([filament_pos_x+(groove_mount_hole_spacing/2+groove_mount_nut_diam)*side,y,block_height/2]) {
+              cube([hotend_rounded_corner_radius*2,groove_mount_thickness,block_height],center=true);
+            }
           }
         }
       }
@@ -70,6 +94,16 @@ module direct_drive() {
         translate([-motor_side/2,tensioner_wiggle/2*side,0]) {
           rotate([0,90,0]) {
             hole(m3_nut_diam,10,6);
+          }
+        }
+      }
+    }
+
+    if (groove_mount) {
+      for(side=[left,right]) {
+        translate([filament_pos_x+groove_mount_hole_spacing/2*side,-motor_side/2,block_height/2]) {
+          rotate([90,0,0]) {
+            hole(4.1,30,8);
           }
         }
       }
