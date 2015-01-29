@@ -3,7 +3,7 @@ include <config.scad>
 
 idler_shaft_support   = 4;
 
-filament_opening = filament_diam + 0.5;
+filament_opening = filament_diam + 1;
 
 plate_thickness = motor_shoulder_height;
 plate_thickness = 4;
@@ -14,8 +14,8 @@ idler_pos_x     = filament_pos_x - (filament_compressed_diam/2+idler_bearing_out
 idler_pos_z     = idler_nut_pos_z + idler_nut_thickness/2 + idler_shaft_support + idler_bearing_height/2;
 filament_pos_z  = idler_pos_z;
 
-hinge_space_width = 2;
-hinge_space_pos_x = filament_pos_x - filament_diam/2 - 1 - hinge_space_width/2;
+hinge_space_width = 1.5;
+hinge_space_pos_x = filament_pos_x - filament_opening/2 - extrusion_width*2 - hinge_space_width/2;
 hinge_pos_y       = - motor_hole_spacing/2;
 
 hotend_pos_y      = -motor_hole_spacing/2-motor_screw_head_diam/2;
@@ -49,9 +49,7 @@ module direct_drive() {
       for(y=[motor_side/2-hotend_rounded_corner_radius,hotend_rounded_corner_pos_y]) {
         for (x=[(motor_side/2-hotend_rounded_corner_radius)*left,hotend_rounded_corner_pos_x]) {
           translate([x,y,block_height/2]) {
-            rotate([0,0,rotation]) {
-              hole(hotend_rounded_corner_radius*2,block_height,resolution);
-            }
+            hole(hotend_rounded_corner_radius*2,block_height,resolution);
           }
         }
       }
@@ -65,17 +63,13 @@ module direct_drive() {
         // tensioner screw
         translate([0,tensioner_wiggle/2*side,0]) {
           rotate([0,90,0]) {
-            rotate([0,0,22.5]) {
-              hole(m3_diam,motor_side*2,8);
-            }
+            hole(m3_diam,motor_side*2,8);
           }
         }
         // tensioner captive nut
         translate([-motor_side/2,tensioner_wiggle/2*side,0]) {
           rotate([0,90,0]) {
-            rotate([0,0,90]) {
-              hole(m3_nut_diam,10,6);
-            }
+            hole(m3_nut_diam,10,6);
           }
         }
       }
@@ -84,9 +78,7 @@ module direct_drive() {
     // motor mount holes
     for(side=[top,bottom]) {
       translate([motor_hole_spacing/2,motor_hole_spacing/2*side,0]) {
-        rotate([0,0,22.5]) {
-          hole(m3_diam_vertical,motor_len,8);
-        }
+        hole(m3_diam_vertical,motor_len,8);
       }
     }
     translate([-motor_hole_spacing/2,-motor_hole_spacing/2,0]) {
@@ -97,9 +89,7 @@ module direct_drive() {
     mount_shoulder_width = motor_shoulder_diam/2+abs(hinge_space_pos_x)+1;
     intersection() {
       hull() {
-        rotate([0,0,22.5]) {
-          hole(motor_shoulder_diam+0.5,plate_thickness*2+0.05,resolution);
-        }
+        hole(motor_shoulder_diam+0.5,plate_thickness*2+0.05,resolution);
         hole(2,(plate_thickness+motor_shoulder_diam/2+2)*2,resolution);
       }
       translate([motor_shoulder_diam/2-mount_shoulder_width/2+1,0,0]) {
@@ -133,10 +123,8 @@ module direct_drive() {
       }
     }
     // hobbed pulley access
-    translate([motor_side*.6,0,plate_thickness+motor_len/2]) {
-      rotate([0,0,0]) {
-        hole(motor_side,motor_len,4);
-      }
+    translate([motor_side*.2,0,plate_thickness+motor_len/2]) {
+      hole(motor_shoulder_diam,motor_len,8);
     }
 
     // hinge space between idler and hobbed pulley
@@ -182,13 +170,11 @@ module direct_drive() {
 
       // captive idler nut/bolt
       hull() {
-        rotate([0,0,90]) {
-          translate([0,0,idler_nut_pos_z]) {
-            hole(idler_nut_diam,idler_nut_thickness,6);
+        translate([0,0,idler_nut_pos_z]) {
+          hole(idler_nut_diam,idler_nut_thickness,6);
 
-            translate([0,0,-motor_len/2]) {
-              hole(idler_nut_diam,idler_nut_thickness,6);
-            }
+          translate([0,0,-motor_len/2]) {
+            hole(idler_nut_diam,idler_nut_thickness,6);
           }
         }
       }
@@ -198,21 +184,15 @@ module direct_drive() {
     translate([idler_pos_x,0,0]) {
       // created a bevel in case the first few layers are melted into a flange
       hull() {
-        rotate([0,0,90]) {
-          hole(idler_nut_diam,motor_shoulder_height,6);
-        }
-        rotate([0,0,90]) {
-          hole(idler_nut_diam+bevel_dist*2,0.05,36);
-        }
+        hole(idler_nut_diam,motor_shoulder_height,6);
+        hole(idler_nut_diam+bevel_dist*2,0.05,36);
       }
     }
 
     // filament path
     translate([filament_pos_x,0,filament_pos_z]) {
       rotate([90,0,0]) {
-        rotate([0,0,22.5]) {
-          hole(filament_opening,50,8);
-        }
+        hole(filament_opening,50,8);
       }
     }
 
@@ -222,16 +202,14 @@ module direct_drive() {
     translate([filament_pos_x,hotend_pos_y,filament_pos_z]) {
       rotate([-90,0,0]) {
         translate([0,0,-hotend_clamped_height]) {
-          rotate([0,0,180/hotend_res])
-            hole(hotend_groove_diam+hotend_clearance,hotend_clamped_height*2,hotend_res);
+          hole(hotend_groove_diam+hotend_clearance,hotend_clamped_height*2,hotend_res);
           translate([0,-hotend_diam/2,0]) {
             cube([hotend_groove_diam,hotend_diam,hotend_clamped_height*2],center=true);
           }
         }
 
         translate([0,0,-above_height/2+hotend_clearance]) {
-          rotate([0,0,180/hotend_res])
-            hole(hotend_diam+hotend_clearance,above_height,hotend_res);
+          hole(hotend_diam+hotend_clearance,above_height,hotend_res);
           translate([0,-hotend_diam/2,0]) {
             cube([hotend_diam,hotend_diam,above_height],center=true);
           }
@@ -241,8 +219,7 @@ module direct_drive() {
         }
 
         translate([0,0,-hotend_clamped_height-10+hotend_clearance]) {
-          rotate([0,0,180/hotend_res])
-            hole(hotend_diam+hotend_clearance,20,hotend_res);
+          hole(hotend_diam+hotend_clearance,20,hotend_res);
           translate([0,-hotend_diam/2,0]) {
             cube([hotend_diam,hotend_diam,20],center=true);
           }
