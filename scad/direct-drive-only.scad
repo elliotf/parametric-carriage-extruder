@@ -26,7 +26,8 @@ idler_washer_thickness = 1;
 
 echo("Idler screw length at least ", idler_shaft_support*2 + 1 + idler_bearing_height + 3);
 
-groove_mount = 1;
+groove_mount = true;
+groove_mount = false;
 groove_mount_hole_spacing = 50;
 groove_mount_hole_diam    = 4.1;
 groove_mount_nut_diam     = 4.1;
