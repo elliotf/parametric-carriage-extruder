@@ -1,5 +1,10 @@
+// From http://www.thingiverse.com/thing:17027
+// Licensed under the creative commons share alike license:
+//  http://creativecommons.org/licenses/by-sa/3.0/
+
 use <polyScrewThread.scad>
-use <knurledFinishLib.scad>
+use <util.scad>
+//use <knurledFinishLib.scad>
 
 ///// feeder mechanim
 outer_plate_width = 5.75;
@@ -21,6 +26,7 @@ clamp_ring_h = 1.5;
 screw_d = 9;
 screw_mid_d = 2*sqrt(pow(screw_d/2,2) + pow(inner_plate_width/2,2));
 screw_h = 9;
+screw_h = 6.6;
 filament_d = 4.0;
 bowden_d = 7.0;
 
@@ -45,7 +51,8 @@ stlClearance = 0.02; //Used to make edges to overlap by a small amount to preven
 tubeCentre = [0, 0, -stlClearance];
 
 ///// other params
-$fn = 36;
+$fn = 18;
+$fn = 72;
 PI=3.141592;
 
 
@@ -56,7 +63,7 @@ PI=3.141592;
 
 
 /////////////////// PRINTING //////////////////////
-new_clamp(); 
+new_clamp();
 //tighteningCone();
 //cap();
 ////////////////////////////////////////////////////////
@@ -114,19 +121,33 @@ module original_clamp() {
 }
 
 module new_clamp() {
+  angled_height = (riserTubeRadius - screw_mid_d/2);
   difference() {
     union() {
-      cylinder(r=screw_mid_d/2, h=screw_h);
-      translate([0, 0, screw_h]) {
-        intersection() {
-          translate([-nut_d/2,-total_width/2,0]) cube([nut_d, total_width, nut_h]);
-          translate([0,0,-0.01]) cylinder(r=screw_mid_d/2, r2=nut_outer_d/2, h=nut_h+0.02);
+      translate([0,0,screw_h]) {
+        hole(12,screw_h*2,$fn);
+      }
+      hull() {
+        translate([0,0,5/2]) {
+          hole(15,5,$fn);
+          hole(16,4,$fn);
         }
-        translate([0,0,nut_h]) riserTube();
-     }
+      }
+      hull() {
+        translate([0,0,5+4.7+1]) {
+          hole(12,2,$fn);
+        }
+        translate([0,0,screw_h+nut_h-angled_height]) {
+          cylinder(r2=riserTubeRadius, h=angled_height);
+        }
+      }
+      translate([0, 0, screw_h+nut_h]) {
+        riserTube();
+      }
     }
-    translate([0,0,-1]) cylinder(r=filament_d/2, nut_h+screw_h+clamp_full_h+2);
-    translate([0,0,screw_h]) cylinder(r=bowden_d/2, screw_h+clamp_full_h+1);
+    translate([0,0,-1]) cylinder(r=filament_d/2+1, nut_h+screw_h+clamp_full_h+2);
+    //translate([0,0,screw_h]) cylinder(r=bowden_d/2, h=screw_h+clamp_full_h+100);
+    translate([0,0,1]) cylinder(r=bowden_d/2, h=50);
   }
 }
 
@@ -142,7 +163,7 @@ module riserTube(){
             union(){
                 cylinder(r = riserTubeRadius, h = threadBottom + stlClearance);
                 cylinder(r1 = riserTubeRadius + riserTubeSkirt, r2 = riserTubeRadius, h = threadBottom + stlClearance);  //riserTubeSkirt//
-                translate([0,0,threadBottom])Makerbolt();
+                translate([0,0,threadBottom]) Makerbolt();
             }
                 translate ([0,0,threadBottom])
                     cylinder(r1 = tubeRadius + tR_Allow, r2 = tighteningConeTopRadius, h = threadLength + stlClearance);
@@ -198,7 +219,8 @@ module Makerbolt() {
     t_st=2.5; // Step/traveling per turn
     t_lf=55; // Step angle degrees
     t_ln=threadLength; // Length of the threade section
-    t_rs=PI/2; // Resolution
+    t_rs=PI; // Resolution
+    t_rs=.6; // Resolution
     t_se=1; // Thread ends style
     t_gp=0; // Gap between nut and bolt threads
     
