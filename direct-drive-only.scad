@@ -26,28 +26,40 @@ idler_washer_thickness = 1;
 
 echo("Idler screw length at least ", idler_shaft_support*2 + 1 + idler_bearing_height + 3);
 
-groove_mount = true;
-groove_mount = false;
-groove_mount_hole_spacing = 50;
-groove_mount_hole_diam    = 4.1;
-groove_mount_nut_diam     = 4.1;
-groove_mount_thickness    = 8;
-groove_mount_thickness    = (motor_side-motor_shoulder_diam)/2;
+groove_mount_wings = true;
+groove_mount_wings = false;
+groove_mount_wings_hole_spacing = 50;
+groove_mount_wings_hole_diam    = 4.1;
+groove_mount_wings_nut_diam     = 4.1;
+groove_mount_wings_thickness    = 8;
+groove_mount_wings_thickness    = (motor_side-motor_shoulder_diam)/2;
+
+bowden_nut_diam      = 11;
+bowden_nut_thickness = 5;
+bowden_tubing_diam   = 6; // 0.25inch threaded diam
+
+OUTPUT_NONE         = 0;
+OUTPUT_GROOVE_MOUNT = 1;
+OUTPUT_BOWDEN       = 2;
+output              = OUTPUT_NONE;
+output              = OUTPUT_BOWDEN;
+output              = OUTPUT_GROOVE_MOUNT;
 
 module direct_drive() {
   rounded_radius = motor_side/2 - motor_hole_spacing/2;
   block_height = idler_pos_z + idler_bearing_height/2 + idler_washer_thickness + idler_shaft_support;
-  block_height = idler_pos_z + idler_bearing_height/2;
+  block_height = idler_pos_z + idler_bearing_height/2 + .5;
+  block_height = filament_pos_z + filament_opening/2 + 1;
 
   hotend_rounded_corner_radius = 3;
+  hotend_rounded_corner_pos_x  = filament_pos_x+hotend_diam/2;
+  hotend_rounded_corner_pos_y  = hotend_pos_y-hotend_clamped_height+hotend_rounded_corner_radius+hotend_clearance;
   module body() {
-    hotend_rounded_corner_pos_x  = filament_pos_x+hotend_diam/2;
-    hotend_rounded_corner_pos_y  = hotend_pos_y-hotend_clamped_height+hotend_rounded_corner_radius+hotend_clearance;
     hull() {
       translate([0,0,plate_thickness/2]) {
         rounded_square(motor_side,motor_diam,plate_thickness);
       }
-      if (!groove_mount) {
+      if (!groove_mount_wings) {
         translate([hotend_rounded_corner_pos_x,hotend_rounded_corner_pos_y,plate_thickness/2]) {
           hole(hotend_rounded_corner_radius*2,plate_thickness,resolution);
         }
@@ -65,17 +77,25 @@ module direct_drive() {
       }
     }
 
-    if (groove_mount) {
+    if (groove_mount_wings) {
       hull() {
         for(side=[left,right]) {
           // groove mount is flush with bottom of extruder, but motor is cantilevered
           //for(y=[hotend_rounded_corner_pos_y-hotend_rounded_corner_radius+groove_mount_thickness/2]) {
           // groove mount is flush with face of motor, so no overhang, but extruder extends into carriage hole
-          for(y=[-motor_side/2+groove_mount_thickness/2]) {
-            translate([filament_pos_x+(groove_mount_hole_spacing/2+groove_mount_nut_diam)*side,y,block_height/2]) {
-              cube([hotend_rounded_corner_radius*2,groove_mount_thickness,block_height],center=true);
+          for(y=[-motor_side/2+groove_mount_wings_thickness/2]) {
+            translate([filament_pos_x+(groove_mount_wings_hole_spacing/2+groove_mount_wings_nut_diam)*side,y,block_height/2]) {
+              cube([hotend_rounded_corner_radius*2,groove_mount_wings_thickness,block_height],center=true);
             }
           }
+        }
+      }
+    }
+
+    if (output == OUTPUT_BOWDEN) {
+      translate([filament_pos_x,hotend_rounded_corner_pos_y-hotend_rounded_corner_radius/2,filament_pos_z]) {
+        rotate([90,0,0]) {
+          hole(bowden_tubing_diam+6,hotend_rounded_corner_radius,8);
         }
       }
     }
@@ -100,9 +120,9 @@ module direct_drive() {
       }
     }
 
-    if (groove_mount) {
+    if (groove_mount_wings) {
       for(side=[left,right]) {
-        translate([filament_pos_x+groove_mount_hole_spacing/2*side,-motor_side/2,block_height/2]) {
+        translate([filament_pos_x+groove_mount_wings_hole_spacing/2*side,-motor_side/2,block_height/2]) {
           rotate([90,0,0]) {
             hole(4.1,30,8);
           }
@@ -227,36 +247,52 @@ module direct_drive() {
     // filament path
     translate([filament_pos_x,0,filament_pos_z]) {
       rotate([90,0,0]) {
-        hole(filament_opening,50,8);
+        hole(filament_opening,70,8);
       }
     }
 
     // hotend void
     hotend_res = resolution*2;
     above_height = hotend_height_above_groove+hotend_clearance*2;
-    translate([filament_pos_x,hotend_pos_y,filament_pos_z]) {
-      rotate([-90,0,0]) {
-        translate([0,0,-hotend_clamped_height]) {
-          hole(hotend_groove_diam+hotend_clearance,hotend_clamped_height*2,hotend_res);
-          translate([0,-hotend_diam/2,0]) {
-            cube([hotend_groove_diam,hotend_diam,hotend_clamped_height*2],center=true);
-          }
-        }
-
-        translate([0,0,-above_height/2+hotend_clearance]) {
-          hole(hotend_diam+hotend_clearance,above_height,hotend_res);
-          translate([0,-hotend_diam/2,0]) {
-            cube([hotend_diam,hotend_diam,above_height],center=true);
+    if (output == OUTPUT_GROOVE_MOUNT) {
+      translate([filament_pos_x,hotend_pos_y,filament_pos_z]) {
+        rotate([-90,0,0]) {
+          translate([0,0,-hotend_clamped_height]) {
+            hole(hotend_groove_diam+hotend_clearance,hotend_clamped_height*2,hotend_res);
+            translate([0,-hotend_diam/2,0]) {
+              cube([hotend_groove_diam,hotend_diam,hotend_clamped_height*2],center=true);
+            }
           }
 
-          // zip tie restraint
-          zip_tie_hole(hotend_diam + hotend_rounded_corner_radius*2);
+          translate([0,0,-above_height/2+hotend_clearance]) {
+            hole(hotend_diam+hotend_clearance,above_height,hotend_res);
+            translate([0,-hotend_diam/2,0]) {
+              cube([hotend_diam,hotend_diam,above_height],center=true);
+            }
+
+            // zip tie restraint
+            zip_tie_hole(hotend_diam + hotend_rounded_corner_radius*2);
+          }
+
+          translate([0,0,-hotend_clamped_height-10+hotend_clearance]) {
+            hole(hotend_diam+hotend_clearance,20,hotend_res);
+            translate([0,-hotend_diam/2,0]) {
+              cube([hotend_diam,hotend_diam,20],center=true);
+            }
+          }
+        }
+      }
+    }
+
+    if (output == OUTPUT_BOWDEN) {
+      translate([filament_pos_x,hotend_rounded_corner_pos_y,filament_pos_z]) {
+        rotate([90,0,0]) {
+          hole(bowden_tubing_diam,hotend_rounded_corner_radius+bowden_nut_thickness,8);
         }
 
-        translate([0,0,-hotend_clamped_height-10+hotend_clearance]) {
-          hole(hotend_diam+hotend_clearance,20,hotend_res);
-          translate([0,-hotend_diam/2,0]) {
-            cube([hotend_diam,hotend_diam,20],center=true);
+        translate([0,bowden_nut_thickness/2,0]) {
+          rotate([90,0,0]) {
+            hole(bowden_nut_diam,bowden_nut_thickness,6);
           }
         }
       }
