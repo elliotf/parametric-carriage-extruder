@@ -108,9 +108,11 @@ module geared_direct_drive() {
   idler_screw_body_diam = 9;
   idler_screw_body_len  = idler_pos_x + idler_bearing_outer/2-1;
 
-  idler_hinge_thickness = 2;
   idler_gap_width       = 2;
   idler_gap_x           = filament_x + filament_diam/2 + extrusion_width*2 + idler_gap_width/2;
+
+  idler_hinge_thickness = 2;
+  idler_hinge_pos_x     = idler_pos_x-idler_bearing_inner/2-idler_gap_width/2;
 
   bowden_tubing_diam        = 6.5;
   bowden_retainer_inner     = 11; // FIXME:  not correct -- it needs to include diameter of retainer with PTFE in it
@@ -142,7 +144,7 @@ module geared_direct_drive() {
           translate([idler_pos_x,geared_stepper_screw_spacing/2,0]) {
             hole(body_wall_thickness*2,height,resolution);
           }
-          translate([idler_gap_x,-body_diam/2+idler_hinge_thickness+idler_gap_width/2,0]) {
+          translate([idler_hinge_pos_x,-body_diam/2+idler_hinge_thickness+idler_gap_width/2,0]) {
             hole(idler_hinge_thickness*2+idler_gap_width,height,resolution);
           }
         }
@@ -224,23 +226,33 @@ module geared_direct_drive() {
       }
     }
 
-    translate([0,0,height/2]) {
+    translate([0,0,height/2+extrusion_height]) {
       hull() {
-        translate([idler_gap_x,hobbed_diam/2,0]) {
-          hole(idler_gap_width,height+1);
+        translate([idler_gap_x,idler_bearing_inner/2+idler_gap_width/2,0]) {
+          hole(idler_gap_width,height);
         }
-        translate([idler_gap_x,-body_diam/2+idler_hinge_thickness+idler_gap_width/2,0]) {
-          hole(idler_gap_width,height+1);
+        translate([idler_pos_x,idler_screw_pos_y+idler_screw_body_diam/2,0]) {
+          hole(idler_gap_width,height);
         }
       }
     }
     translate([0,0,height/2+extrusion_height]) {
       hull() {
-        translate([idler_gap_x,hobbed_diam/2,0]) {
-          hole(idler_gap_width,height);
+        translate([idler_gap_x,idler_bearing_inner/2+idler_gap_width/2,0]) {
+          hole(idler_gap_width,height+1);
         }
-        translate([idler_pos_x,idler_screw_pos_y+idler_screw_body_diam/2,0]) {
-          hole(idler_gap_width,height);
+        translate([idler_gap_x,-idler_bearing_inner/2-idler_gap_width/2,0]) {
+          hole(idler_gap_width,height+1);
+        }
+      }
+    }
+    translate([0,0,height/2]) {
+      hull() {
+        translate([idler_gap_x,-idler_bearing_inner/2-idler_gap_width/2,0]) {
+          hole(idler_gap_width,height+1);
+        }
+        translate([idler_hinge_pos_x,-body_diam/2+idler_hinge_thickness+idler_gap_width/2,0]) {
+          hole(idler_gap_width,height+1);
         }
       }
     }
