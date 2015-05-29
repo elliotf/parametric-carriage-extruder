@@ -55,7 +55,7 @@ module plain_carriage_holes() {
         translate([x_carriage_width/2*end,0,0]) {
           rotate([0,90*end,0]) {
             hull() {
-              translate([0,0,1.5]) {
+              translate([0,0,1.5+0.05]) {
                 hole(bearing_diam+1,3,resolution);
               }
               hole(bearing_diam-0.05,3,resolution);
@@ -719,6 +719,24 @@ module clamp_assembly() {
   }
 }
 
+module e3d_plate() {
+  translate([x_rod_spacing,0,0]) {
+    translate([0,0,-belt_clamp_pos_y+belt_clamp_depth/2]) {
+      rotate([0,0,180]) {
+        rotate([90,0,0]) {
+          //belt_clamp();
+        }
+      }
+    }
+  }
+
+  translate([-x_rod_spacing,0,x_carriage_width/2]) {
+    rotate([0,-90,0]) {
+      e3d_clamp_carriage();
+    }
+  }
+}
+
 module clamp_plate() {
   translate([x_rod_spacing,0,0]) {
     rotate([0,-90,0]) {
@@ -741,7 +759,8 @@ module clamp_plate() {
 }
 
 //motor_clamp_carriage();
-e3d_clamp_carriage();
+//e3d_clamp_carriage();
 
 //clamp_plate();
 //clamp_assembly();
+e3d_plate();
