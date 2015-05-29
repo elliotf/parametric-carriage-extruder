@@ -1,6 +1,7 @@
 include <util.scad>
 include <config.scad>
 include <positions.scad>
+include <hotends.scad>
 use <motor_clamp.scad>
 
 bearing_body_diam = bearing_diam+wall_thickness*2;
@@ -46,7 +47,7 @@ module plain_carriage_holes() {
     translate([0,0,x_rod_spacing/2*side]) {
       // bearing hole
       rotate([0,90,0]) {
-        hole(bearing_diam,x_carriage_width+1,90);
+        hole(bearing_diam,x_carriage_width*2,resolution);
       }
 
       // bevels
@@ -55,9 +56,9 @@ module plain_carriage_holes() {
           rotate([0,90*end,0]) {
             hull() {
               translate([0,0,1.5]) {
-                hole(bearing_diam+1,3,90);
+                hole(bearing_diam+1,3,resolution);
               }
-              hole(bearing_diam,3,90);
+              hole(bearing_diam-0.05,3,resolution);
             }
           }
         }
@@ -74,7 +75,6 @@ module plain_carriage_holes() {
       }
     }
   }
-
 }
 
 module plain_carriage() {
@@ -142,7 +142,6 @@ module motor_clamp_carriage() {
     for(side=[top,bottom]) {
       translate([0,0,x_rod_spacing/2*side]) {
         hull() {
-          //for(z=[0,carriage_plate_thickness/2*side]) {
           translate([0,-carriage_plate_thickness/2,0]) {
             rotate([0,90,0]) {
               rotate([0,0,rotation]) {
@@ -263,6 +262,255 @@ module motor_clamp_carriage() {
     rotate([0,90,0]) {
       //% motor();
     }
+  }
+}
+
+module e3d_hotend() {
+  module body() {
+    hotend_mount_height    = hotend_height_above_groove + hotend_groove_height + hotend_height_below_groove;
+
+    translate([0,0,-hotend_height_above_groove/2]) {
+      hole(hotend_mount_diam,hotend_height_above_groove,resolution);
+    }
+    translate([0,0,-hotend_height_above_groove-hotend_groove_height/2]) {
+      hole(hotend_groove_diam,hotend_groove_height+1,resolution);
+    }
+    translate([0,0,-hotend_height_above_groove-hotend_groove_height-hotend_height_below_groove/2-10]) {
+      hole(hotend_mount_diam,hotend_height_below_groove+20,resolution);
+    }
+
+    num_fins      = 11;
+    fin_thickness = 1;
+    fin_spacing   = 2.5;
+
+    translate([0,0,-hotend_dist_to_heatsink_bottom+fin_thickness/2]) {
+      for(z=[0:10]) {
+        translate([0,0,fin_spacing*z]) {
+          hole(hotend_heatsink_diam,fin_thickness,resolution);
+        }
+      }
+    }
+
+    translate([0,0,-hotend_len]) {
+      hull() {
+        translate([0,0,0.5]) {
+          hole(.5,1,36);
+        }
+        translate([0,0,3.5]) {
+          hole(4,2,36);
+        }
+      }
+
+      translate([0,-20/2+4.5,5+11.5/2]) {
+        cube([16,20,11.5],center=true);
+      }
+    }
+  }
+
+  module holes() {
+    //hole(filament_diam,hotend_len*3,8);
+  }
+
+  difference() {
+    body();
+    holes();
+  }
+}
+
+module e3d_clamp_carriage() {
+  clamp_pos_x = -x_carriage_width/2+motor_clamp_mount_width/2;
+  clamp_pos_y = carriage_plate_pos_y-carriage_plate_thickness/2-motor_side/2-3;
+  clamp_pos_z = x_rod_spacing/2+bearing_body_diam/2-motor_side/2-wall_thickness;
+
+  carriage_height = x_rod_spacing + bearing_body_diam;
+
+  hotend_x = 0;
+  hotend_y = -bearing_diam/2-carriage_plate_thickness-hotend_heatsink_diam/2;
+  hotend_z = -carriage_height/2+hotend_dist_to_heatsink_bottom;
+
+  fan_side         = 30;
+  fan_diam         = fan_side-wall_thickness*2;
+  fan_screw_diam   = 2.6;
+  fan_screw_depth  = 7;
+  fan_thickness    = 10;
+  fan_pos_y        = hotend_y;
+  fan_pos_z        = -carriage_height/2+fan_side/2;
+  fan_hole_spacing = 24;
+  heatsink_pos_z   = hotend_z-hotend_len+hotend_nozzle_to_bottom_fin+hotend_heatsink_height/2;
+  heatsink_pos_z   = hotend_z-hotend_dist_to_heatsink_bottom+hotend_heatsink_height/2;
+
+  rounded_diam = 8;
+
+  hotend_holder_diam = hotend_diam+wall_thickness*4;
+  hotend_holder_width = x_carriage_width/2 + hotend_holder_diam/2;
+
+  module hotend_mount_body() {
+    translate([-x_carriage_width/2+hotend_holder_width/2,-bearing_body_diam/4-carriage_plate_thickness/2,-carriage_height/2+bearing_body_diam/2]) {
+      cube([hotend_holder_width,bearing_body_diam/2+carriage_plate_thickness,bearing_body_diam],center=true);
+    }
+    hull() {
+      translate([-x_carriage_width/2+hotend_holder_width/2,-bearing_body_diam/2,hotend_z-hotend_height_above_groove/2]) {
+        cube([hotend_holder_width,carriage_plate_thickness,0.1],center=true);
+      }
+      translate([0,hotend_y,hotend_z-hotend_height_above_groove/2]) {
+        hole(hotend_mount_diam+wall_thickness*3,0.1,resolution);
+      }
+      translate([0,hotend_y,fan_pos_z]) {
+        hole(hotend_holder_diam,fan_side,resolution);
+      }
+      translate([-x_carriage_width/2+wall_thickness*2,fan_pos_y,fan_pos_z]) {
+        for(y=[front,rear]) {
+          for(z=[top,bottom]) {
+            translate([0,(fan_side/2-rounded_diam/2)*y,(fan_side/2-rounded_diam/2)*z]) {
+              rotate([0,90,0]) {
+                hole(rounded_diam,wall_thickness*4,resolution);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  module hotend_mount_holes() {
+    // hotend mount
+    hotend_groove_depth = (hotend_diam - hotend_groove_diam)/2;
+    translate([0,hotend_y,hotend_z-hotend_height_above_groove-hotend_groove_height/2]) {
+      zip_tie_hole(hotend_groove_diam+wall_thickness*3);
+    }
+
+    translate([0,hotend_y,hotend_z-hotend_len/2]) {
+      hull() {
+        for(r=[0,-60]) {
+          rotate([0,0,r]) {
+            translate([20,1,0]) {
+              cube([40,2,hotend_len+10],center=true);
+            }
+          }
+        }
+      }
+    }
+    translate([hotend_groove_diam*.8,hotend_y-hotend_groove_diam,hotend_z-hotend_len/2]) {
+      //cube([hotend_groove_diam,hotend_groove_diam*1.5,hotend_len+1],center=true);
+    }
+
+    groove_slop = 0.1;
+    translate([0,hotend_y,hotend_z-groove_slop/2]) {
+      hole(hotend_mount_diam,hotend_height_above_groove*2,resolution);
+
+      translate([20,0,0]) {
+        cube([40,hotend_mount_diam-0.1,hotend_height_above_groove*2],center=true);
+      }
+    }
+    translate([0,hotend_y,hotend_z-hotend_height_above_groove-hotend_groove_height/2]) {
+      hole(hotend_groove_diam,hotend_groove_height*2,resolution);
+
+      translate([20,0,0]) {
+        cube([40,hotend_groove_diam-0.1,hotend_groove_height*2],center=true);
+      }
+    }
+    translate([0,hotend_y,hotend_z-hotend_height_above_groove-hotend_groove_height-10+groove_slop/2]) {
+      hole(hotend_mount_diam,20,resolution);
+
+      translate([20,0,0]) {
+        cube([40,hotend_mount_diam-0.1,20],center=true);
+      }
+    }
+    hull() {
+      translate([-x_carriage_width/2,fan_pos_y,fan_pos_z]) {
+        rotate([0,90,0]) {
+          hole(fan_diam,fan_thickness*3,resolution);
+        }
+      }
+      translate([0,hotend_y,fan_pos_z]) {
+        hole(hotend_diam,1,resolution);
+      }
+    }
+    translate([-x_carriage_width/2,fan_pos_y,fan_pos_z]) {
+      for(y=[front,rear]) {
+        for(z=[top,bottom]) {
+          translate([0,fan_hole_spacing/2*y,fan_hole_spacing/2*z]) {
+            rotate([0,90,0]) {
+              hole(fan_screw_diam,fan_screw_depth*2,8);
+            }
+          }
+        }
+      }
+    }
+    translate([0,hotend_y,heatsink_pos_z-0.05]) {
+      hole(hotend_diam,hotend_heatsink_height+0.1,resolution);
+
+      translate([20,0,0]) {
+        cube([40,hotend_diam-0.4,hotend_heatsink_height+0.1],center=true);
+      }
+    }
+  }
+
+  module body() {
+    hotend_mount_body();
+    // bearing holders
+    for(side=[top,bottom]) {
+      translate([0,0,x_rod_spacing/2*side]) {
+        hull() {
+          translate([0,-carriage_plate_thickness/2,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,x_carriage_width,resolution);
+            }
+          }
+          translate([0,0,0]) {
+            rotate([0,90,0]) {
+              hole(bearing_body_diam,x_carriage_width,resolution);
+            }
+          }
+        }
+
+        translate([0,-bearing_body_diam/4,-bearing_body_diam/4*side]) {
+          cube([x_carriage_width,bearing_body_diam/2,bearing_body_diam/2],center=true);
+        }
+      }
+    }
+
+    // mount plate
+    translate([0,carriage_plate_pos_y,0]) {
+      cube([x_carriage_width,carriage_plate_thickness,x_rod_spacing],center=true);
+    }
+
+    // clamp
+    translate([clamp_pos_x,0,0]) {
+    }
+  }
+
+  module holes() {
+    hotend_mount_holes();
+    plain_carriage_holes();
+
+    // mounting holes
+    for(side=[left,right]) {
+      translate([carriage_screw_spacing/2*side,(bearing_body_diam/2+carriage_plate_thickness/2)*front,0]) {
+        rotate([90,0,0]) {
+          hole(carriage_screw_diam,bearing_body_diam,8);
+          translate([0,0,40]) {
+            hole(carriage_nut_diam,carriage_nut_thickness*2+80,6);
+          }
+        }
+      }
+    }
+  }
+
+  color("LightBlue") difference() {
+    body();
+    holes();
+  }
+
+  translate([clamp_pos_x+motor_clamp_mount_width/2+10,clamp_pos_y,clamp_pos_z]) {
+    rotate([0,90,0]) {
+      //% motor();
+    }
+  }
+
+  translate([hotend_x,hotend_y,hotend_z]) {
+    // hotend
+    % e3d_hotend();
   }
 }
 
@@ -410,7 +658,7 @@ module belt_clamp() {
   }
 }
 
-module assembly() {
+module clamp_assembly() {
   translate([motor_x,motor_y,motor_z]) {
     rotate([0,90,0]) {
       //% motor();
@@ -471,7 +719,7 @@ module assembly() {
   }
 }
 
-module plate() {
+module clamp_plate() {
   translate([x_rod_spacing,0,0]) {
     rotate([0,-90,0]) {
       //plain_carriage();
@@ -493,6 +741,7 @@ module plate() {
 }
 
 //motor_clamp_carriage();
+e3d_clamp_carriage();
 
-plate();
-//assembly();
+//clamp_plate();
+//clamp_assembly();
