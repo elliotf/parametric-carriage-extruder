@@ -103,11 +103,13 @@ idler_nut_thickness = 2.5;
 idler_bearing_height = 7;
 idler_bearing_outer  = 22;
 idler_bearing_inner  = 8;
+idler_nut_diam       = 13;
 
 //626
 idler_bearing_height = 6;
 idler_bearing_outer  = 19;
 idler_bearing_inner  = 6;
+idler_nut_diam       = 10;
 
 //625
 idler_bearing_height      = 5;

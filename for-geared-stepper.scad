@@ -1,18 +1,29 @@
 include <util.scad>
 include <config.scad>
 
+geared_stepper_mount_diam      = 36;
+geared_stepper_mount_height    = 26;
+geared_stepper_shoulder_diam   = 22;
+geared_stepper_shoulder_height = 2;
+geared_stepper_screw_spacing   = 28;
+geared_stepper_screw_diam      = 3;
+geared_stepper_shaft_diam      = 8;
+geared_stepper_shaft_len       = 20;
+geared_stepper_body_side       = 42;
+geared_stepper_body_len        = 34;
+
 idler_shaft_support   = 4;
 
-filament_opening = filament_diam + 1;
+filament_opening = filament_diam + 0.5;
 
 plate_thickness = motor_shoulder_height;
 plate_thickness = 4;
 filament_pos_x  = (hobbed_effective_diam/2+filament_compressed_diam/2)*left;
 filament_pos_y  = 0;
+filament_pos_z  = 0;
 idler_nut_pos_z = motor_shoulder_height + extrusion_height + idler_nut_thickness/2;
 idler_pos_x     = filament_pos_x - (filament_compressed_diam/2+idler_bearing_outer/2);
 idler_pos_z     = idler_nut_pos_z + idler_nut_thickness/2 + idler_shaft_support + idler_bearing_height/2;
-filament_pos_z  = idler_pos_z;
 
 hinge_space_width = 1.5;
 hinge_space_pos_x = filament_pos_x - filament_opening/2 - extrusion_width*2 - hinge_space_width/2;
@@ -36,24 +47,6 @@ groove_mount_wings_thickness    = (motor_side-motor_shoulder_diam)/2;
 bowden_nut_diam      = 11;
 bowden_nut_thickness = 5;
 bowden_tubing_diam   = 6; // 0.25inch threaded diam
-
-OUTPUT_NONE         = 0;
-OUTPUT_GROOVE_MOUNT = 1;
-OUTPUT_BOWDEN       = 2;
-output              = OUTPUT_NONE;
-output              = OUTPUT_BOWDEN;
-output              = OUTPUT_GROOVE_MOUNT;
-
-geared_stepper_mount_diam      = 36;
-geared_stepper_mount_height    = 26;
-geared_stepper_shoulder_diam   = 22;
-geared_stepper_shoulder_height = 2;
-geared_stepper_screw_spacing   = 28;
-geared_stepper_screw_diam      = 3;
-geared_stepper_shaft_diam      = 8;
-geared_stepper_shaft_len       = 20;
-geared_stepper_body_side       = 42;
-geared_stepper_body_len        = 34;
 
 module geared_stepper_motor() {
   module body() {
@@ -96,11 +89,11 @@ module geared_direct_drive() {
   hobbed_diam    = 11.4;
   hobbed_height  = 13.1;
 
-  idler_pos_x    = hobbed_diam/2 + filament_diam + idler_bearing_outer/2;
-  idler_pos_z    = height - idler_bearing_height/2 - 1;
-
   filament_x     = hobbed_diam/2 + filament_diam/2;
-  filament_z     = idler_pos_z;
+  filament_z     = height - 1 - filament_opening/2;
+
+  idler_pos_x    = hobbed_diam/2 + filament_diam + idler_bearing_outer/2;
+  idler_pos_z    = filament_z - filament_opening/2 - 1.25 + idler_bearing_height/2;
 
   idler_screw_diam      = 3.1;
   idler_screw_pos_y     = body_diam/2 + idler_screw_diam/2 + 1;
@@ -110,16 +103,19 @@ module geared_direct_drive() {
 
   idler_gap_width       = 2;
   idler_gap_x           = filament_x + filament_diam/2 + extrusion_width*2 + idler_gap_width/2;
+  idler_gap_x           = idler_pos_x - idler_bearing_inner/2 - 3 - idler_gap_width/2;
 
   idler_hinge_thickness = 2;
   idler_hinge_pos_x     = idler_pos_x-idler_bearing_inner/2-idler_gap_width/2;
 
-  bowden_tubing_diam        = 6.5;
-  bowden_retainer_inner     = 11; // FIXME:  not correct -- it needs to include diameter of retainer with PTFE in it
-  bowden_retainer_body_diam = bowden_retainer_inner + 4;
+  bowden_tubing_diam          = 6.5;
+  bowden_retainer_inner       = 11; // FIXME:  not correct -- it needs to include diameter of retainer with PTFE in it
+  bowden_retainer_body_diam   = bowden_retainer_inner + 4;
+  bowden_retainer_body_height = 8;
+  bowden_retainer_pos_y       = idler_screw_pos_y + idler_screw_body_diam/2 + bowden_retainer_body_height/2;
 
   rotate([0,0,45]) {
-    % geared_stepper_motor();
+    //% geared_stepper_motor();
   }
 
   translate([idler_pos_x,0,idler_pos_z]) {
@@ -131,6 +127,7 @@ module geared_direct_drive() {
   }
 
   module body() {
+    rounded_rotation = 30;
     rounded_diam = body_diam/2 - hobbed_opening/2;
     intersection() {
       translate([0,0,height/2]) {
@@ -151,16 +148,22 @@ module geared_direct_drive() {
       }
 
       union() {
-        cube([100,100,(height-hobbed_height+1)*2],center=true);
-        translate([50,0,0]) {
-          cube([100,100,height*3],center=true);
+        cube([100,100,(height-hobbed_height)*2],center=true);
+        for(y=[front,rear]) {
+          rotate([0,0,rounded_rotation*y]) {
+            translate([50,0,0]) {
+              cube([100,100,height*3],center=true);
+            }
+          }
         }
       }
     }
 
     for(y=[front,rear]) {
-      translate([0,(body_diam/2-rounded_diam/2)*y,height/2]) {
-        hole(rounded_diam,height,resolution);
+      rotate([0,0,rounded_rotation*y]) {
+        translate([0,(body_diam/2-rounded_diam/2)*y,height/2]) {
+          hole(rounded_diam,height,resolution);
+        }
       }
     }
     hull() {
@@ -177,14 +180,81 @@ module geared_direct_drive() {
       translate([idler_pos_x,0,height/2]) {
         hole(idler_bearing_outer-2, height, resolution);
       }
+
+      translate([filament_x,idler_screw_pos_y+8,filament_z]) {
+        rotate([90,0,0]) {
+          //hole(bowden_retainer_body_diam,8,resolution);
+        }
+      }
+    }
+
+    /*
+    difference() {
+      translate([0,0,40]) {
+        hole(bowden_retainer_body_diam,8,resolution);
+      }
+      # translate([0,0,35]) {
+        translate([0,0,10]) {
+          hole(8,20);
+        }
+
+        hull() {
+          translate([0,0,2]) {
+            hole(bowden_retainer_inner,4);
+          }
+          translate([0,0,7]) {
+            translate([0,0,-1]) {
+              hole(8,2);
+            }
+          }
+        }
+      }
+    }
+    */
+
+    hull() {
+      translate([filament_x,0,0]) {
+        translate([0,idler_screw_pos_y,idler_screw_pos_z]) {
+          rotate([0,90,0]) {
+            hole(idler_screw_body_diam,bowden_retainer_body_diam,resolution);
+          }
+        }
+        translate([0,0,filament_z]) {
+          rotate([90,0,0]) {
+            hole(filament_opening+2,1,resolution);
+          }
+        }
+        translate([0,bowden_retainer_pos_y,filament_z]) {
+          rotate([90,0,0]) {
+            hole(bowden_retainer_body_diam,bowden_retainer_body_height,resolution);
+          }
+        }
+        translate([0,body_diam/2+1,filament_z]) {
+          rotate([90,0,0]) {
+            hole(bowden_retainer_body_diam,2,resolution);
+          }
+        }
+
+        // bind to bottom plate
+        translate([0,bowden_retainer_pos_y+bowden_retainer_body_height/2-bowden_retainer_body_diam/2-2,1]) {
+          hole(bowden_retainer_body_diam,2,resolution);
+        }
+        translate([0,0,1]) {
+          cube([bowden_retainer_body_diam-6,1,2],center=true);
+        }
+      }
     }
   }
 
   module holes() {
     for(r=[1,2,3]) {
       rotate([0,0,r*90]) {
-        translate([geared_stepper_screw_spacing/2,0,0]) {
-          hole(geared_stepper_screw_diam,50);
+        translate([geared_stepper_screw_spacing/2,0,height/2]) {
+          hole(geared_stepper_screw_diam,height+1);
+
+          translate([0,0,height]) {
+            hole(7,height);
+          }
         }
       }
     }
@@ -200,13 +270,37 @@ module geared_direct_drive() {
     translate([filament_x,0,filament_z]) {
       rotate([90,0,0]) {
         % hole(filament_diam,60);
-        hole(filament_diam+0.5,60,8);
+        hole(filament_diam+0.5,100,8);
+      }
+    }
+
+    // bowden retainer cavity
+    translate([filament_x,bowden_retainer_pos_y+bowden_retainer_body_height/2-8,filament_z]) {
+      translate([0,0,bowden_retainer_body_diam/2]) {
+        //cube([bowden_retainer_body_diam+1,100,bowden_retainer_body_diam],center=true);
+      }
+      rotate([-90,0,0]) {
+        hole(bowden_tubing_diam,bowden_retainer_body_height*2.5,8);
+        translate([0,0,10]) {
+          hole(8,20);
+        }
+
+        hull() {
+          translate([0,0,2]) {
+            hole(bowden_retainer_inner,4);
+          }
+          translate([0,0,7]) {
+            translate([0,0,-1]) {
+              hole(8,2);
+            }
+          }
+        }
       }
     }
 
     // idler gap
-    translate([0,0,idler_pos_z]) {
-      cube([100,12,idler_bearing_height+3],center=true);
+    translate([50,0,idler_pos_z+0.05+20]) {
+      cube([100,12,idler_bearing_height+2+40],center=true);
     }
 
     // idler screw
@@ -220,19 +314,19 @@ module geared_direct_drive() {
         }
         translate([-10,0,0]) {
           rotate([0,90,0]) {
-            hole(6,20,8);
+            hole(6,20,6);
           }
         }
       }
     }
 
-    translate([0,0,height/2+extrusion_height]) {
+    translate([0,0,height+extrusion_height]) {
       hull() {
         translate([idler_gap_x,idler_bearing_inner/2+idler_gap_width/2,0]) {
-          hole(idler_gap_width,height);
+          hole(idler_gap_width,height*2);
         }
         translate([idler_pos_x,idler_screw_pos_y+idler_screw_body_diam/2,0]) {
-          hole(idler_gap_width,height);
+          hole(idler_gap_width,height*2);
         }
       }
     }
@@ -263,8 +357,8 @@ module geared_direct_drive() {
       hole(idler_bearing_inner, height*3, 12);
       hole(idler_nut_diam,idler_bolt_head_thickness*2,6);
 
-      translate([0,0,idler_pos_z]) {
-        hole(idler_bearing_outer+2,idler_bearing_height+3,resolution);
+      translate([0,0,idler_pos_z+0.05]) {
+        hole(idler_bearing_outer+2,idler_bearing_height+2,resolution);
       }
     }
   }
@@ -283,6 +377,18 @@ module geared_direct_drive() {
         }
 
         hole(idler_bearing_inner,30,res);
+      }
+    }
+
+    translate([idler_pos_x,0,0]) {
+      translate([0,0,idler_bolt_head_thickness+extrusion_height/2]) {
+        hole(idler_bearing_inner+1,extrusion_height,6);
+      }
+      translate([0,0,idler_bolt_head_thickness/2]) {
+        hole(idler_bearing_inner-1,idler_bolt_head_thickness);
+      }
+      translate([0,0,extrusion_height/2]) {
+        hole(idler_nut_diam-2,extrusion_height);
       }
     }
   }
