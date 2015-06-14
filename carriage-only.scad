@@ -514,6 +514,47 @@ module e3d_clamp_carriage() {
   }
 }
 
+module vertical_belt_clamp() {
+  rounded_diam = 4;
+  module body() {
+    hull() {
+      for(z=[top,bottom]) {
+        for(y=[front,rear]) {
+          translate([0,(belt_clamp_depth/2-rounded_diam/2)*y,(belt_clamp_height/2-rounded_diam/2)*z]) {
+            rotate([0,90,0]) {
+              hole(rounded_diam,belt_clamp_width,resolution);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  module holes() {
+    tooth_diam = 1.4;
+    // belt teeth
+    translate([0,belt_clamp_depth/2,0]) {
+      translate([-20+1,0,.5]) {
+        cube([40,belt_width*2,1],center=true);
+      }
+      for(i=[0:20]) {
+        translate([-2*i,0,0]) {
+          rotate([90,0,0]) {
+            rotate([0,0,90]) {
+              hole(tooth_diam,belt_width*2,6);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  difference() {
+    body();
+    holes();
+  }
+}
+
 module belt_clamp() {
   body_rounded_diam = carriage_screw_diam + wall_thickness*2;
 
