@@ -174,7 +174,8 @@ belt_tooth_ratio    = 0.5;
 belt_width = 6;
 belt_opening_width = 8;
 
-x_rod_spacing = 45;
+x_rod_spacing   = 45;
+pulley_offset_z = -1.75;
 
 // lm8uu
 bearing_len = 25;

@@ -33,13 +33,13 @@ module motor_clamp_body() {
     translate([0,clamp_screw_pos_y,0]) {
       for(x=[left,right]) {
         translate([x*(clamp_mount_width/2-clamp_screw_diam/2),0,0]) {
-          rotate([0,0,90]) {
-            hole(clamp_screw_diam,clamp_area_length,6);
-          }
+          hole(clamp_screw_diam,clamp_area_length,6);
         }
       }
       translate([0,0,0]) {
-        hole(clamp_nut_diam+wall_thickness*4,clamp_area_length,6);
+        rotate([0,0,90]) {
+          hole(clamp_nut_diam+wall_thickness*4,clamp_area_length,6);
+        }
       }
     }
   }
@@ -58,15 +58,11 @@ module motor_clamp_holes() {
 
   // clamp screw area
   translate([0,clamp_screw_pos_y,0]) {
-    rotate([0,0,22.5]) {
-      hole(clamp_screw_diam,clamp_area_length+1,8);
-    }
+    hole(clamp_screw_diam,clamp_area_length+1,8);
 
     // captive nut
     translate([0,0,-clamp_area_length/2]) {
-      rotate([0,0,90]) {
-        hole(clamp_nut_diam,clamp_nut_thickness*2,6);
-      }
+      hole(clamp_nut_diam,clamp_nut_thickness*2,6);
     }
   }
 }
