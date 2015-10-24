@@ -86,7 +86,7 @@ motor_screw_head_diam = 6;
 
 // Misc settings
 extrusion_width = 0.5;
-extrusion_height = 0.2;
+extrusion_height = 0.3;
 min_material_thickness = extrusion_width*2;
 spacer = 1;
 

@@ -4,7 +4,9 @@ include <positions.scad>
 include <hotends.scad>
 use <motor_clamp.scad>
 
-bearing_body_diam = bearing_diam+wall_thickness*2;
+rounded_diam = 4;
+
+bearing_body_diam = bearing_diam+wall_thickness*3;
 space_between_bearing_bodies = x_rod_spacing - bearing_body_diam;
 space_between_bearings = 1;
 x_carriage_width = bearing_len*2 + space_between_bearings;
@@ -14,7 +16,7 @@ carriage_screw_diam = m3_diam;
 carriage_nut_diam = m3_nut_diam;
 carriage_nut_thickness = 2;
 
-belt_clamp_width  = x_carriage_width;
+belt_clamp_width  = x_carriage_width*.4;
 belt_clamp_height = space_between_bearing_bodies/2+carriage_nut_diam/2;
 belt_clamp_depth  = bearing_body_diam/2-carriage_plate_thickness/2 + belt_opening_width/2;
 
@@ -40,6 +42,14 @@ motor_pos_z = pulley_offset_z;
 idler_pos_z = pulley_offset_z;
 
 motor_belt_pos_z  = motor_pos_z + motor_pulley_diameter/2;
+
+tensioner_screw_hole_diam = 3.25;
+tensioner_clamp_gap = 0.2;
+tensioner_clamp_height = wall_thickness + belt_thickness + wall_thickness + m3_nut_diam/2 + tensioner_screw_hole_diam/2 + wall_thickness;
+tensioner_clamp_width  = belt_width + wall_thickness*2;
+tensioner_screw_belt_spacing = belt_thickness/2 + wall_thickness + m3_nut_diam/2;
+tensioner_screw_pos_z = motor_belt_pos_z + tensioner_screw_belt_spacing;
+tensioner_clamp_pos_z = tensioner_screw_pos_z + tensioner_screw_hole_diam/2 + wall_thickness - tensioner_clamp_height/2;
 
 idler_diam  = 10;
 idler_belt_pos_z  = idler_pos_z + idler_diam/2;
@@ -70,7 +80,7 @@ module plain_carriage_holes() {
       hull() {
         for (end=[top,bottom]) {
           rotate([33*end,0,0])
-          translate([extrusion_height,bearing_diam/2,0]) {
+          translate([-extrusion_height,bearing_diam/2,0]) {
             cube([x_carriage_width,bearing_diam,0.05],center=true);
           }
         }
@@ -516,47 +526,6 @@ module e3d_clamp_carriage() {
   }
 }
 
-module vertical_belt_clamp() {
-  rounded_diam = 4;
-  module body() {
-    hull() {
-      for(z=[top,bottom]) {
-        for(y=[front,rear]) {
-          translate([0,(belt_clamp_depth/2-rounded_diam/2)*y,(belt_clamp_height/2-rounded_diam/2)*z]) {
-            rotate([0,90,0]) {
-              hole(rounded_diam,belt_clamp_width,resolution);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  module holes() {
-    tooth_diam = 1.4;
-    // belt teeth
-    translate([0,belt_clamp_depth/2,0]) {
-      translate([-20+1,0,.5]) {
-        cube([40,belt_width*2,1],center=true);
-      }
-      for(i=[0:20]) {
-        translate([-2*i,0,0]) {
-          rotate([90,0,0]) {
-            rotate([0,0,90]) {
-              hole(tooth_diam,belt_width*2,6);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  difference() {
-    body();
-    holes();
-  }
-}
-
 module belt_clamp() {
   body_rounded_diam = carriage_screw_diam + wall_thickness*2;
 
@@ -802,9 +771,10 @@ module clamp_plate() {
 }
 
 module motor_clamp_carriage_with_integrated_clamp() {
-  clamp_pos_x = -x_carriage_width/2+motor_clamp_mount_width/2;
+  clamp_pos_x = x_carriage_width/2-motor_clamp_mount_width/2;
   clamp_pos_y = carriage_plate_pos_y-carriage_plate_thickness/2-motor_side/2-3;
   clamp_pos_z = x_rod_spacing/2+bearing_body_diam/2-motor_side/2-wall_thickness;
+
   module body() {
     // bearing holders
     for(side=[top,bottom]) {
@@ -824,6 +794,34 @@ module motor_clamp_carriage_with_integrated_clamp() {
 
         translate([0,-bearing_body_diam/4,-bearing_body_diam/4*side]) {
           cube([x_carriage_width,bearing_body_diam/2,bearing_body_diam/2],center=true);
+        }
+      }
+    }
+
+    hull() {
+      translate([0,0,x_rod_spacing/2]) {
+        translate([0,-carriage_plate_thickness/2,0]) {
+          rotate([0,90,0]) {
+            hole(bearing_body_diam,x_carriage_width,resolution);
+          }
+        }
+        translate([0,0,0]) {
+          rotate([0,90,0]) {
+            hole(bearing_body_diam,x_carriage_width,resolution);
+          }
+        }
+
+      }
+      //translate([0,0,motor_pos_z-motor_pulley_diameter/2+rounded_diam/2+belt_width/2]) {
+      translate([0,0,tensioner_clamp_pos_z-tensioner_clamp_height/2+rounded_diam/2]) {
+        translate([0,tensioner_clamp_width/2-rounded_diam/2,0]) {
+        //translate([0,bearing_body_diam/2-rounded_diam/2-tensioner_clamp_gap-wall_thickness,0]) {
+          rotate([0,90,0]) {
+            hole(rounded_diam+tensioner_clamp_gap*2+wall_thickness*2,x_carriage_width,resolution);
+          }
+        }
+        translate([0,-bearing_body_diam/2,0]) {
+          cube([x_carriage_width,1,rounded_diam+tensioner_clamp_gap*2+wall_thickness*2],center=true);
         }
       }
     }
@@ -889,11 +887,104 @@ module motor_clamp_carriage_with_integrated_clamp() {
   module holes() {
     plain_carriage_holes();
 
-    // clamp
+    // motor clamp
     translate([clamp_pos_x,clamp_pos_y,clamp_pos_z]) {
       rotate([0,0,180]) {
         rotate([-90,0,0]) {
           motor_clamp_holes();
+        }
+      }
+    }
+
+    // tensioner cavity
+    tensioner_hole_depth = x_carriage_width/2-2;
+    translate([x_carriage_width/2,0,tensioner_clamp_pos_z]) {
+      hull() {
+        for(y=[front,rear]) {
+          for(z=[top,bottom]) {
+            translate([0,(tensioner_clamp_width/2-rounded_diam/2)*y,(tensioner_clamp_height/2-rounded_diam/2)*z]) {
+              rotate([0,90,0]) {
+                hole(rounded_diam+tensioner_clamp_gap*2,tensioner_hole_depth*2,resolution);
+              }
+            }
+          }
+        }
+      }
+      hull() {
+        for(y=[front,rear]) {
+          for(z=[top,bottom]) {
+            translate([1,(tensioner_clamp_width/2-rounded_diam/2)*y,(tensioner_clamp_height/2-rounded_diam/2)*z]) {
+              rotate([0,90,0]) {
+                hole(rounded_diam+tensioner_clamp_gap*2+extrusion_width*2,2,resolution);
+                hole(1,4+extrusion_width*8,resolution);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // tensioner screw
+    tensioner_screw_length = (x_carriage_width - tensioner_hole_depth - extrusion_height) * 2;
+    translate([-x_carriage_width/2,0,tensioner_screw_pos_z]) {
+      rotate([0,90,0]) {
+        hole(tensioner_screw_hole_diam,tensioner_screw_length,resolution);
+        hole(m3_nut_diam+0.2,x_carriage_width-2,6);
+      }
+    }
+
+    /*
+    // tensioner clamp
+    gap = 0.2;
+    hull() {
+      translate([x_carriage_width/2,0,0]) {
+        for(side=[front,rear]) {
+          for(z=[x_rod_spacing/2-bearing_diam/2-wall_thickness-rounded_diam/2,motor_pos_z-motor_pulley_diameter/2+rounded_diam/2+belt_width/2+wall_thickness]) {
+            translate([0,(belt_width/2+spacer-wall_thickness+rounded_diam/2)*side,z]) {
+              rotate([0,90,0]) {
+                hole(rounded_diam,tensioner_hole_depth*2,resolution);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    translate([0,0,motor_belt_pos_z]) {
+      // belt teeth
+      translate([-x_carriage_width/2+24.5,-2,0]) {
+        belt_teeth();
+      }
+
+      // belt access
+      translate([-x_carriage_width/4-0.05,0,0]) {
+        hull() {
+          translate([0,belt_width*.6,0]) {
+            cube([x_carriage_width/2,1,1],center=true);
+          }
+          translate([0,bearing_body_diam/2,0]) {
+            cube([x_carriage_width/2,1,10],center=true);
+          }
+        }
+      }
+    }
+    */
+
+    translate([0,0,motor_belt_pos_z]) {
+      // belt teeth
+      translate([-x_carriage_width/2,-2,0]) {
+        belt_teeth(x_carriage_width/2);
+      }
+
+      // belt access
+      translate([-x_carriage_width/4-0.05,0,0]) {
+        hull() {
+          translate([0,belt_width*.6,0]) {
+            cube([x_carriage_width/2,1,1],center=true);
+          }
+          translate([0,bearing_body_diam/2,0]) {
+            cube([x_carriage_width/2,1,10],center=true);
+          }
         }
       }
     }
@@ -949,6 +1040,57 @@ module motor_clamp_carriage_with_integrated_clamp() {
   }
 }
 
+module belt_teeth(leng) {
+  tooth_diam  = 1.4;
+  tooth_pitch = 2;
+  num_teeth = floor(leng / tooth_pitch);
+  // belt teeth
+  translate([0,belt_width/2,0]) {
+    translate([0,0,.5]) {
+      cube([tooth_pitch*(2*num_teeth+1),belt_width*2,1],center=true);
+    }
+    for(side=[left,right]) {
+      for(i=[0:num_teeth]) {
+        translate([2*i*side,0,0]) {
+          rotate([90,0,0]) {
+            rotate([0,0,90]) {
+              hole(tooth_diam,belt_width*2,6);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+module vertical_belt_clamp() {
+  rounded_diam = 4;
+  module body() {
+    hull() {
+      for(z=[top,bottom]) {
+        for(y=[front,rear]) {
+          translate([0,(belt_clamp_depth/2-rounded_diam/2)*y,(belt_clamp_height/2-rounded_diam/2)*z]) {
+            rotate([0,90,0]) {
+              hole(rounded_diam,belt_clamp_width,resolution);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  module holes() {
+    translate([belt_clamp_width/2,0,0]) {
+      belt_teeth(belt_clamp_width);
+    }
+  }
+
+  difference() {
+    body();
+    holes();
+  }
+}
+
 //motor_clamp_carriage();
 motor_clamp_carriage_with_integrated_clamp();
 //e3d_clamp_carriage();
@@ -957,4 +1099,6 @@ motor_clamp_carriage_with_integrated_clamp();
 //clamp_assembly();
 //e3d_plate();
 
-//vertical_belt_clamp();
+translate([x_carriage_width/2-belt_clamp_width/2,0,idler_belt_pos_z]) {
+  //vertical_belt_clamp();
+}
