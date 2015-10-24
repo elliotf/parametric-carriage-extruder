@@ -47,7 +47,7 @@ tensioner_screw_hole_diam = 3.25;
 tensioner_clamp_gap = 0.2;
 tensioner_clamp_height = wall_thickness + belt_thickness + wall_thickness + m3_nut_diam/2 + tensioner_screw_hole_diam/2 + wall_thickness;
 tensioner_clamp_width  = belt_width + wall_thickness*2;
-tensioner_screw_belt_spacing = belt_thickness/2 + wall_thickness + m3_nut_diam/2;
+tensioner_screw_belt_spacing = belt_thickness/2 + wall_thickness + extrusion_width + m3_nut_diam/2;
 tensioner_screw_pos_z = motor_belt_pos_z + tensioner_screw_belt_spacing;
 tensioner_clamp_pos_z = tensioner_screw_pos_z + tensioner_screw_hole_diam/2 + wall_thickness - tensioner_clamp_height/2;
 
