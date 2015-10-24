@@ -133,6 +133,5 @@ module rounded_square(side,diam,len) {
   intersection() {
     cube([side,side,len],center=true);
     hole(rounded,len+1,resolution);
-    echo("RADIUS: ", rounded);
   }
 }
