@@ -42,8 +42,8 @@ echo("MOTOR PULLEY DIAMETER: ", motor_pulley_diameter);
 motor_pos_z = pulley_offset_z;
 idler_pos_z = pulley_offset_z;
 
-anchor_side = bottom;
 anchor_side = top;
+anchor_side = bottom;
 
 idler_diam  = 10;
 idler_belt_pos_z  = idler_pos_z + idler_diam/2;
@@ -96,11 +96,10 @@ module bearing_hole(bearing_diam) {
 }
 
 module plain_carriage_holes() {
-  bearing_resolution = 12;
-  translate([0,0,x_rod_spacing/2*top]) {
+  translate([0,0,x_rod_spacing/2*anchor_side]) {
     bearing_hole(bearing_diam);
   }
-  translate([0,0,x_rod_spacing/2*bottom]) {
+  translate([0,0,x_rod_spacing/2*-anchor_side]) {
     bearing_hole(lower_bearing_diam);
   }
 }
@@ -118,10 +117,6 @@ module bearing_body(bearing_diam,side) {
       }
     }
   }
-
-  translate([0,-bearing_body_diam/4,-bearing_body_diam/4*side]) {
-    cube([x_carriage_width,bearing_body_diam/2,bearing_body_diam/2],center=true);
-  }
 }
 
 module motor_clamp_carriage() {
@@ -131,11 +126,15 @@ module motor_clamp_carriage() {
 
   module body() {
     // bearing holders
-    translate([0,0,x_rod_spacing/2*top]) {
+    translate([0,0,x_rod_spacing/2*anchor_side]) {
       bearing_body(bearing_diam,top);
     }
-    translate([0,0,x_rod_spacing/2*bottom]) {
+    translate([0,0,x_rod_spacing/2*-anchor_side]) {
       bearing_body(lower_bearing_diam,bottom);
+
+      translate([0,-lower_bearing_diam/4,lower_bearing_diam/4*anchor_side]) {
+        cube([x_carriage_width,lower_bearing_diam/2,lower_bearing_diam/2+bearing_body_wall],center=true);
+      }
     }
 
     hull() {
@@ -269,7 +268,7 @@ module motor_clamp_carriage() {
     tensioner_screw_length = (x_carriage_width - tensioner_hole_depth - extrusion_height) * 2;
     translate([-x_carriage_width/2,0,tensioner_screw_pos_z]) {
       rotate([0,90,0]) {
-        hole(tensioner_screw_hole_diam,2*tensioner_screw_length,resolution);
+        hole(tensioner_screw_hole_diam,tensioner_screw_length,resolution);
         hole(tensioner_nut_hole_diam,x_carriage_width-2,6);
       }
     }
