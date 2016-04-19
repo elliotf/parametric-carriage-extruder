@@ -1,4 +1,5 @@
 motor_pulley_tooth_pitch = 2; // GT2 belt
+motor_pulley_tooth_count = 20;
 motor_pulley_tooth_count = 16;
 
 // All hail whosawhatsis
@@ -176,9 +177,18 @@ belt_opening_width = 8;
 
 x_rod_spacing   = 45;
 pulley_offset_z = -1.75;
+pulley_offset_z = 0;
 
 // lm8uu
 bearing_len = 25;
 bearing_diam = 15;
+
+// bronze bushings
+//bearing_len = 15;
+//bearing_diam = 11;
+bearing_diam = 12;
+
+lower_bearing_diam = bearing_diam;
+lower_bearing_diam = 15;
 
 carriage_screw_spacing = 30;
