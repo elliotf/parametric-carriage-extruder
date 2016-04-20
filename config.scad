@@ -8,7 +8,7 @@ pi  = 3.14159265359;
 resolution = 32;
 rotation   = 180/resolution;
 
-motor_clamp_mount_width     = 20;
+motor_clamp_mount_width     = 25;
 motor_clamp_mount_thickness = 8;
 
 // make coordinates more communicative
@@ -41,7 +41,7 @@ m5_nut_height = m5_nut_thickness;
 
 // Motors
 nema17_side = 42.5;
-nema17_diam = 50.5;
+nema17_diam = 55.5;
 nema17_len = 36; // "half-length" nema 17
 nema17_len = 48;
 nema17_hole_spacing = 31;

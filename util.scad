@@ -2,6 +2,12 @@ include <config.scad>;
 
 function accurate_diam(diam,sides=16) = 1 / cos(180 / sides) * diam;
 
+function circle_rotation(sides) = 180/sides;
+
+module accurate_circle(diam,sides=16) {
+  circle(r=diam/2,center=true,$fn=sides);
+}
+
 module hole(diam,height,sides=16) {
   diam = accurate_diam(diam,sides);
 
