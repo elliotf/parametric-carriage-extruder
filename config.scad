@@ -177,6 +177,7 @@ belt_opening_width = 8;
 
 x_rod_spacing   = 45;
 pulley_offset_z = -1.75;
+pulley_offset_z = 1.75;
 pulley_offset_z = 0;
 
 // lm8uu
