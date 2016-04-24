@@ -376,7 +376,7 @@ module motor_clamp_carriage() {
   }
 
   translate([x_carriage_width/2+tensioner_clamp_length/2,0,tensioner_clamp_pos_z]) {
-    //vertical_belt_clamp();
+    vertical_belt_clamp();
   }
 
   translate([motor_clamp_pos_x+motor_clamp_mount_width/2+5,motor_clamp_pos_y,motor_clamp_pos_z]) {
@@ -497,5 +497,5 @@ module plate() {
 }
 
 
-//motor_clamp_carriage();
-plate();
+motor_clamp_carriage();
+//plate();
