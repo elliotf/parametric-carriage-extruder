@@ -189,7 +189,10 @@ bearing_diam = 15;
 //bearing_diam = 11;
 bearing_diam = 12;
 
-lower_bearing_diam = bearing_diam;
 lower_bearing_diam = 15;
+lower_bearing_diam = bearing_diam;
 
 carriage_screw_spacing = 30;
+
+screw_tensioner = 1;
+screw_tensioner = 0;
