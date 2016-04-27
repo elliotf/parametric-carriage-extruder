@@ -8,7 +8,7 @@ pi  = 3.14159265359;
 resolution = 32;
 rotation   = 180/resolution;
 
-motor_clamp_mount_width     = 25;
+motor_clamp_mount_width     = 20;
 motor_clamp_mount_thickness = 8;
 
 // make coordinates more communicative
@@ -196,3 +196,6 @@ carriage_screw_spacing = 30;
 
 screw_tensioner = 1;
 screw_tensioner = 0;
+
+all_bushings = 1;
+all_bushings = 0;
